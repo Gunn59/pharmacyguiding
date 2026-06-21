@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fungal Regimen</title>
+    <style>
+        /* ================= Base Styles ================= */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #f2f2f7; 
+            margin: 0; 
+            padding: 15px;
+            color: #333;
+        }
+        .container { 
+            background-color: #ffffff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+        h2 { text-align: center; color: #333; font-size: 20px; margin-bottom: 5px; margin-top: 0; }
+        .subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 20px; }
+        
+        .back-btn { 
+            text-decoration: none; 
+            color: #007aff; 
+            font-weight: bold; 
+            display: inline-block; 
+            margin-bottom: 15px; 
+            font-size: 14px; 
+        }
+
+        /* ================= UI Elements ================= */
+        label { font-weight: 600; color: #555; display: block; margin-top: 15px; font-size: 14px; }
+        select { 
+            width: 100%; 
+            padding: 12px; 
+            margin-top: 5px; 
+            border: 1px solid #d1d1d6; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            background-color: #fafafa; 
+            outline: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+        select:focus { border-color: #007aff; }
+
+        /* ================= Fungal Tool Styles ================= */
+        .fungal-section { display: none; margin-top: 15px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .concept-box { background-color: #e8f8f5; color: #16a085; border-left: 4px solid #1abc9c; padding: 10px; margin-bottom: 15px; font-weight: bold; font-size: 14px; border-radius: 4px; }
+        .concept-box.warning { background-color: #fdedec; color: #c0392b; border-left-color: #e74c3c; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 15px; background: #fff; }
+        th, td { border: 1px solid #e0e6ed; padding: 10px 8px; text-align: left; }
+        th { background-color: #34495e; color: #fff; font-weight: normal; }
+        .bg-light-blue { background-color: #ebf5fb; }
+        .bg-light-gray { background-color: #f8f9f9; }
+        .highlight-red { color: #e74c3c; font-weight: bold; }
+        .highlight-green { color: #27ae60; font-weight: bold; }
+        .note { font-size: 12px; color: #7f8c8d; display: block; margin-top: 4px; }
+        .handwriting { color: #8e44ad; font-style: italic; font-size: 13px; }
+        .section-title { font-size: 16px; color: #2980b9; margin: 15px 0 8px 0; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">⬅️ กลับหน้าหลัก</a>
+
+    <div class="container">
+        <h2>Fungal Regimen</h2>
+        <div class="subtitle">สรุปขนาดยาและระยะเวลา (Pharmacotherapy)</div>
+
+        <label>เลือกตำแหน่งที่ติดเชื้อ:</label>
+        <select id="diseaseSelect" onchange="showFungalContent()">
+            <option value="">-- กรุณาเลือกโรค --</option>
+            <option value="capitis">กลากที่หัว (Tinea Capitis)</option>
+            <option value="corporis">กลากที่ลำตัว, ขาหนีบ, หน้า</option>
+            <option value="pedis">กลากที่ฝ่ามือ ฝ่าเท้า</option>
+            <option value="unguium">กลากที่เล็บ (Tinea Unguium)</option>
+            <option value="candida">เชื้อราแคนดิดาในช่องปาก</option>
+        </select>
+
+        <div id="capitis" class="fungal-section">
+            <div class="concept-box">📌 ยืนด้วย **ยากิน** เสมอ</div>
+            <div class="section-title">ยารับประทาน</div>
+            <table>
+                <tr><th>ชื่อยา / ขนาดยา</th><th>ระยะเวลา</th></tr>
+                <tr><td><strong>Griseofulvin</strong><br>20 มก./กก./วัน หรือ 1 ก./วัน</td><td>6-8 สัปดาห์</td></tr>
+                <tr class="bg-light-blue"><td><strong>Terbinafine</strong><br>250 มก./วัน</td><td>2-4 สัปดาห์ <span class="handwriting">(Note: 2 wk)</span></td></tr>
+                <tr><td><strong>Itraconazole</strong><br>5 มก./กก./วัน</td><td>4-8 สัปดาห์</td></tr>
+                <tr class="bg-light-blue"><td><strong>Fluconazole</strong><br>6 มก./กก./วัน</td><td>3-6 สัปดาห์</td></tr>
+            </table>
+            <div class="section-title">การรักษาเสริม</div>
+            <table>
+                <tr class="bg-light-gray">
+                    <td><strong>2.5% selenium sulfide, 2% ketoconazole</strong><br>สระผม <span class="highlight-red">2-4 ครั้ง/สัปดาห์</span><br><span class="handwriting">(Note: วันเว้นวัน)</span></td>
+                    <td>2-4 สัปดาห์ <span class="handwriting">(Note: 2 wk)</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="corporis" class="fungal-section">
+            <div class="concept-box">📌 ยืนด้วยยาทา</div>
+            <div class="section-title">ยาใช้ภายนอก</div>
+            <table>
+                <tr><th>ชื่อยา</th><th>วิธีการใช้ / ระยะเวลา</th></tr>
+                <tr><td>Imidazole cream</td><td>ทาวันละ 2 ครั้ง (2-4 สัปดาห์)</td></tr>
+                <tr class="bg-light-blue"><td>2% Miconazole cream</td><td>ทาวันละ 2 ครั้ง นาน 4-6 สัปดาห์ <br><span class="highlight-red">หรือ ทาจนรอยโรคหายไปและทาต่ออีก 2 สัปดาห์</span><br><span class="handwriting">(Note: F/U 2 wk)</span></td></tr>
+                <tr><td>Ciclopirox</td><td>ทาวันละ 2 ครั้ง (4 สัปดาห์)</td></tr>
+                <tr class="bg-light-blue"><td>Tolnaftate</td><td>ทาวันละ 2 ครั้ง (4 สัปดาห์)</td></tr>
+                <tr><td>Terbinafine</td><td>ทาวันละ 2 ครั้ง (2-4 สัปดาห์)</td></tr>
+            </table>
+            <div class="section-title highlight-red">ยารับประทาน (กรณีรอยกว้าง/ไม่ตอบสนอง)</div>
+            <table>
+                <tr><td>Fluconazole (150-200 มก./สัปดาห์)</td><td>2-4 สัปดาห์</td></tr>
+                <tr class="bg-light-gray"><td>Griseofulvin (0.5-1 ก./วัน)</td><td>4 สัปดาห์</td></tr>
+                <tr><td>Itraconazole (200-400 มก./วัน)</td><td>1 สัปดาห์</td></tr>
+                <tr class="bg-light-gray"><td><strong>Terbinafine (250 มก./วัน)</strong></td><td><strong>1 สัปดาห์</strong></td></tr>
+            </table>
+        </div>
+
+        <div id="pedis" class="fungal-section">
+            <div class="section-title">ยาใช้ภายนอก</div>
+            <table>
+                <tr class="bg-light-gray">
+                    <td><strong>Whitfield ointment</strong><br><span class="concept-box" style="padding:5px; margin-top:5px; display:block;">พิเศษขึ้นมา ลอกผิวเฉยๆ ฤทธิ์ฆ่าเชื้อน้อยมาก</span></td>
+                    <td>ทาวันละ 2 ครั้ง (6-8 สัปดาห์)</td>
+                </tr>
+                <tr><td>Imidazole cream</td><td>ทาวันละ 2 ครั้ง (6-8 สัปดาห์)</td></tr>
+                <tr class="bg-light-gray"><td>Ciclopirox</td><td>ทาวันละ 2 ครั้ง (6-8 สัปดาห์)</td></tr>
+                <tr><td>Terbinafine</td><td>ทาวันละ 2 ครั้ง (6-8 สัปดาห์)</td></tr>
+            </table>
+            <div class="section-title">ยารับประทาน</div>
+            <table>
+                <tr><td>Fluconazole (150-200 มก./สัปดาห์)</td><td>4-6 สัปดาห์</td></tr>
+                <tr class="bg-light-gray"><td>Griseofulvin (0.5-1 ก./วัน)</td><td>4-8 สัปดาห์</td></tr>
+                <tr><td>Itraconazole (400 มก./วัน)</td><td>1 สัปดาห์</td></tr>
+                <tr class="bg-light-gray"><td>Terbinafine (250 มก./วัน)</td><td>2-4 สัปดาห์</td></tr>
+            </table>
+        </div>
+
+        <div id="unguium" class="fungal-section">
+            <div class="section-title highlight-red">ยารับประทาน**</div>
+            <table>
+                <tr class="bg-light-blue">
+                    <td rowspan="2"><strong>Itraconazole</strong> (200 มก./วัน)</td>
+                    <td>6 สัปดาห์ (เล็บมือ)</td>
+                </tr>
+                <tr class="bg-light-blue"><td>12 สัปดาห์ (เล็บเท้า)</td></tr>
+                <tr>
+                    <td rowspan="2"><strong>Itraconazole (Pulsed regimen)</strong><br><span class="highlight-red">200 มก. วันละ 2 ครั้ง นาน 1 สัปดาห์/เดือน</span></td>
+                    <td><span class="highlight-red">ติดต่อกัน 2 รอบ (เล็บมือ)</span></td>
+                </tr>
+                <tr><td><span class="highlight-red">ติดต่อกัน 3-6 รอบ (เล็บเท้า)</span></td></tr>
+                <tr class="bg-light-blue">
+                    <td rowspan="2"><strong>Terbinafine</strong> <span class="handwriting highlight-red">(เก่งกว่า)</span><br><span class="highlight-green">250 มก./วัน</span></td>
+                    <td><span class="highlight-green">6 สัปดาห์ (เล็บมือ)</span></td>
+                </tr>
+                <tr class="bg-light-blue"><td><span class="highlight-green">12-16 สัปดาห์ (เล็บเท้า)</span></td></tr>
+                <tr>
+                    <td rowspan="2"><strong>Fluconazole</strong><br>150-300 มก./สัปดาห์ (มือ)<br>150-200 มก./สัปดาห์ (เท้า)</td>
+                    <td>3-6 เดือน (เล็บมือ)</td>
+                </tr>
+                <tr><td>4-9 เดือน (เล็บเท้า)</td></tr>
+            </table>
+        </div>
+
+        <div id="candida" class="fungal-section">
+            <div class="concept-box warning">
+                ⚠️ Terbinafine หายไป เพราะไม่ cover Candida<br>
+                ⚠️ Geofravin (Griseofulvin) หายไป
+            </div>
+            <div class="section-title">ยาใช้เฉพาะที่ (ในช่องปาก)</div>
+            <table>
+                <tr>
+                    <td><strong>Clotrimazole lozenge</strong> <span class="handwriting highlight-red">(TH ไม่มี)</span><br>อมครั้งละ 1 เม็ด วันละ 5 ครั้ง</td>
+                    <td>1-2 สัปดาห์</td>
+                </tr>
+                <tr class="bg-light-gray"><td><strong>Miconazole oral gel</strong> (ทาวันละ 2 ครั้ง)</td><td>1-2 สัปดาห์</td></tr>
+                <tr><td><strong>Nystatin oral suspension</strong><br>อมกลั้วปากแล้วกลืน 4-6 แสนยูนิต วันละ 4-5 ครั้ง</td><td>นาน 1-2 สัปดาห์</td></tr>
+            </table>
+            <div class="section-title highlight-red">ยารับประทาน (กรณีรอยกว้าง/ลงหลอดอาหาร)</div>
+            <table>
+                <tr class="bg-light-gray">
+                    <td><strong>Ketoconazole</strong> (200 มก. วันละ 1 ครั้ง)<br><span class="note">(US FDA boxed warnings about hepatotoxic)</span></td>
+                    <td>10-14 วัน</td>
+                </tr>
+                <tr>
+                    <td><strong>Fluconazole</strong> (100-200 มก./วัน)<br><span class="note">(อาจให้ loading dose 200 มก. กรณีรุนแรง)</span></td>
+                    <td>1-2 สัปดาห์</td>
+                </tr>
+                <tr class="bg-light-gray">
+                    <td><strong>Itraconazole</strong> (100-200 มก./วัน)<br><span class="note">รูปแบบน้ำ อมกลั้วคอแล้วกลืนจะได้ผลดีกว่าแคปซูล</span></td>
+                    <td>1-2 สัปดาห์</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function showFungalContent() {
+            var sections = document.getElementsByClassName('fungal-section');
+            for(var i = 0; i < sections.length; i++) {
+                sections[i].style.display = 'none';
+            }
+            var selectedValue = document.getElementById('diseaseSelect').value;
+            if(selectedValue !== '') {
+                document.getElementById(selectedValue).style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
