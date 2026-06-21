@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warfarin Fast Screen</title>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; max-width: 650px; margin: auto; padding: 20px; }
+        .row { 
+            display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 12px; padding: 15px; 
+            border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .color-1mg { background-color: #ffe4e1; border-left: 6px solid #ffb6c1; }
+        .color-2mg { background-color: #f3e5f5; border-left: 6px solid #ce93d8; }
+        .color-3mg { background-color: #e3f2fd; border-left: 6px solid #90caf9; }
+        .color-5mg { background-color: #fff3e0; border-left: 6px solid #ffcc80; }
+        
+        .strength-label { font-weight: bold; width: 60px; font-size: 1.1em; }
+        .tabs-select { padding: 5px; font-size: 1em; margin-right: 15px; border-radius: 4px; }
+        
+        .days-group { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; align-items: center; }
+        .day-label {
+            display: inline-block; cursor: pointer; padding: 6px 12px;
+            background-color: #fff; border: 1px solid #ccc; border-radius: 20px;
+            font-size: 0.9em; user-select: none; transition: 0.2s;
+        }
+        .day-checkbox { display: none; }
+        .day-checkbox:checked + .day-label { background-color: #4CAF50; color: white; border-color: #4CAF50; }
+
+        .btn-reverse {
+            margin-left: 10px; padding: 5px 12px; background-color: #607d8b;
+            color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;
+        }
+        .btn-reverse:hover { background-color: #455a64; }
+
+        .summary-box {
+            margin-top: 20px; padding: 15px; background-color: #f9f9f9;
+            border: 2px dashed #4CAF50; border-radius: 8px; text-align: center;
+        }
+        
+        .comparison-container { display: flex; justify-content: space-between; margin: 15px 0; }
+        .comp-item { width: 48%; }
+        .comp-title { font-size: 0.9em; color: #666; margin-bottom: 5px; }
+        
+        .total-dose { font-size: 1.8em; font-weight: bold; margin: 5px 0; }
+        .dose-prev { color: #607d8b; }
+        .dose-current { color: #1630f5; }
+        
+        /* สไตล์สีใหม่ตามที่คุณต้องการ */
+        .percent-change { font-weight: bold; font-size: 1.1em; margin-top: 5px; }
+        .color-green { color: #2e7d32; } /* มากขึ้น = เขียว */
+        .color-red { color: #d32f2f; }   /* ลดลง = แดง */
+        
+        .daily-breakdown { display: flex; justify-content: space-between; margin-top: 15px; }
+        .daily-item { text-align: center; font-size: 0.9em; width: 14%; }
+        .daily-day { font-weight: bold; color: #555; }
+        .daily-mg { margin-top: 5px; color: #000; font-weight: bold; }
+        .alert { color: red; font-weight: bold; }
+        .dispense-box { margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 2px dashed #4CAF50; border-radius: 8px; }
+        .dispense-input { padding: 5px; width: 60px; border-radius: 4px; border: 1px solid #ccc; }
+        .dispense-result { margin-top: 10px; font-weight: bold; color: #2e7d32; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <h2>⚡ Warfarin Fast Screen</h2>
+    
+    <div id="regimen-container">
+        <div class="row color-1mg" data-strength="1"><div class="strength-label">1 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button></div></div>
+        
+        <div class="row color-2mg" data-strength="2"><div class="strength-label">2 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button></div></div>
+        
+        <div class="row color-3mg" data-strength="3"><div class="strength-label">3 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button></div></div>
+        
+        <div class="row color-5mg" data-strength="5"><div class="strength-label">5 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button></div></div>
+    </div>
+
+    <div class="summary-box">
+        <div style="margin-bottom: 10px;">
+            <label style="font-weight: bold;">TWD ครั้งก่อน: </label>
+            <input type="number" id="prev-twd" value="0" step="0.5" style="padding: 5px; width: 80px; border-radius: 4px; border: 1px solid #ccc;"> mg
+        </div>
+        
+        <div class="comparison-container">
+            <div class="comp-item">
+                <div class="comp-title">ครั้งก่อน</div>
+                <div class="total-dose dose-prev" id="display-prev">0.00</div>
+            </div>
+            <div class="comp-item">
+                <div class="comp-title">ครั้งนี้</div>
+                <div class="total-dose dose-current" id="total-weekly-dose">0.00</div>
+            </div>
+        </div>
+        
+        <div id="percent-change" class="percent-change">เปรียบเทียบ: -</div>
+
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+        <div style="font-size: 0.85em; color: #666; text-align: left; margin-bottom: 5px;">Daily Breakdown (mg)</div>
+        <div class="daily-breakdown">
+            <div class="daily-item"><div class="daily-day">จ</div><div class="daily-mg" id="day-0">0</div></div>
+            <div class="daily-item"><div class="daily-day">อ</div><div class="daily-mg" id="day-1">0</div></div>
+            <div class="daily-item"><div class="daily-day">พ</div><div class="daily-mg" id="day-2">0</div></div>
+            <div class="daily-item"><div class="daily-day">พฤ</div><div class="daily-mg" id="day-3">0</div></div>
+            <div class="daily-item"><div class="daily-day">ศ</div><div class="daily-mg" id="day-4">0</div></div>
+            <div class="daily-item"><div class="daily-day">ส</div><div class="daily-mg" id="day-5">0</div></div>
+            <div class="daily-item"><div class="daily-day">อา</div><div class="daily-mg" id="day-6">0</div></div>
+        </div>
+        <div class="dispense-box" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 2px dashed #4CAF50; border-radius: 8px;">
+            <label><b>จำนวนวันที่นัด (วัน):</b></label>
+            <input type="number" id="num-days" class="dispense-input" value="0" min="0" style="padding: 5px; width: 60px;">
+            <div id="dispense-output" class="dispense-result" style="margin-top: 10px; font-weight: bold; color: #2e7d32; line-height: 1.6;">
+                กรุณาระบุจำนวนวัน
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateDose() {
+            let totalWeeklyMg = 0;
+            let dailyMg = [0, 0, 0, 0, 0, 0, 0];
+            const rows = document.querySelectorAll('.row');
+            
+            rows.forEach(row => {
+                const strength = parseFloat(row.getAttribute('data-strength'));
+                const tabs = parseFloat(row.querySelector('.tabs-select').value);
+                const checkboxes = row.querySelectorAll('.day-checkbox');
+                
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        const dayIndex = parseInt(cb.value);
+                        const mgForToday = strength * tabs;
+                        dailyMg[dayIndex] += mgForToday;
+                        totalWeeklyMg += mgForToday;
+                    }
+                });
+            });
+            
+            document.getElementById('total-weekly-dose').innerText = totalWeeklyMg.toFixed(2);
+
+            for (let i = 0; i < 7; i++) {
+                const dayElement = document.getElementById(`day-${i}`);
+                dayElement.innerText = dailyMg[i] > 0 ? dailyMg[i].toFixed(2) : "0";
+                dayElement.classList.toggle('alert', dailyMg[i] > 10);
+            }
+            
+            updatePercentChange();
+        }
+
+        function updatePercentChange() {
+            const prev = parseFloat(document.getElementById('prev-twd').value) || 0;
+            const current = parseFloat(document.getElementById('total-weekly-dose').innerText) || 0;
+            const changeDisplay = document.getElementById('percent-change');
+            
+            document.getElementById('display-prev').innerText = prev.toFixed(2);
+
+            if (prev === 0) {
+                changeDisplay.innerText = "เปรียบเทียบ: -";
+                changeDisplay.className = "percent-change";
+            } else {
+                const percent = ((current - prev) / prev) * 100;
+                const sign = percent > 0 ? "+" : "";
+                changeDisplay.innerText = `เปลี่ยนแปลง: ${sign}${percent.toFixed(1)}%`;
+                
+                if (percent > 0) {
+                    // มากขึ้น = เขียว
+                    changeDisplay.className = "percent-change color-green";
+                } else if (percent < 0) {
+                    // ลดลง = แดง
+                    changeDisplay.className = "percent-change color-red";
+                } else {
+                    changeDisplay.className = "percent-change";
+                }
+            }
+        }
+        
+        function calculateDispense() {
+            const numDays = parseInt(document.getElementById('num-days').value) || 0;
+            const output = document.getElementById('dispense-output');
+            
+            if (numDays <= 0) { 
+                output.innerText = "กรุณาระบุจำนวนวัน"; 
+                return; 
+            }
+
+            let html = `ยาที่ต้องจ่ายสำหรับ <b>${numDays} วัน</b>:<br>`;
+            let hasContent = false;
+
+            // วนลูปเช็คแต่ละแถวของความแรงยา
+            document.querySelectorAll('.row').forEach(row => {
+                const strength = row.getAttribute('data-strength');
+                const tabsPerDay = parseFloat(row.querySelector('.tabs-select').value);
+                const checkedDays = row.querySelectorAll('.day-checkbox:checked').length;
+                
+                // สูตรคำนวณ: (จำนวนเม็ดต่อวัน * จำนวนวันที่กินจริงต่อสัปดาห์ / 7) * จำนวนวันนัด
+                const totalTabsNeeded = (tabsPerDay * checkedDays / 7) * numDays;
+                
+                if (totalTabsNeeded > 0) {
+                    html += `• ${strength} mg: <b>${totalTabsNeeded.toFixed(2)} เม็ด</b><br>`;
+                    hasContent = true;
+                }
+            });
+
+            output.innerHTML = hasContent ? html : "ยังไม่มีรายการยา";
+        }
+
+        document.getElementById('prev-twd').addEventListener('input', calculateDose);
+        document.querySelectorAll('.tabs-select').forEach(select => select.addEventListener('change', function() {
+            const row = this.closest('.row');
+            const checkboxes = row.querySelectorAll('.day-checkbox');
+            const isAnyChecked = Array.from(checkboxes).some(cb => cb.checked);
+            if (parseFloat(this.value) > 0 && !isAnyChecked) checkboxes.forEach(cb => cb.checked = true);
+            else if (parseFloat(this.value) === 0) checkboxes.forEach(cb => cb.checked = false);
+            calculateDose();
+        }));
+
+        document.querySelectorAll('.day-checkbox').forEach(cb => cb.addEventListener('change', calculateDose));
+        document.getElementById('num-days').addEventListener('input', calculateDispense);
+        document.querySelectorAll('.btn-reverse').forEach(btn => btn.addEventListener('click', function() {
+            this.closest('.row').querySelectorAll('.day-checkbox').forEach(cb => cb.checked = !cb.checked);
+            calculateDose();
+        }));
+    </script>
+</body>
+</html>
