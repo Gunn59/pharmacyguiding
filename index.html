@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Clinical Tools Hub</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #f2f2f7; padding: 20px; margin: 0; }
+        .header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
+        .header h1 { color: #1c1c1e; font-size: 24px; margin: 0; }
+        .header p { color: #8e8e93; font-size: 14px; margin-top: 5px; }
+        
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        
+        .menu-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.1s;
+        }
+        .menu-card:active { transform: scale(0.98); background: #f9f9f9; }
+        
+        .icon { font-size: 30px; margin-right: 15px; background: #f2f2f7; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+        .details h3 { margin: 0; font-size: 18px; color: #007aff; }
+        .details p { margin: 4px 0 0 0; font-size: 13px; color: #8e8e93; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Clinical Tools Hub</h1>
+        <p>ศูนย์รวมเครื่องมือสนับสนุนการตัดสินใจทางคลินิก</p>
+    </div>
+
+    <div class="menu-grid">
+        <a href="ped-dose.html" class="menu-card">
+            <div class="icon">👶</div>
+            <div class="details">
+                <h3>Pediatric Dose Calc</h3>
+                <p>คำนวณขนาดยาเด็กและแบ่งมื้ออัตโนมัติ</p>
+            </div>
+        </a>
+
+        <a href="fungal.html" class="menu-card">
+            <div class="icon">🍄</div>
+            <div class="details">
+                <h3>Fungal Regimen</h3>
+                <p>สรุปขนาดยาและระยะเวลา Pharmacotherapy</p>
+            </div>
+        </a>
+
+        <a href="warfarin.html" class="menu-card">
+            <div class="icon">🩸</div>
+            <div class="details">
+                <h3>Warfarin Dose Calc</h3>
+                <p>คำนวณปรับขนาดยาต้านการแข็งตัวของเลือด</p>
+            </div>
+        </a>
+
+        <a href="pregnancy.html" class="menu-card">
+            <div class="icon">🤰</div>
+            <div class="details">
+                <h3>Pregnancy & Lactation</h3>
+                <p>ตรวจสอบความปลอดภัยในการใช้ยา</p>
+            </div>
+        </a>
+    </div>
+
+</body>
+</html>
