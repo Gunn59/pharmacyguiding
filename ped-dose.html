@@ -62,6 +62,14 @@
         .age-note { font-size: 13px; color: #1565c0; margin-top: 15px; background-color: #e3f2fd; padding: 8px; border-radius: 6px; font-weight: bold;}
         .max-dose { font-size: 12px; color: #d32f2f; margin-top: 8px; background-color: #ffebee; padding: 8px; border-radius: 6px; text-align: left;}
         .reference { font-size: 10px; color: #aaa; text-align: center; margin-top: 15px; }
+        /* ================= Feedback Box ================= */
+        .feedback-box { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #d1d1d6; }
+        .feedback-box h3 { font-size: 15px; color: #333; margin-bottom: 10px; margin-top: 0; }
+        .feedback-box textarea { width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 14px; resize: vertical; min-height: 80px; box-sizing: border-box; background-color: #fafafa; font-family: inherit; }
+        .send-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: #34c759; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .send-btn:active { background-color: #28a745; }
+        .send-btn:disabled { background-color: #a1d6b2; cursor: not-allowed; }
+        #reqStatus { font-size: 13px; text-align: center; margin-top: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -103,6 +111,12 @@
         
         <div class="max-dose" id="maxDoseBox"></div>
         <div class="reference">ผู้ใช้งานควรประเมินทางคลินิกและข้อบ่งใช้ของเด็กร่วมด้วยเสมอ</div>
+        <div class="feedback-box">
+            <h3>💡 เสนอแนะยาที่ต้องการให้เพิ่ม</h3>
+            <textarea id="requestText" placeholder="พิมพ์ชื่อยา, ขนาดยา หรือคำแนะนำ..."></textarea>
+            <button id="submitReqBtn" class="send-btn" onclick="sendRequest()">ส่งข้อเสนอแนะให้ผู้พัฒนา</button>
+            <div id="reqStatus"></div>
+        </div>
     </div>
 
     <script>
@@ -234,7 +248,48 @@
             }
             document.getElementById('result').style.color = "#007aff";
         }
+function sendRequest() {
+            let reqText = document.getElementById("requestText").value.trim();
+            if (!reqText) {
+                alert("กรุณาพิมพ์ข้อความก่อนกดส่งครับ");
+                return;
+            }
 
+            let statusDiv = document.getElementById("reqStatus");
+            let btn = document.getElementById("submitReqBtn");
+            
+            statusDiv.style.color = "#007aff";
+            statusDiv.innerText = "กำลังส่งข้อความ...";
+            btn.disabled = true;
+
+            // ใช้ webAppUrl ตัวเดียวกับที่ดึงข้อมูลยา
+            fetch(webAppUrl, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ request: reqText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    statusDiv.style.color = "#34c759";
+                    statusDiv.innerText = "✅ ส่งข้อเสนอแนะเรียบร้อย! ขอบคุณครับ";
+                    document.getElementById("requestText").value = ""; // ล้างกล่องข้อความ
+                } else {
+                    statusDiv.style.color = "red";
+                    statusDiv.innerText = "❌ เกิดข้อผิดพลาด กรุณาลองใหม่";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                statusDiv.style.color = "red";
+                statusDiv.innerText = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
+            })
+            .finally(() => {
+                btn.disabled = false;
+                // ให้ข้อความสถานะหายไปหลังจาก 5 วินาที
+                setTimeout(() => { statusDiv.innerText = ""; }, 5000);
+            });
+        }
         window.onload = loadDrugData;
     </script>
 </body>
