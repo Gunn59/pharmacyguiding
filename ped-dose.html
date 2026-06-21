@@ -5,87 +5,205 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pediatric Dose Calc</title>
     <style>
-        /* ================= Base Styles ================= */
+        /* ================= Base Styles & Typography ================= */
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
+
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: #f2f2f7; 
             margin: 0; 
             padding: 15px;
             color: #333;
         }
-        .container { 
-            background-color: #ffffff; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-        }
-        h2 { text-align: center; color: #333; font-size: 20px; margin-bottom: 5px; margin-top: 0; }
-        .subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 20px; }
-        
+
+        /* ปุ่มย้อนกลับแบบ Pill */
         .back-btn { 
             text-decoration: none; 
             color: #007aff; 
-            font-weight: bold; 
-            display: inline-block; 
-            margin-bottom: 15px; 
+            font-weight: 500; 
+            display: inline-flex; 
+            align-items: center;
+            background: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px; 
             font-size: 14px; 
+            transition: all 0.2s ease;
+        }
+        .back-btn:active {
+            transform: scale(0.96);
+            background: #fafafa;
+        }
+
+        /* ================= Header Box (อิงจากหน้า Index) ================= */
+        .page-header {
+            background: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 24px rgba(0, 122, 255, 0.2);
+        }
+        .page-header h2 { 
+            color: #ffffff; 
+            font-size: 26px; 
+            font-weight: 600; 
+            margin: 0; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .page-header .subtitle { 
+            color: rgba(255, 255, 255, 0.85); 
+            font-size: 14px; 
+            margin-top: 8px; 
+            font-weight: 400;
+        }
+
+        /* ================= Main Container ================= */
+        .container { 
+            background-color: #ffffff; 
+            padding: 24px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02);
         }
 
         /* ================= UI Elements ================= */
-        label { font-weight: 600; color: #555; display: block; margin-top: 15px; font-size: 14px; }
-        input, select { 
+        label { 
+            font-weight: 500; 
+            color: #555; 
+            display: block; 
+            margin-top: 15px; 
+            font-size: 15px; 
+        }
+        input, select, textarea { 
+            font-family: 'Prompt', sans-serif;
             width: 100%; 
-            padding: 12px; 
-            margin-top: 5px; 
-            border: 1px solid #d1d1d6; 
-            border-radius: 8px; 
+            padding: 14px; 
+            margin-top: 6px; 
+            border: 1px solid #e5e5ea; 
+            border-radius: 12px; 
             font-size: 16px; 
             box-sizing: border-box; 
             background-color: #fafafa; 
             outline: none;
             appearance: none;
+            transition: border-color 0.2s ease;
         }
         select {
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
-            background-position: right 10px center;
+            background-position: right 14px center;
         }
-        input:focus, select:focus { border-color: #007aff; }
+        input:focus, select:focus, textarea:focus { 
+            border-color: #007aff; 
+            background-color: #fff;
+        }
 
         /* ================= Pediatric Tool Styles ================= */
-        .hint { font-size: 12px; color: #ff9500; margin-top: 4px; display: block; line-height: 1.4; }
-        .calc-btn { width: 100%; padding: 15px; margin-top: 25px; background-color: #007aff; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .calc-btn:active { background-color: #005bb5; }
-        .result-box { margin-top: 20px; padding: 15px; background-color: #e5f1ff; border-radius: 8px; text-align: center; }
-        #result { font-size: 22px; font-weight: bold; color: #007aff; margin-top: 8px; line-height: 1.5; }
-        .freq-note { font-size: 13px; color: #444; margin-top: 12px; font-weight: bold; }
-        .age-note { font-size: 13px; color: #1565c0; margin-top: 15px; background-color: #e3f2fd; padding: 8px; border-radius: 6px; font-weight: bold;}
-        .max-dose { font-size: 12px; color: #d32f2f; margin-top: 8px; background-color: #ffebee; padding: 8px; border-radius: 6px; text-align: left;}
-        .reference { font-size: 10px; color: #aaa; text-align: center; margin-top: 15px; }
+        .hint { font-size: 13px; color: #ff9500; margin-top: 6px; display: block; line-height: 1.4; }
+        
+        .calc-btn { 
+            font-family: 'Prompt', sans-serif;
+            width: 100%; 
+            padding: 16px; 
+            margin-top: 25px; 
+            background: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            font-size: 18px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.2);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .calc-btn:active { 
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.15);
+        }
+
+        .result-box { 
+            margin-top: 25px; 
+            padding: 20px; 
+            background-color: #f0f8ff; 
+            border-radius: 14px; 
+            text-align: center; 
+            border: 1px solid #e0efff;
+        }
+        #result { font-size: 24px; font-weight: 600; color: #007aff; margin-top: 8px; line-height: 1.5; }
+        .freq-note { font-size: 14px; color: #444; margin-top: 12px; font-weight: 500; }
+        
+        .age-note { 
+            font-size: 14px; 
+            color: #1565c0; 
+            margin-top: 15px; 
+            background-color: #e3f2fd; 
+            padding: 12px; 
+            border-radius: 10px; 
+            font-weight: 500;
+        }
+        .max-dose { 
+            font-size: 13px; 
+            color: #d32f2f; 
+            margin-top: 15px; 
+            background-color: #ffebee; 
+            padding: 12px; 
+            border-radius: 10px; 
+            text-align: left;
+            line-height: 1.4;
+        }
+        .reference { font-size: 12px; color: #aaa; text-align: center; margin-top: 20px; }
+        
         /* ================= Feedback Box ================= */
-        .feedback-box { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #d1d1d6; }
-        .feedback-box h3 { font-size: 15px; color: #333; margin-bottom: 10px; margin-top: 0; }
-        .feedback-box textarea { width: 100%; padding: 12px; border: 1px solid #d1d1d6; border-radius: 8px; font-size: 14px; resize: vertical; min-height: 80px; box-sizing: border-box; background-color: #fafafa; font-family: inherit; }
-        .send-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: #34c759; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        .send-btn:active { background-color: #28a745; }
-        .send-btn:disabled { background-color: #a1d6b2; cursor: not-allowed; }
-        #reqStatus { font-size: 13px; text-align: center; margin-top: 8px; font-weight: bold; }
+        .feedback-box { 
+            margin-top: 35px; 
+            padding-top: 25px; 
+            border-top: 1px dashed #e5e5ea; 
+        }
+        .feedback-box h3 { font-size: 16px; color: #333; margin-bottom: 12px; margin-top: 0; font-weight: 500; }
+        .feedback-box textarea { min-height: 80px; resize: vertical; }
+        
+        .send-btn { 
+            font-family: 'Prompt', sans-serif;
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 12px; 
+            background: linear-gradient(135deg, #34c759 0%, #30b753 100%);
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2);
+            transition: transform 0.1s ease;
+        }
+        .send-btn:active { transform: scale(0.97); }
+        .send-btn:disabled { background: #a1d6b2; box-shadow: none; cursor: not-allowed; transform: none; }
+        #reqStatus { font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <a href="index.html" class="back-btn">⬅️ กลับหน้าหลัก</a>
+    <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        กลับหน้าหลัก
+    </a>
 
-    <div class="container">
+    <div class="page-header">
         <h2>Pediatric Dose Calc</h2>
         <div class="subtitle">คำนวณและแบ่ง Dose ให้ qXh อัตโนมัติ</div>
+    </div>
+
+    <div class="container">
         
         <label>เลือกยา (Drug):</label>
         <select id="drug" onchange="updateDrugInfo()">
             <option value="">-- กำลังโหลดข้อมูลยาจาก Database... --</option>
         </select>
 
-        <div class="age-note" id="ageNote"></div>
+        <div class="age-note" id="ageNote" style="display:none;"></div>
 
         <div id="weightDoseGroup">
             <label>น้ำหนักเด็ก (kg):</label>
@@ -103,14 +221,15 @@
 
         <button id="calcBtn" class="calc-btn" onclick="calculateDose()">คำนวณปริมาตร</button>
 
-        <div class="result-box">
-            <div id="unitLabel">ปริมาตรที่คำนวณได้:</div>
+        <div class="result-box" id="resultContainer" style="display:none;">
+            <div id="unitLabel" style="font-size: 15px; color: #555;">ปริมาตรที่คำนวณได้:</div>
             <div id="result">0.00</div>
             <div class="freq-note" id="frequencyNote"></div>
         </div>
         
-        <div class="max-dose" id="maxDoseBox"></div>
+        <div class="max-dose" id="maxDoseBox" style="display:none;"></div>
         <div class="reference">ผู้ใช้งานควรประเมินทางคลินิกและข้อบ่งใช้ของเด็กร่วมด้วยเสมอ</div>
+        
         <div class="feedback-box">
             <h3>💡 เสนอแนะยาที่ต้องการให้เพิ่ม</h3>
             <textarea id="requestText" placeholder="พิมพ์ชื่อยา, ขนาดยา หรือคำแนะนำ..."></textarea>
@@ -174,8 +293,13 @@
 
             let drug = drugData[selectedDrug];
 
+            document.getElementById("ageNote").style.display = "block";
             document.getElementById("ageNote").innerHTML = "<strong>อายุขั้นต่ำ:</strong> " + drug.age;
+            
+            document.getElementById("maxDoseBox").style.display = "block";
             document.getElementById("maxDoseBox").innerHTML = "🚨 <strong>เงื่อนไข:</strong> " + drug.max;
+            
+            document.getElementById("resultContainer").style.display = "block";
             document.getElementById("frequencyNote").innerText = "** " + drug.freq + " **";
 
             let concSelect = document.getElementById("concentration");
@@ -210,7 +334,7 @@
                 document.getElementById("doseHint").innerHTML = drug.hint.replace(/\\n/g, "<br>").replace(/\n/g, "<br>");
                 document.getElementById("unitLabel").innerText = "ปริมาตรที่คำนวณได้ (" + drug.unit + "):";
                 document.getElementById("result").innerText = "0.00 " + drug.unit;
-                document.getElementById("result").style.fontSize = "26px";
+                document.getElementById("result").style.fontSize = "28px";
                 document.getElementById("result").style.textAlign = "center";
             }
         }
@@ -227,7 +351,7 @@
 
             if(isNaN(weight) || weight <= 0) {
                 document.getElementById('result').innerText = "ระบุน้ำหนัก!";
-                document.getElementById('result').style.color = "red";
+                document.getElementById('result').style.color = "#d32f2f";
                 return;
             }
 
@@ -236,10 +360,10 @@
 
             if (drug.type === 'day') {
                 let resultHtml = `รวม ${finalResult.toFixed(2)} ${drug.unit} / วัน<br>`;
-                resultHtml += `<div style="font-size: 16px; margin-top: 10px; color: #333; text-align: left; background: #fff; padding: 10px; border-radius: 8px;">`;
+                resultHtml += `<div style="font-size: 16px; margin-top: 12px; color: #333; text-align: left; background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #e5e5ea;">`;
                 for(let i=0; i<drug.div.length; i++) {
                     let perDose = finalResult / drug.div[i];
-                    resultHtml += `➡️ แบ่งให้ ${drug.divName[i]} = <strong style="color:#007aff; font-size:18px;">${perDose.toFixed(2)}</strong> ${drug.unit}/ครั้ง<br>`;
+                    resultHtml += `➡️ แบ่งให้ ${drug.divName[i]} = <strong style="color:#007aff; font-size:20px;">${perDose.toFixed(2)}</strong> ${drug.unit}/ครั้ง<br>`;
                 }
                 resultHtml += `</div>`;
                 document.getElementById('result').innerHTML = resultHtml;
@@ -248,7 +372,8 @@
             }
             document.getElementById('result').style.color = "#007aff";
         }
-function sendRequest() {
+
+        function sendRequest() {
             let reqText = document.getElementById("requestText").value.trim();
             if (!reqText) {
                 alert("กรุณาพิมพ์ข้อความก่อนกดส่งครับ");
@@ -262,7 +387,6 @@ function sendRequest() {
             statusDiv.innerText = "กำลังส่งข้อความ...";
             btn.disabled = true;
 
-            // ใช้ webAppUrl ตัวเดียวกับที่ดึงข้อมูลยา
             fetch(webAppUrl, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -273,23 +397,23 @@ function sendRequest() {
                 if(data.result === 'success') {
                     statusDiv.style.color = "#34c759";
                     statusDiv.innerText = "✅ ส่งข้อเสนอแนะเรียบร้อย! ขอบคุณครับ";
-                    document.getElementById("requestText").value = ""; // ล้างกล่องข้อความ
+                    document.getElementById("requestText").value = ""; 
                 } else {
-                    statusDiv.style.color = "red";
+                    statusDiv.style.color = "#d32f2f";
                     statusDiv.innerText = "❌ เกิดข้อผิดพลาด กรุณาลองใหม่";
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                statusDiv.style.color = "red";
+                statusDiv.style.color = "#d32f2f";
                 statusDiv.innerText = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ";
             })
             .finally(() => {
                 btn.disabled = false;
-                // ให้ข้อความสถานะหายไปหลังจาก 5 วินาที
                 setTimeout(() => { statusDiv.innerText = ""; }, 5000);
             });
         }
+        
         window.onload = loadDrugData;
     </script>
 </body>
