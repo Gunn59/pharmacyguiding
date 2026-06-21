@@ -5,29 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pharmacy Guiding</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #f2f2f7; padding: 20px; margin: 0; }
-        .header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
-        .header h1 { color: #1c1c1e; font-size: 24px; margin: 0; }
-        .header p { color: #8e8e93; font-size: 14px; margin-top: 5px; }
+        /* นำเข้าฟอนต์ Prompt จาก Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
+    
+        body { 
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
+            background-color: #f2f2f7; 
+            padding: 20px; 
+            margin: 0; 
+        }
         
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .header { 
+        /* สร้างพื้นหลังไล่สีโทนฟ้า-น้ำเงิน */
+        background: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
+        border-radius: 24px; /* ปรับมุมให้โค้งมนรับกับ Card ด้านล่าง */
+        padding: 35px 20px; 
+        text-align: center; 
+        margin-bottom: 35px; 
+        margin-top: 15px; 
+        /* เพิ่มเงาสีฟ้าอ่อนๆ ให้กล่องดูลอยขึ้นมา */
+        box-shadow: 0 12px 24px rgba(0, 122, 255, 0.25);
+    }
+    
+    .header h1 { 
+        color: #ffffff; /* เปลี่ยนสีตัวอักษรเป็นสีขาวให้ตัดกับพื้นหลัง */
+        font-size: 32px; 
+        font-weight: 600;
+        margin: 0; 
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1); /* เพิ่มเงาให้ข้อความเด่นขึ้น */
+    }
+    
+    .header p { 
+        color: rgba(255, 255, 255, 0.85); /* สีขาวแบบโปร่งแสงเล็กน้อยให้ดูมีลำดับชั้น */
+        font-size: 15px; 
+        margin-top: 8px; 
+        font-weight: 400;
+    }
+        
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 16px; 
+        }
         
         .menu-card {
             background: #ffffff;
-            border-radius: 16px;
+            border-radius: 20px; /* เพิ่มความโค้งให้ดูนุ่มนวลขึ้น */
             padding: 20px;
             display: flex;
             align-items: center;
             text-decoration: none;
             color: #333;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: transform 0.1s;
+            /* ปรับเงาให้ดูฟุ้ง ละมุน และมีมิติมากขึ้น */
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+            position: relative; /* สำหรับวางลูกศร */
+            border: 1px solid rgba(0,0,0,0.02); /* ขอบบางๆ ให้ card ดูมีมิติ */
         }
-        .menu-card:active { transform: scale(0.98); background: #f9f9f9; }
         
-        .icon { font-size: 30px; margin-right: 15px; background: #f2f2f7; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
-        .details h3 { margin: 0; font-size: 18px; color: #007aff; }
-        .details p { margin: 4px 0 0 0; font-size: 13px; color: #8e8e93; }
+        /* เพิ่มลูกศร (Chevron) ด้านขวาของ Card */
+        .menu-card::after {
+            content: "›";
+            position: absolute;
+            right: 20px;
+            font-size: 24px;
+            color: #c7c7cc;
+            transition: transform 0.2s ease;
+        }
+    
+        .menu-card:active { 
+            transform: scale(0.97); 
+            background: #fafafa; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        
+        .icon { 
+            font-size: 28px; 
+            margin-right: 18px; 
+            background: #f4f6f9; /* สีพื้นหลังไอคอนที่ดูสบายตาขึ้น */
+            width: 56px; 
+            height: 56px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 14px; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        
+        .details h3 { 
+            margin: 0; 
+            font-size: 20px; 
+            font-weight: 500;
+            color: #007aff; 
+        }
+        .details p { 
+            margin: 4px 0 0 0; 
+            font-size: 13px; 
+            color: #8e8e93; 
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
