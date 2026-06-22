@@ -272,19 +272,25 @@
                 groups[drug.group].push(drug);
             }
 
-            for (let groupName in groups) {
+            // Sort group keys
+            let sortedGroups = Object.keys(groups).sort();
+
+            sortedGroups.forEach(groupName => {
                 let optgroup = document.createElement("optgroup");
                 optgroup.label = groupName;
-                
+
+                // Sort drugs within group
+                groups[groupName].sort((a, b) => a.displayName.localeCompare(b.displayName, 'th'));
+
                 groups[groupName].forEach(drug => {
                     let option = document.createElement("option");
                     option.value = drug.id;
                     option.innerText = drug.displayName;
                     optgroup.appendChild(option);
                 });
-                
+
                 drugSelect.appendChild(optgroup);
-            }
+            });
         }
 
         function updateDrugInfo() {
