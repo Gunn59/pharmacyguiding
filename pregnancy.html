@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pregnancy & Lactation Screen</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #6c757d;
+            --safe-bg: #d4edda; --safe-text: #155724; --safe-border: #c3e6cb;
+            --caution-bg: #fff3cd; --caution-text: #856404; --caution-border: #ffeeba;
+            --danger-bg: #f8d7da; --danger-text: #721c24; --danger-border: #f5c6cb;
+            --border-radius: 12px;
+        }
+
+        body { 
+            font-family: 'Prompt', sans-serif; 
+            background-color: var(--bg-color); 
+            margin: 0; 
+            padding: 15px;
+            color: var(--text-main);
+        }
+
+        .back-btn { 
+            text-decoration: none; 
+            color: var(--primary-color); 
+            font-weight: 500; 
+            display: inline-flex; 
+            align-items: center;
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 15px; 
+            font-size: 14px; 
+            transition: all 0.2s ease;
+            border: 1px solid #eee;
+        }
+        .back-btn:active { transform: scale(0.96); background: #fafafa; }
+
+        .page-header {
+            background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 24px rgba(0, 122, 255, 0.2);
+            color: white;
+        }
+        .page-header h2 { margin: 0; font-size: 22px; }
+        .page-header .subtitle { font-size: 13px; margin-top: 5px; opacity: 0.9; }
+
+        /* Search Box */
+        .search-container {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            position: sticky;
+            top: 15px;
+            z-index: 100;
+            border: 1px solid #eee;
+        }
+        .search-input {
+            width: 100%;
+            padding: 14px 15px 14px 40px;
+            font-size: 16px;
+            font-family: 'Prompt', sans-serif;
+            border: 2px solid #e5e5ea;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 12px center;
+            background-color: #fafafa;
+        }
+        .search-input:focus { border-color: var(--primary-color); background-color: #fff; }
+
+        /* Status & Loading */
+        #status-msg { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 15px; }
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color);
+            border-radius: 50%; width: 30px; height: 30px;
+            animation: spin 1s linear infinite; margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Drug Cards */
+        .results-container { display: flex; flex-direction: column; gap: 15px; }
+        .drug-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #eee;
+        }
+        
+        .drug-title { 
+            font-size: 18px; 
+            font-weight: 600; 
+            color: var(--primary-color); 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 2px solid #f4f7f6; 
+            padding-bottom: 10px;
+        }
+        .drug-cat { font-size: 12px; color: #888; background: #f0f0f0; padding: 3px 8px; border-radius: 10px; font-weight: normal; }
+
+        .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .status-box { padding: 10px; border-radius: 6px; text-align: center; font-weight: 500; font-size: 14px; }
+        
+        .status-safe { background-color: var(--safe-bg); color: var(--safe-text); border: 1px solid var(--safe-border); }
+        .status-caution { background-color: var(--caution-bg); color: var(--caution-text); border: 1px solid var(--caution-border); }
+        .status-danger { background-color: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
+
+        .info-section { margin-bottom: 12px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee;}
+        .info-label { font-weight: 600; color: var(--text-muted); font-size: 13px; margin-bottom: 4px; display: block; }
+        .info-value { font-size: 14px; line-height: 1.5; color: var(--text-main); }
+        
+        .no-result { text-align: center; color: var(--text-muted); padding: 30px 10px; font-size: 16px; background: #fff; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        กลับหน้าหลัก
+    </a>
+
+    <div class="page-header">
+        <h2>OB/GYN Drug Ref.</h2>
+        <div class="subtitle">ตรวจสอบความปลอดภัยยาในคนท้องและให้นมบุตร</div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="พิมพ์ชื่อยา, กลุ่มยา หรือ อาการ (เช่น แก้แพ้, atb)...">
+    </div>
+
+    <div id="status-msg">
+        <div class="loader" id="loader"></div>
+        <span id="loading-text">กำลังโหลดฐานข้อมูลยาจาก Google Sheets...</span>
+    </div>
+
+    <div class="results-container" id="results">
+        </div>
+
+    <script>
+        // URL Web App จาก Google Apps Script ของคุณ
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbzZ3jlahSCBQpUj52vnhICowTA0pz7xVe89VlMwtVs2f2a_Lr9J5Gcf2U307ChjntdR/exec";
+        let masterData = [];
+
+        window.onload = function() {
+            fetch(webAppUrl)
+                .then(response => response.json())
+                .then(data => {
+                    masterData = data;
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('loading-text').innerText = `พร้อมใช้งาน! โหลดข้อมูลแล้ว ${masterData.length} รายการ`;
+                    setTimeout(() => { document.getElementById('status-msg').style.display = 'none'; }, 2000);
+                    renderCards(masterData);
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('loading-text').innerText = "❌ โหลดข้อมูลล้มเหลว โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต";
+                    document.getElementById('loading-text').style.color = "red";
+                });
+        };
+
+        // ระบบ Omni-Search
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase().trim();
+            
+            if (keyword === "") {
+                renderCards(masterData);
+                return;
+            }
+
+            const filteredData = masterData.filter(drug => {
+                const matchId = (drug.drug_id || "").toLowerCase().includes(keyword);
+                const matchName = (drug.generic_name || "").toLowerCase().includes(keyword);
+                const matchTags = (drug.search_tags || "").toLowerCase().includes(keyword);
+                
+                return matchId || matchName || matchTags;
+            });
+
+            renderCards(filteredData);
+        });
+
+        function renderCards(data) {
+            const container = document.getElementById('results');
+            container.innerHTML = ""; 
+
+            if (data.length === 0) {
+                container.innerHTML = `<div class="no-result">🤔 ไม่พบรายการยาที่ค้นหา<br><span style="font-size:14px; margin-top:5px; display:block;">ลองเปลี่ยนคำค้นหา หรือเช็คตัวสะกดดูนะครับ</span></div>`;
+                return;
+            }
+
+            data.forEach(drug => {
+                // จัดการสีของกล่องสถานะตาม color_code
+                let pregClass = "status-safe";
+                let lactClass = "status-safe";
+                let pregIcon = "✅ ได้";
+                let lactIcon = "✅ ได้";
+
+                // Map สีเข้ากับ CSS Class (อิงจาก color_code ที่รับมาจาก Sheet)
+                if (drug.color_code === "yellow") {
+                    pregClass = "status-caution"; pregIcon = "⚠️ ระวัง";
+                    lactClass = "status-caution"; lactIcon = "⚠️ ระวัง";
+                } else if (drug.color_code === "red") {
+                    pregClass = "status-danger"; pregIcon = "🚨 ห้าม";
+                    lactClass = "status-danger"; lactIcon = "🚨 ห้าม";
+                }
+                
+                // สามารถประยุกต์ใช้เงื่อนไขเพิ่มเติมเพื่อแยกสี Preg กับ Lact ได้ถ้าในอนาคตแยกคอลัมน์สี
+
+                const cardHtml = `
+                    <div class="drug-card">
+                        <div class="drug-title">
+                            ${drug.generic_name}
+                            <span class="drug-cat">${drug.preg_cat ? 'Cat ' + drug.preg_cat : 'N/A'}</span>
+                        </div>
+                        
+                        <div class="status-grid">
+                            <div class="status-box ${pregClass}">🤰 คนท้อง: ${pregIcon}</div>
+                            <div class="status-box ${lactClass}">🤱 ให้นมบุตร: ${lactIcon}</div>
+                        </div>
+
+                        <div class="info-section">
+                            <span class="info-label">ข้อมูลการตั้งครรภ์:</span>
+                            <span class="info-value">${drug.preg_advice || '-'}</span>
+                        </div>
+
+                        <div class="info-section">
+                            <span class="info-label">ข้อมูลการให้นมบุตร (Lactation Cat: ${drug.lact_cat || '-'}):</span>
+                            <span class="info-value">${drug.lact_advice || '-'}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+        }
+    </script>
+</body>
+</html>
