@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST SCREENING: Peds Dose</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-light: #e0f2fe;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --danger: #ef4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding-bottom: 40px; }
+
+        /* ปุ่มย้อนกลับแบบ Pill */
+        .back-btn {
+            text-decoration: none;
+            color: #007aff;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            background: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin: 15px 0 0 15px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .back-btn:active {
+            transform: scale(0.96);
+            background: #fafafa;
+        }
+
+        /* Header แบบตรึงด้านบน */
+        .header { padding: 16px; text-align: center; }
+        .header h1 { font-size: 1.2rem; color: var(--primary); margin-bottom: 12px; font-weight: 600; }
+        .weight-input { display: inline-flex; align-items: center; gap: 10px; background: var(--primary-light); padding: 10px 16px; border-radius: 12px; }
+        .weight-input input { width: 90px; font-size: 1.5rem; font-weight: 600; text-align: center; padding: 4px; border: 2px solid #bae6fd; border-radius: 8px; outline: none; color: var(--primary); }
+        .weight-input input:focus { border-color: var(--primary); }
+
+        /* แถบเมนูหมวดหมู่ (Tabs) เลื่อนซ้าย-ขวาได้ */
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 12px 20px;
+            background: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            border-bottom: 1px solid #e2e8f0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            white-space: nowrap;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .drug-card { background: var(--card-bg); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        .d-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; align-items: flex-start; }
+        .d-name { font-weight: 600; font-size: 1rem; color: var(--primary); line-height: 1.2; }
+        .d-age { font-size: 0.7rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--text-muted); }
+        .d-hint { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; white-space: pre-line; line-height: 1.4; }
+        .controls { margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+        select { padding: 4px 6px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.75rem; outline: none; background: #f8fafc; width: 100%; }
+        .freq-group { display: flex; gap: 4px; flex-wrap: wrap; }
+        .freq-btn { flex: 1; padding: 4px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap; text-align: center; }
+        .freq-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .result-box { background: #f1f5f9; border-radius: 8px; padding: 12px 8px; text-align: center; margin-top: auto; }
+        .res-ml { font-size: 1.3rem; font-weight: 600; color: var(--primary); line-height: 1; }
+        .res-ml span { font-size: 0.85rem; font-weight: 400; }
+        .res-mg { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .warning { font-size: 0.7rem; color: var(--danger); margin-top: 8px; font-weight: 500; line-height: 1.2; }
+        .fixed-text { font-size: 0.75rem; color: var(--text-main); white-space: pre-line; text-align: left; background: #fff; padding: 10px; border-radius: 6px; border: 1px dashed #cbd5e1; height: 100%; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>FAST SCREENING : PEDS DOSE</h1>
+        <div class="weight-input">
+            <label>น้ำหนัก</label>
+            <input type="number" id="weight" placeholder="0.0" inputmode="decimal">
+            <span>kg</span>
+        </div>
+    </div>
+
+    <div class="category-tabs" id="tabs-container"></div>
+
+    <main class="container" id="cards-container"></main>
+
+    <script>
+        // --- ข้อมูลความเข้มข้นของยา ---
+        const concData = {
+            paracetamol: [
+                { label: "120 mg / 5 ml", mg: 120, ml: 5 },
+                { label: "250 mg / 5 ml", mg: 250, ml: 5 },
+                { label: "160 mg / 5 ml", mg: 160, ml: 5 },
+                { label: "60 mg / 0.6 ml (Drops)", mg: 60, ml: 0.6 }
+            ],
+            ibuprofen: [{ label: "100 mg / 5 ml", mg: 100, ml: 5 }],
+            amoxicillin: [
+                { label: "125 mg / 5 ml", mg: 125, ml: 5 },
+                { label: "250 mg / 5 ml", mg: 250, ml: 5 }
+            ],
+            amx_clv: [
+                { label: "228.5 mg / 5 ml (Amox 200)", mg: 200, ml: 5 },
+                { label: "457 mg / 5 ml (Amox 400)", mg: 400, ml: 5 },
+                { label: "156.25 mg / 5 ml (Amox 125)", mg: 125, ml: 5 }
+            ],
+            azithromycin: [{ label: "200 mg / 5 ml", mg: 200, ml: 5 }],
+            cpm: [{ label: "2 mg / 5 ml", mg: 2, ml: 5 }],
+            cetirizine: [{ label: "5 mg / 5 ml", mg: 5, ml: 5 }],
+            levodropropizine: [{ label: "30 mg / 5 ml", mg: 30, ml: 5 }],
+            salbutamol: [{ label: "2 mg / 5 ml", mg: 2, ml: 5 }],
+            domperidone: [{ label: "5 mg / 5 ml", mg: 5, ml: 5 }],
+            berclomine: [{ label: "10 mg / 5 ml (Dicyclomine)", mg: 10, ml: 5 }],
+            carbocysteine: [
+                { label: "100 mg / 5 ml (Syrup)", mg: 100, ml: 5 },
+                { label: "250 mg / 5 ml (Syrup)", mg: 250, ml: 5 }
+            ],
+            pseudoephedrine: [{ label: "30 mg / 5 ml (Syrup)", mg: 30, ml: 5 }],
+            fexofenadine: [{ label: "30 mg / 5 ml (Suspension)", mg: 30, ml: 5 }],
+            loratadine: [{ label: "5 mg / 5 ml (Syrup)", mg: 5, ml: 5 }]
+        };
+
+        // --- ข้อมูลหลักของยา ---
+        const drugs = [
+            { id: "amoxicillin", group: "Antibiotics", name: "Amoxicillin", type: "day", dose: 30, hint: "30-90 mg/kg/day", age: "ทารกแรกเกิด", max: "Max: 3-4 g/day / Max/dose: 875-1,000 mg", div: [2,3], divName: ["q12h", "q8h"] },
+            { id: "amx_clv", group: "Antibiotics", name: "Amx/Clv", type: "day", dose: 40, hint: "30-90 mg/kg/day (คิดตาม Amox)", age: "ทารกแรกเกิด", max: "Max: อิง Amox (ระวัง Clavulanate รวมไม่ควรเกิน 600 mg/day)", div: [2], divName: ["q12h"] },
+            { id: "azithromycin", group: "Antibiotics", name: "Azithromycin", type: "day", dose: 10, hint: "10 mg/kg/day (x3 วัน) หรือ 10mg วันแรก ตามด้วย 5mg (x4 วัน)", age: "≥ 6 เดือน", max: "Max: 500 mg/day", div: [1], divName: ["OD (ให้วันละ 1 ครั้ง)"] },
+            
+            { id: "paracetamol", group: "Antipyretic / Analgesic", name: "Paracetamol", type: "dose", dose: 10, hint: "10-15 mg/kg/dose", age: "≥ 1 เดือน", max: "Max dose: <6 ปี 75 mg/kg/day // 6-12 ปี 1,625 mg/day // 4,000 mg/day", div: [], divName: [] },
+            { id: "ibuprofen", group: "Antipyretic / Analgesic", name: "Ibuprofen", type: "dose", dose: 10, hint: "5-10 mg/kg/dose (หลังอาหารทันที)", age: "≥ 6 เดือน", max: "Max: 40 mg/kg/day (ไม่เกิน 2,400 mg/day) / Max/dose: 400 mg", div: [], divName: [] },
+
+            { id: "cpm", group: "Antihistamine / Allergy", name: "CPM (Chlorpheniramine)", type: "day", dose: 0.35, hint: "0.35 mg/kg/day\n*Age-based (Fixed):\n- 2-5 ปี: 1 mg/dose\n- 6-11 ปี: 2 mg/dose", age: "≥ 1 ปี", max: "Max: 6 mg/day (2-5 ปี), 12 mg/day (6-11 ปี), 24 mg/day (≥12 ปี)", div: [4,6], divName: ["q6h", "q4h"] },
+            { id: "cetirizine", group: "Antihistamine / Allergy", name: "Cetirizine", type: "dose", dose: 0.25, hint: "Weight-based: 0.25 mg/kg/dose\n*Age-based:\n- 6-23 เดือน: 2.5 mg OD\n- 2-5 ปี: 2.5 mg OD - BID\n- ≥ 6 ปี: 5-10 mg OD", age: "≥ 6 เดือน", max: "Max: 2.5 mg/day (<2 ปี) / 5 mg/day (2-5 ปี) / 10 mg/day (≥6 ปี)", div: [], divName: [] },
+            { id: "desloratadine", group: "Antihistamine / Allergy", name: "Desloratadine", type: "fixed", text: "• 6 - 11 เดือน: 2 ml (1 mg)\n• 1 - 5 ปี: 2.5 ml (1.25 mg)\n• 6 - 11 ปี: 5 ml (2.5 mg)\n• ≥ 12 ปี: 10 ml (5 mg)\n*อิงจากความเข้มข้น 2.5 mg / 5 ml", hint: "ให้ตามขนาดที่แนะนำในแต่ละช่วงวัย", age: "≥ 6 เดือน" },
+            { id: "fexofenadine", group: "Antihistamine / Allergy", name: "Fexofenadine", type: "fixed", text: "• 6 ด-4 ปี: 15 mg bid\n• 4-11 ปี: 30 mg bid\n• ≥12 ปี: 60 mg bid หรือ 180 mg OD", hint: "ดูขนาดตามช่วงอายุ", age: "≥ 6 เดือน", max: "Max: 180 mg/day" },
+            { id: "loratadine", group: "Antihistamine / Allergy", name: "Loratadine", type: "fixed", text: "• นน < 30 kg: 5 mg OD\n• นน ≥ 30 kg: 10 mg OD", hint: "น้ำหนัก < 30 kg ให้ 5 mg / ≥ 30 kg ให้ 10 mg", age: "≥ 2 ปี", max: "Max: 10 mg/day" },
+
+            { id: "carbocysteine", group: "Cough / Cold / Respiratory", name: "Carbocysteine", type: "day", dose: 20, hint: "20-30 mg/kg/day", age: "≥ 2 ปี", max: "Max: 1.5 - 2 g/day", div: [3], divName: ["q8h"] },
+            { id: "pseudoephedrine", group: "Cough / Cold / Respiratory", name: "Pseudoephedrine", type: "day", dose: 4, hint: "4-5 mg/kg/day", age: "≥ 2 ปี", max: "Max: 240 mg/day", div: [4], divName: ["q6h"] },
+            { id: "salbutamol", group: "Cough / Cold / Respiratory", name: "Salbutamol", type: "dose", dose: 0.1, hint: "0.1 mg/kg/dose\n*Age-based:\n- 2-5 ปี: 1-2 mg/dose\n- 6-11 ปี: 2 mg/dose", age: "≥ 2 ปี (⚠️ < 2 ปี ควรพ่น)", max: "Max: 12 mg/day (2-5 ปี) / 24 mg/day (6-11 ปี)", div: [], divName: [] },
+            { id: "levodropropizine", group: "Cough / Cold / Respiratory", name: "Levodropropizine", type: "dose", dose: 1, hint: "1 mg/kg/dose (วันละ 3 ครั้ง ห่างกัน 6 ชม.)", age: "≥ 2 ปี", max: "Max: 3 mg/kg/day", div: [], divName: [] },
+            { id: "guaifenesin", group: "Cough / Cold / Respiratory", name: "Guaifenesin", type: "fixed", text: "• 2 - 5 ปี: 50-100 mg ทุก 4 ชม.\n• 6 - 11 ปี: 100-200 mg ทุก 4 ชม.\n(ไม่นิยมคำนวณ mg/kg เพราะตวงยาก)", hint: "ทุก 4 ชั่วโมง (q4h)", age: "≥ 2 ปี", max: "Max: 600 mg/day (2-5 ปี) / 1,200 mg/day (6-11 ปี)" },
+            { id: "iyafin", group: "Cough / Cold / Respiratory", name: "Iyafin", type: "fixed", text: "• 2 - 6 ปี: 2.5 ml (ครึ่งช้อนชา)\n• 6 - 12 ปี: 5 ml (1 ช้อนชา)\n• ผู้ใหญ่: 10 ml (2 ช้อนชา)\n*(สูตร Diphenhydramine + Expectorants)*", hint: "q6h - q8h PRN", age: "≥ 2 ปี", max: "ระวังผลข้างเคียงง่วงซึม" },
+
+            { id: "domperidone", group: "Gastrointestinal", name: "Domperidone", type: "dose", dose: 0.25, hint: "0.2-0.4 mg/kg/dose ก่อนอาหาร", age: "ทารกแรกเกิด", max: "Max: 0.75 mg/kg/day หรือ 30 mg/day", div: [], divName: [] },
+            { id: "berclomine", group: "Gastrointestinal", name: "Berclomine", type: "dose", dose: 0.1, hint: "Dicyclomine 0.1 mg/kg/dose (q6h PRN)", age: "≥ 6 เดือน", max: "Max: 4 dose/day", div: [], divName: [] },
+            { id: "hyoscine", group: "Gastrointestinal", name: "Hyoscine", type: "fixed", text: "• อายุ < 1 ปี : 2.5 ml\n• อายุ 1 - 6 ปี : 5-10 ml\n• อายุ > 6 ปี : 10-20 ml", hint: "q6h - q8h", age: "≥ 1 เดือน", max: "Max: 30 mg/day (เด็ก < 12 ปี)" },
+            { id: "simethicone", group: "Gastrointestinal", name: "Simethicone", type: "fixed", text: "• มักให้ 20-40 mg/dose (ไม่ต้องคูณน้ำหนัก)", hint: "หลังอาหารและก่อนนอน", age: "ทารกแรกเกิด", max: "Max: 240 mg/day (< 2 ปี)" }
+        ];
+
+        // State ควบคุมสถานะ
+        const state = { 
+            div: {}, 
+            conc: {}, 
+            currentGroup: "" // เก็บค่าหมวดหมู่ยาที่กำลังเลือกอยู่
+        };
+
+        // ดึงรายชื่อหมวดหมู่ทั้งหมดที่ไม่ซ้ำกัน
+        const uniqueGroups = [...new Set(drugs.map(d => d.group))];
+
+        function initApp() {
+            // เซ็ตหมวดหมู่เริ่มต้นให้เป็นหมวดแรก
+            state.currentGroup = uniqueGroups[0];
+
+            drugs.forEach(d => {
+                if (d.div && d.div.length > 0) state.div[d.id] = d.div[0];
+                if (concData[d.id]) state.conc[d.id] = 0;
+            });
+
+            renderTabs();
+            renderCards();
+            document.getElementById('weight').addEventListener('input', calculate);
+        }
+
+        // ฟังก์ชันสร้างปุ่มเมนูหมวดหมู่
+        function renderTabs() {
+            const tabsContainer = document.getElementById('tabs-container');
+            tabsContainer.innerHTML = ''; // ล้างค่าเดิม
+            
+            uniqueGroups.forEach(group => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${group === state.currentGroup ? 'active' : ''}`;
+                btn.innerText = group;
+                
+                // เมื่อคลิกเปลี่ยนหมวดหมู่
+                btn.onclick = () => {
+                    state.currentGroup = group;
+                    renderTabs(); // วาดปุ่มใหม่เพื่อเปลี่ยนสีปุ่มที่ active
+                    renderCards(); // เปลี่ยนรายการยาด้านล่าง
+                    calculate(); // สั่งคำนวณใหม่
+                    
+                    // เลื่อนให้ปุ่มที่กดอยู่ตรงกลางจอแบบสมูท
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                };
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        // ฟังก์ชันสร้างรายการยาตามหมวดที่ถูกเลือก
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            
+            // กรองมาเฉพาะยาที่อยู่ในหมวดปัจจุบัน
+            const currentDrugs = drugs.filter(d => d.group === state.currentGroup);
+            
+            let gridHtml = '<div class="card-grid">';
+            
+            currentDrugs.forEach(d => {
+                let controls = `<div class="controls">`;
+                
+                if (concData[d.id] && d.type !== 'fixed') {
+                    // อ่านค่า conc index ที่เลือกค้างไว้
+                    const selectedConc = state.conc[d.id] || 0;
+                    controls += `<select id="conc-${d.id}" onchange="changeConc('${d.id}', this.value)">`;
+                    concData[d.id].forEach((c, idx) => {
+                        const isSelected = idx === selectedConc ? 'selected' : '';
+                        controls += `<option value="${idx}" ${isSelected}>${c.label}</option>`;
+                    });
+                    controls += `</select>`;
+                }
+
+                if (d.div && d.div.length > 0) {
+                    const selectedDiv = state.div[d.id] || d.div[0];
+                    controls += `<div class="freq-group">`;
+                    d.divName.forEach((name, idx) => {
+                        const isActive = d.div[idx] === selectedDiv ? 'active' : '';
+                        controls += `<button class="freq-btn ${isActive}" onclick="changeDiv(this, '${d.id}', ${d.div[idx]})">${name}</button>`;
+                    });
+                    controls += `</div>`;
+                }
+                controls += `</div>`;
+
+                let resultArea = '';
+                if (d.type === 'fixed') {
+                    resultArea = `<div class="fixed-text">${d.text || ''}</div>`;
+                } else {
+                    resultArea = `
+                        <div class="result-box">
+                            <div class="res-ml" id="ml-${d.id}">-- <span>ml</span></div>
+                            <div class="res-mg" id="mg-${d.id}">-- mg / dose</div>
+                            ${d.max ? `<div class="warning">⚠️ ${d.max}</div>` : ''}
+                        </div>
+                    `;
+                }
+
+                gridHtml += `
+                    <div class="drug-card">
+                        <div class="d-header">
+                            <div class="d-name">${d.name}</div>
+                            ${d.age ? `<div class="d-age">${d.age}</div>` : ''}
+                        </div>
+                        <div class="d-hint">${d.hint}</div>
+                        ${d.type !== 'fixed' ? controls : ''}
+                        ${resultArea}
+                    </div>
+                `;
+            });
+            
+            gridHtml += '</div>';
+            container.innerHTML = gridHtml;
+        }
+
+        // Functions จัดการคลิกและอัปเดต State
+        function changeDiv(btn, id, val) {
+            const group = btn.parentElement;
+            group.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.div[id] = val;
+            calculate();
+        }
+
+        function changeConc(id, idx) {
+            state.conc[id] = parseInt(idx);
+            calculate();
+        }
+
+        // Function คำนวณ (เฉพาะยาที่โชว์อยู่)
+        function calculate() {
+            const w = parseFloat(document.getElementById('weight').value);
+            const currentDrugs = drugs.filter(d => d.group === state.currentGroup);
+
+            if (isNaN(w) || w <= 0) {
+                currentDrugs.forEach(d => {
+                    if (d.type !== 'fixed') {
+                        const elMl = document.getElementById(`ml-${d.id}`);
+                        const elMg = document.getElementById(`mg-${d.id}`);
+                        if(elMl) elMl.innerHTML = `-- <span>ml</span>`;
+                        if(elMg) elMg.innerText = `-- mg / dose`;
+                    }
+                });
+                return;
+            }
+
+            currentDrugs.forEach(d => {
+                if (d.type === 'fixed') return;
+
+                let mgPerDose = 0;
+                if (d.type === 'day') {
+                    const divisor = state.div[d.id] || 1;
+                    mgPerDose = (d.dose * w) / divisor;
+                } else {
+                    mgPerDose = d.dose * w;
+                }
+
+                const elMg = document.getElementById(`mg-${d.id}`);
+                const elMl = document.getElementById(`ml-${d.id}`);
+                
+                if(elMg) elMg.innerText = `${mgPerDose.toFixed(1)} mg / dose`;
+
+                if (concData[d.id]) {
+                    const cIdx = state.conc[d.id] || 0;
+                    const cData = concData[d.id][cIdx];
+                    const mlResult = (mgPerDose * cData.ml) / cData.mg;
+                    if(elMl) elMl.innerHTML = `${mlResult.toFixed(2)} <span>ml</span>`;
+                } else {
+                    if(elMl) elMl.innerHTML = `${mgPerDose.toFixed(1)} <span>mg</span>`;
+                }
+            });
+        }
+
+        // สั่งรันเมื่อโหลดเสร็จ
+        window.onload = initApp;
+    </script>
+</body>
+</html>
