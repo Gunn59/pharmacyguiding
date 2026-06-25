@@ -17,34 +17,35 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding-bottom: 40px; }
-
-        /* ปุ่มย้อนกลับแบบ Pill */
-        .back-btn {
-            text-decoration: none;
-            color: #007aff;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            background: #ffffff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin: 15px 0 0 15px;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-        .back-btn:active {
-            transform: scale(0.96);
-            background: #fafafa;
-        }
-
+        
         /* Header แบบตรึงด้านบน */
-        .header { padding: 16px; text-align: center; }
-        .header h1 { font-size: 1.2rem; color: var(--primary); margin-bottom: 12px; font-weight: 600; }
+        .header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 16px; z-index: 100; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-align: center; }
+        .header h1 { font-size: 1.2rem; color: var(--primary); margin-bottom: 12px; font-weight: 600; margin-top: 4px; }
+        
+        /* ปุ่มกลับหน้าหลัก */
+        .back-btn {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: 8px;
+            transition: 0.2s;
+            border: 1px solid #bae6fd;
+        }
+        .back-btn:hover { background: #bae6fd; }
+
         .weight-input { display: inline-flex; align-items: center; gap: 10px; background: var(--primary-light); padding: 10px 16px; border-radius: 12px; }
         .weight-input input { width: 90px; font-size: 1.5rem; font-weight: 600; text-align: center; padding: 4px; border: 2px solid #bae6fd; border-radius: 8px; outline: none; color: var(--primary); }
         .weight-input input:focus { border-color: var(--primary); }
-
+        
         /* แถบเมนูหมวดหมู่ (Tabs) เลื่อนซ้าย-ขวาได้ */
         .category-tabs {
             display: flex;
@@ -53,14 +54,15 @@
             padding: 12px 20px;
             background: #ffffff;
             position: sticky;
-            top: 0;
+            top: 105px; /* ล็อกให้อยู่ใต้ Header พอดี */
             z-index: 99;
             border-bottom: 1px solid #e2e8f0;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            scrollbar-width: none; 
         }
         .category-tabs::-webkit-scrollbar { display: none; }
-
+        
+        /* ปุ่มเลือกหมวดหมู่ */
         .tab-btn {
             white-space: nowrap;
             padding: 8px 16px;
@@ -81,28 +83,79 @@
         }
 
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .drug-card { background: var(--card-bg); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: flex; flex-direction: column; }
-        .d-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; align-items: flex-start; }
+        
+        .card-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; 
+        }
+        
+        .drug-card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            padding: 12px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            border: 1px solid #e2e8f0; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .d-header { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px; 
+            margin-bottom: 8px; 
+            align-items: flex-start; 
+        }
         .d-name { font-weight: 600; font-size: 1rem; color: var(--primary); line-height: 1.2; }
         .d-age { font-size: 0.7rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--text-muted); }
         .d-hint { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; white-space: pre-line; line-height: 1.4; }
+        
         .controls { margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
         select { padding: 4px 6px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.75rem; outline: none; background: #f8fafc; width: 100%; }
+        
+        /* ส่วนปรับแต่ง Dose (เพิ่มใหม่) */
+        .dose-config {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.75rem;
+        }
+        .dose-config label { color: var(--text-muted); font-weight: 500; }
+        .dose-config input {
+            width: 55px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #94a3b8;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            outline: none;
+        }
+        .dose-config input:focus { border-color: var(--primary); }
+
         .freq-group { display: flex; gap: 4px; flex-wrap: wrap; }
         .freq-btn { flex: 1; padding: 4px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap; text-align: center; }
         .freq-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        
         .result-box { background: #f1f5f9; border-radius: 8px; padding: 12px 8px; text-align: center; margin-top: auto; }
         .res-ml { font-size: 1.3rem; font-weight: 600; color: var(--primary); line-height: 1; }
         .res-ml span { font-size: 0.85rem; font-weight: 400; }
         .res-mg { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
         .warning { font-size: 0.7rem; color: var(--danger); margin-top: 8px; font-weight: 500; line-height: 1.2; }
+        
         .fixed-text { font-size: 0.75rem; color: var(--text-main); white-space: pre-line; text-align: left; background: #fff; padding: 10px; border-radius: 6px; border: 1px dashed #cbd5e1; height: 100%; }
     </style>
 </head>
 <body>
 
     <div class="header">
+        <a href="index.html" class="back-btn">◀ หน้าหลัก</a>
         <h1>FAST SCREENING : PEDS DOSE</h1>
         <div class="weight-input">
             <label>น้ำหนัก</label>
@@ -182,19 +235,20 @@
         const state = { 
             div: {}, 
             conc: {}, 
-            currentGroup: "" // เก็บค่าหมวดหมู่ยาที่กำลังเลือกอยู่
+            customDose: {}, // เก็บค่า Dose ที่ user กรอกเอง
+            currentGroup: "" 
         };
 
         // ดึงรายชื่อหมวดหมู่ทั้งหมดที่ไม่ซ้ำกัน
         const uniqueGroups = [...new Set(drugs.map(d => d.group))];
 
         function initApp() {
-            // เซ็ตหมวดหมู่เริ่มต้นให้เป็นหมวดแรก
             state.currentGroup = uniqueGroups[0];
 
             drugs.forEach(d => {
                 if (d.div && d.div.length > 0) state.div[d.id] = d.div[0];
                 if (concData[d.id]) state.conc[d.id] = 0;
+                if (d.type !== 'fixed') state.customDose[d.id] = d.dose; // เซ็ต Dose เริ่มต้น
             });
 
             renderTabs();
@@ -205,21 +259,18 @@
         // ฟังก์ชันสร้างปุ่มเมนูหมวดหมู่
         function renderTabs() {
             const tabsContainer = document.getElementById('tabs-container');
-            tabsContainer.innerHTML = ''; // ล้างค่าเดิม
+            tabsContainer.innerHTML = ''; 
             
             uniqueGroups.forEach(group => {
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${group === state.currentGroup ? 'active' : ''}`;
                 btn.innerText = group;
                 
-                // เมื่อคลิกเปลี่ยนหมวดหมู่
                 btn.onclick = () => {
                     state.currentGroup = group;
-                    renderTabs(); // วาดปุ่มใหม่เพื่อเปลี่ยนสีปุ่มที่ active
-                    renderCards(); // เปลี่ยนรายการยาด้านล่าง
-                    calculate(); // สั่งคำนวณใหม่
-                    
-                    // เลื่อนให้ปุ่มที่กดอยู่ตรงกลางจอแบบสมูท
+                    renderTabs(); 
+                    renderCards(); 
+                    calculate(); 
                     btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 };
                 tabsContainer.appendChild(btn);
@@ -229,8 +280,6 @@
         // ฟังก์ชันสร้างรายการยาตามหมวดที่ถูกเลือก
         function renderCards() {
             const container = document.getElementById('cards-container');
-            
-            // กรองมาเฉพาะยาที่อยู่ในหมวดปัจจุบัน
             const currentDrugs = drugs.filter(d => d.group === state.currentGroup);
             
             let gridHtml = '<div class="card-grid">';
@@ -238,8 +287,18 @@
             currentDrugs.forEach(d => {
                 let controls = `<div class="controls">`;
                 
+                // เพิ่ม Input สำหรับแก้ Dose
+                if (d.type !== 'fixed') {
+                    const unitLabel = d.type === 'day' ? 'mg/kg/day' : 'mg/kg/dose';
+                    controls += `
+                        <div class="dose-config">
+                            <label>Dose (${unitLabel}):</label>
+                            <input type="number" step="5" min="0" value="${state.customDose[d.id]}" oninput="changeDose('${d.id}', this.value)">
+                        </div>
+                    `;
+                }
+
                 if (concData[d.id] && d.type !== 'fixed') {
-                    // อ่านค่า conc index ที่เลือกค้างไว้
                     const selectedConc = state.conc[d.id] || 0;
                     controls += `<select id="conc-${d.id}" onchange="changeConc('${d.id}', this.value)">`;
                     concData[d.id].forEach((c, idx) => {
@@ -304,6 +363,12 @@
             calculate();
         }
 
+        function changeDose(id, val) {
+            const num = parseFloat(val);
+            state.customDose[id] = isNaN(num) || num < 0 ? 0 : num;
+            calculate();
+        }
+
         // Function คำนวณ (เฉพาะยาที่โชว์อยู่)
         function calculate() {
             const w = parseFloat(document.getElementById('weight').value);
@@ -324,12 +389,14 @@
             currentDrugs.forEach(d => {
                 if (d.type === 'fixed') return;
 
+                const baseDose = state.customDose[d.id]; // ดึงค่า Dose ที่ระบุเองมาใช้
                 let mgPerDose = 0;
+                
                 if (d.type === 'day') {
                     const divisor = state.div[d.id] || 1;
-                    mgPerDose = (d.dose * w) / divisor;
+                    mgPerDose = (baseDose * w) / divisor;
                 } else {
-                    mgPerDose = d.dose * w;
+                    mgPerDose = baseDose * w;
                 }
 
                 const elMg = document.getElementById(`mg-${d.id}`);
