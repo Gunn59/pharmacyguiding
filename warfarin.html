@@ -5,51 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warfarin Fast Screen</title>
     <style>
-        body { font-family: 'Sarabun', sans-serif; max-width: 650px; margin: auto; padding: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap');
+
+        /* ================= Theme Variables ================= */
+        :root {
+            --bg-body: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --bg-card: #ffffff;
+            --bg-input: #ffffff;
+            --border-color: #dddddd;
+            --border-light: #eeeeee;
+            
+            /* UI Colors */
+            --primary: #007aff;
+            --primary-hover: #005bb5;
+            --success: #4CAF50;
+            --success-text: #2e7d32;
+            --danger: #d32f2f;
+            --box-bg: #f9f9f9;
+
+            /* Warfarin Tablet Colors (Light Mode) */
+            --bg-1mg: #ffe4e1; --border-1mg: #ffb6c1;
+            --bg-2mg: #f3e5f5; --border-2mg: #ce93d8;
+            --bg-3mg: #e3f2fd; --border-3mg: #90caf9;
+            --bg-5mg: #fff3e0; --border-5mg: #ffcc80;
+
+            /* Reset Button */
+            --reset-bg: #ffffff;
+            --reset-border: #ffcdd2;
+            --reset-hover: #ffebee;
+            --reset-text: #d32f2f;
+        }
+
+        html[data-theme="dark"] {
+            --bg-body: #121212;
+            --text-main: #f5f5f5;
+            --text-muted: #aaaaaa;
+            --bg-card: #1e1e1e;
+            --bg-input: #2c2c2e;
+            --border-color: #3a3a3c;
+            --border-light: #2a2a2a;
+            
+            /* UI Colors */
+            --primary: #4da3ff;
+            --primary-hover: #82c4ff;
+            --success: #43a047;
+            --success-text: #66bb6a;
+            --danger: #ef5350;
+            --box-bg: #1a1a1a;
+
+            /* Warfarin Tablet Colors (Dark Mode) - Muted but distinct */
+            --bg-1mg: #3b2629; --border-1mg: #b56c77;
+            --bg-2mg: #322538; --border-2mg: #9c68a6;
+            --bg-3mg: #1e2c3b; --border-3mg: #5d92c4;
+            --bg-5mg: #3b2e1f; --border-5mg: #c49653;
+
+            /* Reset Button */
+            --reset-bg: #1e1e1e;
+            --reset-border: #6b2426;
+            --reset-hover: #3b1c1e;
+            --reset-text: #ef5350;
+        }
+
+        /* ================= Base Styles ================= */
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            max-width: 650px; 
+            margin: auto; 
+            padding: 20px; 
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+        }
         
-        /* สไตล์ปุ่มย้อนกลับด้านบน */
+        h2 { color: var(--text-main); transition: color 0.3s; }
+
+        /* ปุ่มย้อนกลับด้านบน */
         .back-btn { 
             text-decoration: none; 
-            color: #007aff; 
+            color: var(--primary); 
             font-weight: 500; 
             display: inline-flex; 
             align-items: center;
-            background: #ffffff;
+            background: var(--bg-card);
             padding: 8px 16px;
             border-radius: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             margin-bottom: 20px; 
             font-size: 14px; 
             transition: all 0.2s ease;
-            border: 1px solid #eee;
+            border: 1px solid var(--border-color);
         }
-        .back-btn:active {
-            transform: scale(0.96);
-            background: #fafafa;
-        }
+        .back-btn:active { transform: scale(0.96); opacity: 0.8; }
 
+        /* ================= Rows & Colors ================= */
         .row { 
             display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 12px; padding: 15px; 
-            border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: background-color 0.3s, border-color 0.3s;
         }
         
-        .color-1mg { background-color: #ffe4e1; border-left: 6px solid #ffb6c1; }
-        .color-2mg { background-color: #f3e5f5; border-left: 6px solid #ce93d8; }
-        .color-3mg { background-color: #e3f2fd; border-left: 6px solid #90caf9; }
-        .color-5mg { background-color: #fff3e0; border-left: 6px solid #ffcc80; }
+        .color-1mg { background-color: var(--bg-1mg); border-left: 6px solid var(--border-1mg); }
+        .color-2mg { background-color: var(--bg-2mg); border-left: 6px solid var(--border-2mg); }
+        .color-3mg { background-color: var(--bg-3mg); border-left: 6px solid var(--border-3mg); }
+        .color-5mg { background-color: var(--bg-5mg); border-left: 6px solid var(--border-5mg); }
         
-        .strength-label { font-weight: bold; width: 60px; font-size: 1.1em; }
-        .tabs-select { padding: 5px; font-size: 1em; margin-right: 15px; border-radius: 4px; }
+        .strength-label { font-weight: bold; width: 60px; font-size: 1.1em; color: var(--text-main); }
+        
+        /* ================= Inputs & Selects ================= */
+        .tabs-select, input[type="number"] { 
+            padding: 5px; font-size: 1em; margin-right: 15px; border-radius: 4px; 
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
         
         .days-group { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; align-items: center; }
         .day-label {
             display: inline-block; cursor: pointer; padding: 6px 12px;
-            background-color: #fff; border: 1px solid #ccc; border-radius: 20px;
-            font-size: 0.9em; user-select: none; transition: 0.2s;
+            background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 20px;
+            font-size: 0.9em; user-select: none; transition: 0.2s; color: var(--text-main);
         }
         .day-checkbox { display: none; }
-        .day-checkbox:checked + .day-label { background-color: #4CAF50; color: white; border-color: #4CAF50; }
+        .day-checkbox:checked + .day-label { background-color: var(--success); color: white; border-color: var(--success); }
 
+        /* ================= Action Buttons ================= */
         .btn-reverse {
             margin-left: 10px; padding: 5px 12px; background-color: #607d8b;
             color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;
@@ -68,55 +150,58 @@
         }
         .btn-remove:hover { background-color: #da190b; }
 
-        .summary-box {
-            margin-top: 20px; padding: 15px; background-color: #f9f9f9;
-            border: 2px dashed #4CAF50; border-radius: 8px; text-align: center;
+        /* ================= Summary Boxes ================= */
+        .summary-box, .dispense-box {
+            margin-top: 20px; padding: 15px; background-color: var(--box-bg);
+            border: 2px dashed var(--success); border-radius: 8px; text-align: center;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         
         .comparison-container { display: flex; justify-content: space-between; margin: 15px 0; }
         .comp-item { width: 48%; }
-        .comp-title { font-size: 0.9em; color: #666; margin-bottom: 5px; }
+        .comp-title { font-size: 0.9em; color: var(--text-muted); margin-bottom: 5px; }
         
         .total-dose { font-size: 1.8em; font-weight: bold; margin: 5px 0; }
-        .dose-prev { color: #607d8b; }
-        .dose-current { color: #1630f5; }
+        .dose-prev { color: var(--text-muted); }
+        .dose-current { color: var(--primary); }
         
         .percent-change { font-weight: bold; font-size: 1.1em; margin-top: 5px; }
-        .color-green { color: #2e7d32; } 
-        .color-red { color: #d32f2f; }   
+        .color-green { color: var(--success-text); } 
+        .color-red { color: var(--danger); }   
         
+        hr { border: 0; border-top: 1px solid var(--border-color); margin: 15px 0; transition: border-color 0.3s; }
+
         .daily-breakdown { display: flex; justify-content: space-between; margin-top: 15px; }
         .daily-item { text-align: center; font-size: 0.9em; width: 14%; }
-        .daily-day { font-weight: bold; color: #555; }
-        .daily-mg { margin-top: 5px; color: #000; font-weight: bold; }
-        .alert { color: red; font-weight: bold; }
-        .dispense-box { margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 2px dashed #4CAF50; border-radius: 8px; }
-        .dispense-input { padding: 5px; width: 60px; border-radius: 4px; border: 1px solid #ccc; }
-        .dispense-result { margin-top: 10px; font-weight: bold; color: #2e7d32; line-height: 1.6; }
+        .daily-day { font-weight: bold; color: var(--text-muted); }
+        .daily-mg { margin-top: 5px; color: var(--text-main); font-weight: bold; }
+        .alert { color: var(--danger); font-weight: bold; }
+        
+        .dispense-input { padding: 5px; width: 60px; border-radius: 4px; border: 1px solid var(--border-color); }
+        .dispense-result { margin-top: 10px; font-weight: bold; color: var(--success-text); line-height: 1.6; }
 
-        /* สไตล์ปุ่ม Reset เคลียร์ค่า Theme เดียวกับปุ่มย้อนกลับ */
+        /* ================= Reset Button ================= */
         .btn-reset-all {
-            display: block;
-            width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            background-color: #ffffff;
-            color: #d32f2f;
-            border: 1px solid #ffcdd2;
-            border-radius: 20px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
+            display: block; width: 100%; margin-top: 20px; padding: 12px;
+            background-color: var(--reset-bg);
+            color: var(--reset-text);
+            border: 1px solid var(--reset-border);
+            border-radius: 20px; font-size: 1em; font-weight: bold; cursor: pointer;
+            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s ease;
         }
-        .btn-reset-all:hover {
-            background-color: #ffebee;
+        .btn-reset-all:hover { background-color: var(--reset-hover); }
+        .btn-reset-all:active { transform: scale(0.98); }
+
+        /* ================= FAB Theme Toggle ================= */
+        .theme-toggle-btn {
+            position: fixed; bottom: 24px; right: 24px; width: 50px; height: 50px;
+            border-radius: 50%; background: var(--primary); color: #ffffff; border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); cursor: pointer; z-index: 999;
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+            transition: transform 0.2s, background-color 0.3s;
         }
-        .btn-reset-all:active {
-            transform: scale(0.98);
-        }
+        .theme-toggle-btn:hover { transform: scale(1.1); background: var(--primary-hover); }
+        .theme-toggle-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -140,8 +225,8 @@
 
     <div class="summary-box">
         <div style="margin-bottom: 10px;">
-            <label style="font-weight: bold;">TWD ครั้งก่อน: </label>
-            <input type="number" id="prev-twd" value="0" step="0.5" style="padding: 5px; width: 80px; border-radius: 4px; border: 1px solid #ccc;"> mg
+            <label style="font-weight: bold; color: var(--text-main);">TWD ครั้งก่อน: </label>
+            <input type="number" id="prev-twd" value="0" step="0.5" style="width: 80px;"> mg
         </div>
         
         <div class="comparison-container">
@@ -157,8 +242,8 @@
         
         <div id="percent-change" class="percent-change">เปรียบเทียบ: -</div>
 
-        <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
-        <div style="font-size: 0.85em; color: #666; text-align: left; margin-bottom: 5px;">Daily Breakdown (mg)</div>
+        <hr>
+        <div style="font-size: 0.85em; color: var(--text-muted); text-align: left; margin-bottom: 5px;">Daily Breakdown (mg)</div>
         <div class="daily-breakdown">
             <div class="daily-item"><div class="daily-day">จ</div><div class="daily-mg" id="day-0">0</div></div>
             <div class="daily-item"><div class="daily-day">อ</div><div class="daily-mg" id="day-1">0</div></div>
@@ -168,16 +253,19 @@
             <div class="daily-item"><div class="daily-day">ส</div><div class="daily-mg" id="day-5">0</div></div>
             <div class="daily-item"><div class="daily-day">อา</div><div class="daily-mg" id="day-6">0</div></div>
         </div>
-        <div class="dispense-box" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border: 2px dashed #4CAF50; border-radius: 8px;">
-            <label><b>จำนวนวันที่นัด (วัน):</b></label>
-            <input type="number" id="num-days" class="dispense-input" value="0" min="0" style="padding: 5px; width: 60px;">
-            <div id="dispense-output" class="dispense-result" style="margin-top: 10px; font-weight: bold; color: #2e7d32; line-height: 1.6;">
-                กรุณาระบุจำนวนวัน
-            </div>
+    </div>
+
+    <div class="dispense-box">
+        <label style="color: var(--text-main);"><b>จำนวนวันที่นัด (วัน):</b></label>
+        <input type="number" id="num-days" class="dispense-input" value="0" min="0">
+        <div id="dispense-output" class="dispense-result">
+            กรุณาระบุจำนวนวัน
         </div>
     </div>
 
     <button type="button" class="btn-reset-all" onclick="resetAll()">🔄 เริ่มเคสใหม่ (Reset)</button>
+
+    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">🌙</button>
 
     <script>
         function calculateAll() {
@@ -269,7 +357,7 @@
 
             let html = `ยาที่ต้องจ่ายสำหรับ <b>${numDays} วัน</b>:<br>`;
             for (const [strength, amount] of Object.entries(dispenseData)) {
-                html += `• ${strength} mg: <b>${amount.toFixed(2)} เม็ด</b><br>`;
+                html += `• ${strength} mg: <b style="color: var(--text-main);">${amount.toFixed(2)} เม็ด</b><br>`;
             }
 
             output.innerHTML = hasContent ? html : "ยังไม่มีรายการยา";
@@ -324,33 +412,59 @@
             }
         }
 
-        // ฟังก์ชันสำหรับปุ่ม Reset ทั้งหมด
         function resetAll() {
-            // 1. ลบแถวที่ Clone มาทั้งหมด (เช็คจากแถวที่มีปุ่ม 🗑️)
             document.querySelectorAll('.btn-remove').forEach(btn => {
                 btn.closest('.row').remove();
             });
 
-            // 2. เคลียร์ค่าในแถวหลักที่เหลือ
             document.querySelectorAll('.row').forEach(row => {
                 row.querySelector('.tabs-select').value = "0";
                 row.querySelectorAll('.day-checkbox').forEach(cb => cb.checked = false);
             });
 
-            // 3. เคลียร์ Input วันนัด และ TWD ครั้งก่อน
             document.getElementById('prev-twd').value = "0";
             document.getElementById('num-days').value = "0";
 
-            // 4. คำนวณใหม่เพื่อเคลียร์ตัวเลขแสดงผล
             calculateAll();
-
-            // 5. เลื่อนหน้าจอกลับไปบนสุด
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        document.querySelectorAll('.row').forEach(row => bindRowEvents(row));
-        document.getElementById('prev-twd').addEventListener('input', calculateAll);
-        document.getElementById('num-days').addEventListener('input', calculateDispense);
+        // --- ระบบ Theme ---
+        function initTheme() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            updateToggleIcon(initialTheme);
+
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateToggleIcon(newTheme);
+            });
+        }
+
+        function updateToggleIcon(theme) {
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                toggleBtn.innerText = '☀️'; 
+            } else {
+                toggleBtn.innerText = '🌙'; 
+            }
+        }
+
+        window.onload = () => {
+            initTheme();
+            document.querySelectorAll('.row').forEach(row => bindRowEvents(row));
+            document.getElementById('prev-twd').addEventListener('input', calculateAll);
+            document.getElementById('num-days').addEventListener('input', calculateDispense);
+        };
 
     </script>
 </body>
