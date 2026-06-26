@@ -15,141 +15,109 @@
             --card-bg: #ffffff;
             --danger: #ef4444;
         }
+
+        /* --- Dark Mode Theme --- */
+        html[data-theme="dark"] {
+            --primary: #38bdf8;
+            --primary-light: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --danger: #f87171;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding-bottom: 40px; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding-bottom: 40px; transition: background-color 0.3s, color 0.3s; }
         
-        /* Header แบบตรึงด้านบน */
-        .header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 16px; z-index: 100; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-align: center; }
+        /* Header */
+        .header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 16px; z-index: 100; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-align: center; transition: background-color 0.3s; }
+        html[data-theme="dark"] .header { background: rgba(15, 23, 42, 0.95); box-shadow: 0 1px 2px rgba(255,255,255,0.05); }
         .header h1 { font-size: 1.2rem; color: var(--primary); margin-bottom: 12px; font-weight: 600; margin-top: 4px; }
         
-        /* ปุ่มกลับหน้าหลัก */
+        /* Back Button */
         .back-btn {
-            position: absolute;
-            left: 16px;
-            top: 16px;
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--primary-light);
-            padding: 4px 10px;
-            border-radius: 8px;
-            transition: 0.2s;
-            border: 1px solid #bae6fd;
+            position: absolute; left: 16px; top: 16px; color: var(--primary); text-decoration: none; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 4px; background: var(--primary-light); padding: 4px 10px; border-radius: 8px; transition: 0.2s; border: 1px solid #bae6fd;
         }
         .back-btn:hover { background: #bae6fd; }
+        html[data-theme="dark"] .back-btn { border-color: #334155; }
+        html[data-theme="dark"] .back-btn:hover { background: #1e293b; }
 
         .weight-input { display: inline-flex; align-items: center; gap: 10px; background: var(--primary-light); padding: 10px 16px; border-radius: 12px; }
-        .weight-input input { width: 90px; font-size: 1.5rem; font-weight: 600; text-align: center; padding: 4px; border: 2px solid #bae6fd; border-radius: 8px; outline: none; color: var(--primary); }
+        .weight-input input { width: 90px; font-size: 1.5rem; font-weight: 600; text-align: center; padding: 4px; border: 2px solid #bae6fd; border-radius: 8px; outline: none; color: var(--primary); background: #fff; }
         .weight-input input:focus { border-color: var(--primary); }
+        html[data-theme="dark"] .weight-input input { background: #1e293b; border-color: #334155; }
         
-        /* แถบเมนูหมวดหมู่ (Tabs) เลื่อนซ้าย-ขวาได้ */
+        /* Category Tabs */
         .category-tabs {
-            display: flex;
-            overflow-x: auto;
-            gap: 12px;
-            padding: 12px 20px;
-            background: #ffffff;
-            position: sticky;
-            top: 105px; /* ล็อกให้อยู่ใต้ Header พอดี */
-            z-index: 99;
-            border-bottom: 1px solid #e2e8f0;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; 
+            display: flex; overflow-x: auto; gap: 12px; padding: 12px 20px; background: #ffffff; position: sticky; top: 105px; z-index: 99; border-bottom: 1px solid #e2e8f0; -webkit-overflow-scrolling: touch; transition: background-color 0.3s;
         }
-        .category-tabs::-webkit-scrollbar { display: none; }
+        html[data-theme="dark"] .category-tabs { background: #1e293b; border-color: #334155; }
         
-        /* ปุ่มเลือกหมวดหมู่ */
+        /* สไตล์ Scrollbar แบบมินิมอลสำหรับคอมพิวเตอร์ */
+        .category-tabs::-webkit-scrollbar { height: 4px; }
+        .category-tabs::-webkit-scrollbar-track { background: transparent; }
+        .category-tabs::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .category-tabs::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        html[data-theme="dark"] .category-tabs::-webkit-scrollbar-thumb { background: #475569; }
+        
         .tab-btn {
-            white-space: nowrap;
-            padding: 8px 16px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 500;
+            white-space: nowrap; padding: 8px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: 0.2s; font-weight: 500;
         }
-        .tab-btn.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
-        }
+        html[data-theme="dark"] .tab-btn { background: #0f172a; border-color: #334155; }
+        .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3); }
 
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
         
-        .card-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
-        }
+        .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         
         .drug-card { 
-            background: var(--card-bg); 
-            border-radius: 12px; 
-            padding: 12px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-            border: 1px solid #e2e8f0; 
-            display: flex; 
-            flex-direction: column; 
+            background: var(--card-bg); border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: flex; flex-direction: column; transition: background-color 0.3s, border-color 0.3s;
         }
+        html[data-theme="dark"] .drug-card { border-color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
         
-        .d-header { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 4px; 
-            margin-bottom: 8px; 
-            align-items: flex-start; 
-        }
+        .d-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; align-items: flex-start; }
         .d-name { font-weight: 600; font-size: 1rem; color: var(--primary); line-height: 1.2; }
         .d-age { font-size: 0.7rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--text-muted); }
+        html[data-theme="dark"] .d-age { background: #334155; color: #cbd5e1; }
         .d-hint { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; white-space: pre-line; line-height: 1.4; }
         
         .controls { margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
-        select { padding: 4px 6px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.75rem; outline: none; background: #f8fafc; width: 100%; }
+        select { padding: 4px 6px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.75rem; outline: none; background: #f8fafc; width: 100%; color: var(--text-main); }
+        html[data-theme="dark"] select { background: #0f172a; border-color: #475569; }
         
-        /* ส่วนปรับแต่ง Dose (เพิ่มใหม่) */
         .dose-config {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f1f5f9;
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid #cbd5e1;
-            font-size: 0.75rem;
+            display: flex; align-items: center; justify-content: space-between; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 0.75rem;
         }
+        html[data-theme="dark"] .dose-config { background: #1e293b; border-color: #334155; }
         .dose-config label { color: var(--text-muted); font-weight: 500; }
         .dose-config input {
-            width: 55px;
-            padding: 2px 4px;
-            border-radius: 4px;
-            border: 1px solid #94a3b8;
-            text-align: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--primary);
-            outline: none;
+            width: 55px; padding: 2px 4px; border-radius: 4px; border: 1px solid #94a3b8; text-align: center; font-size: 0.75rem; font-weight: 600; color: var(--primary); outline: none; background: #fff;
         }
+        html[data-theme="dark"] .dose-config input { background: #0f172a; border-color: #475569; }
         .dose-config input:focus { border-color: var(--primary); }
 
         .freq-group { display: flex; gap: 4px; flex-wrap: wrap; }
-        .freq-btn { flex: 1; padding: 4px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap; text-align: center; }
+        .freq-btn { flex: 1; padding: 4px; border: 1px solid #cbd5e1; background: #f8fafc; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap; text-align: center; color: var(--text-main); }
+        html[data-theme="dark"] .freq-btn { background: #0f172a; border-color: #475569; }
         .freq-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
         
         .result-box { background: #f1f5f9; border-radius: 8px; padding: 12px 8px; text-align: center; margin-top: auto; }
+        html[data-theme="dark"] .result-box { background: #1e293b; border-color: #334155; }
         .res-ml { font-size: 1.3rem; font-weight: 600; color: var(--primary); line-height: 1; }
         .res-ml span { font-size: 0.85rem; font-weight: 400; }
         .res-mg { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
         .warning { font-size: 0.7rem; color: var(--danger); margin-top: 8px; font-weight: 500; line-height: 1.2; }
         
         .fixed-text { font-size: 0.75rem; color: var(--text-main); white-space: pre-line; text-align: left; background: #fff; padding: 10px; border-radius: 6px; border: 1px dashed #cbd5e1; height: 100%; }
+        html[data-theme="dark"] .fixed-text { background: #1e293b; border-color: #475569; }
+
+        /* --- Floating Action Button (Theme Toggle) --- */
+        .theme-toggle-btn {
+            position: fixed; bottom: 24px; right: 24px; width: 50px; height: 50px; border-radius: 50%; background: var(--primary); color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); cursor: pointer; z-index: 999; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: transform 0.2s, background-color 0.3s;
+        }
+        .theme-toggle-btn:hover { transform: scale(1.1); }
+        .theme-toggle-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -167,6 +135,8 @@
     <div class="category-tabs" id="tabs-container"></div>
 
     <main class="container" id="cards-container"></main>
+
+    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">🌙</button>
 
     <script>
         // --- ข้อมูลความเข้มข้นของยา ---
@@ -235,36 +205,66 @@
         const state = { 
             div: {}, 
             conc: {}, 
-            customDose: {}, // เก็บค่า Dose ที่ user กรอกเอง
+            customDose: {}, 
             currentGroup: "" 
         };
 
-        // ดึงรายชื่อหมวดหมู่ทั้งหมดที่ไม่ซ้ำกัน
         const uniqueGroups = [...new Set(drugs.map(d => d.group))];
 
         function initApp() {
-    state.currentGroup = uniqueGroups[0];
+            state.currentGroup = uniqueGroups[0];
 
-    drugs.forEach(d => {
-        if (d.div && d.div.length > 0) state.div[d.id] = d.div[0];
-        if (concData[d.id]) state.conc[d.id] = 0;
-        if (d.type !== 'fixed') state.customDose[d.id] = d.dose; // เซ็ต Dose เริ่มต้น
-    });
+            drugs.forEach(d => {
+                if (d.div && d.div.length > 0) state.div[d.id] = d.div[0];
+                if (concData[d.id]) state.conc[d.id] = 0;
+                if (d.type !== 'fixed') state.customDose[d.id] = d.dose; 
+            });
 
-    renderTabs();
-    renderCards();
-    document.getElementById('weight').addEventListener('input', calculate);
+            renderTabs();
+            renderCards();
+            document.getElementById('weight').addEventListener('input', calculate);
 
-    // --- เพิ่มโค้ดส่วนนี้สำหรับการเลื่อนแถบด้วยลูกกลิ้งเมาส์ ---
-    const tabsContainer = document.getElementById('tabs-container');
-    tabsContainer.addEventListener('wheel', (evt) => {
-        evt.preventDefault(); // ป้องกันไม่ให้หน้าเว็บเลื่อนขึ้นลง
-        tabsContainer.scrollLeft += evt.deltaY; // แปลงการหมุนลูกกลิ้งเป็นการเลื่อนซ้าย-ขวา
-    });
-    // ----------------------------------------------------
-}
+            // --- เลื่อนแถบ Category ด้วยลูกกลิ้งเมาส์ ---
+            const tabsContainer = document.getElementById('tabs-container');
+            tabsContainer.addEventListener('wheel', (evt) => {
+                evt.preventDefault();
+                tabsContainer.scrollLeft += evt.deltaY;
+            });
 
-        // ฟังก์ชันสร้างปุ่มเมนูหมวดหมู่
+            // --- เริ่มระบบ Theme ---
+            initTheme();
+        }
+
+        // --- ระบบ Theme ---
+        function initTheme() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            updateToggleIcon(initialTheme);
+
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateToggleIcon(newTheme);
+            });
+        }
+
+        function updateToggleIcon(theme) {
+            const toggleBtn = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                toggleBtn.innerText = '☀️'; 
+            } else {
+                toggleBtn.innerText = '🌙'; 
+            }
+        }
+
         function renderTabs() {
             const tabsContainer = document.getElementById('tabs-container');
             tabsContainer.innerHTML = ''; 
@@ -285,7 +285,6 @@
             });
         }
 
-        // ฟังก์ชันสร้างรายการยาตามหมวดที่ถูกเลือก
         function renderCards() {
             const container = document.getElementById('cards-container');
             const currentDrugs = drugs.filter(d => d.group === state.currentGroup);
@@ -295,7 +294,6 @@
             currentDrugs.forEach(d => {
                 let controls = `<div class="controls">`;
                 
-                // เพิ่ม Input สำหรับแก้ Dose
                 if (d.type !== 'fixed') {
                     const unitLabel = d.type === 'day' ? 'mg/kg/day' : 'mg/kg/dose';
                     controls += `
@@ -357,7 +355,6 @@
             container.innerHTML = gridHtml;
         }
 
-        // Functions จัดการคลิกและอัปเดต State
         function changeDiv(btn, id, val) {
             const group = btn.parentElement;
             group.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('active'));
@@ -377,7 +374,6 @@
             calculate();
         }
 
-        // Function คำนวณ (เฉพาะยาที่โชว์อยู่)
         function calculate() {
             const w = parseFloat(document.getElementById('weight').value);
             const currentDrugs = drugs.filter(d => d.group === state.currentGroup);
@@ -397,7 +393,7 @@
             currentDrugs.forEach(d => {
                 if (d.type === 'fixed') return;
 
-                const baseDose = state.customDose[d.id]; // ดึงค่า Dose ที่ระบุเองมาใช้
+                const baseDose = state.customDose[d.id]; 
                 let mgPerDose = 0;
                 
                 if (d.type === 'day') {
@@ -423,7 +419,6 @@
             });
         }
 
-        // สั่งรันเมื่อโหลดเสร็จ
         window.onload = initApp;
     </script>
 </body>
