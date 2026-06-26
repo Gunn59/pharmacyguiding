@@ -243,18 +243,26 @@
         const uniqueGroups = [...new Set(drugs.map(d => d.group))];
 
         function initApp() {
-            state.currentGroup = uniqueGroups[0];
+    state.currentGroup = uniqueGroups[0];
 
-            drugs.forEach(d => {
-                if (d.div && d.div.length > 0) state.div[d.id] = d.div[0];
-                if (concData[d.id]) state.conc[d.id] = 0;
-                if (d.type !== 'fixed') state.customDose[d.id] = d.dose; // เซ็ต Dose เริ่มต้น
-            });
+    drugs.forEach(d => {
+        if (d.div && d.div.length > 0) state.div[d.id] = d.div[0];
+        if (concData[d.id]) state.conc[d.id] = 0;
+        if (d.type !== 'fixed') state.customDose[d.id] = d.dose; // เซ็ต Dose เริ่มต้น
+    });
 
-            renderTabs();
-            renderCards();
-            document.getElementById('weight').addEventListener('input', calculate);
-        }
+    renderTabs();
+    renderCards();
+    document.getElementById('weight').addEventListener('input', calculate);
+
+    // --- เพิ่มโค้ดส่วนนี้สำหรับการเลื่อนแถบด้วยลูกกลิ้งเมาส์ ---
+    const tabsContainer = document.getElementById('tabs-container');
+    tabsContainer.addEventListener('wheel', (evt) => {
+        evt.preventDefault(); // ป้องกันไม่ให้หน้าเว็บเลื่อนขึ้นลง
+        tabsContainer.scrollLeft += evt.deltaY; // แปลงการหมุนลูกกลิ้งเป็นการเลื่อนซ้าย-ขวา
+    });
+    // ----------------------------------------------------
+}
 
         // ฟังก์ชันสร้างปุ่มเมนูหมวดหมู่
         function renderTabs() {
