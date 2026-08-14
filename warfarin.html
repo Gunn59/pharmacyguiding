@@ -24,6 +24,7 @@
             --success-text: #2e7d32;
             --danger: #d32f2f;
             --box-bg: #f9f9f9;
+            --warning: #ff9800;
 
             /* Warfarin Tablet Colors (Light Mode) */
             --bg-1mg: #ffe4e1; --border-1mg: #ffb6c1;
@@ -54,6 +55,7 @@
             --success-text: #66bb6a;
             --danger: #ef5350;
             --box-bg: #1a1a1a;
+            --warning: #ffb74d;
 
             /* Warfarin Tablet Colors (Dark Mode) - Muted but distinct */
             --bg-1mg: #3b2629; --border-1mg: #b56c77;
@@ -114,7 +116,7 @@
         .strength-label { font-weight: bold; width: 60px; font-size: 1.1em; color: var(--text-main); }
         
         /* ================= Inputs & Selects ================= */
-        .tabs-select, input[type="number"] { 
+        .tabs-select, input[type="number"], select { 
             padding: 5px; font-size: 1em; margin-right: 15px; border-radius: 4px; 
             background-color: var(--bg-input);
             color: var(--text-main);
@@ -157,6 +159,13 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
         
+        .input-group {
+            display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 15px; gap: 10px;
+        }
+        .input-item {
+            display: flex; flex-direction: column; align-items: flex-start;
+        }
+
         .comparison-container { display: flex; justify-content: space-between; margin: 15px 0; }
         .comp-item { width: 48%; }
         .comp-title { font-size: 0.9em; color: var(--text-muted); margin-bottom: 5px; }
@@ -166,8 +175,11 @@
         .dose-current { color: var(--primary); }
         
         .percent-change { font-weight: bold; font-size: 1.1em; margin-top: 5px; }
+        .guideline-alert { font-size: 0.9em; margin-top: 5px; font-weight: 500; }
+        
         .color-green { color: var(--success-text); } 
         .color-red { color: var(--danger); }   
+        .color-warning { color: var(--warning); }
         
         hr { border: 0; border-top: 1px solid var(--border-color); margin: 15px 0; transition: border-color 0.3s; }
 
@@ -214,19 +226,30 @@
     <h2>⚡ Warfarin Fast Screen</h2>
     
     <div id="regimen-container">
+        <!-- เริ่มต้นด้วย 1 Row พอครับ (คุณสามารถ Add เพิ่มได้จากโค้ด JS หรือให้มีแค่ 1 row ก็ได้ ผมคงไว้ 1 row เพื่อความกระชับ) -->
         <div class="row color-1mg" data-strength="1"><div class="strength-label">1 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
-        
         <div class="row color-2mg" data-strength="2"><div class="strength-label">2 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
-        
         <div class="row color-3mg" data-strength="3"><div class="strength-label">3 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
-        
         <div class="row color-5mg" data-strength="5"><div class="strength-label">5 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
     </div>
 
     <div class="summary-box">
-        <div style="margin-bottom: 10px;">
-            <label style="font-weight: bold; color: var(--text-main);">TWD ครั้งก่อน: </label>
-            <input type="number" id="prev-twd" value="0" step="0.5" style="width: 80px;"> mg
+        <div class="input-group">
+            <div class="input-item">
+                <label style="font-weight: bold; color: var(--text-main);">TWD ครั้งก่อน:</label>
+                <div><input type="number" id="prev-twd" value="0" step="0.5" style="width: 80px;"> mg</div>
+            </div>
+            <div class="input-item">
+                <label style="font-weight: bold; color: var(--text-main);">INR วันนี้:</label>
+                <div><input type="number" id="current-inr" value="" step="0.1" style="width: 80px;"></div>
+            </div>
+            <div class="input-item">
+                <label style="font-weight: bold; color: var(--text-main);">Target INR:</label>
+                <select id="target-inr">
+                    <option value="2-3" selected>2.0 - 3.0</option>
+                    <option value="2.5-3.5">2.5 - 3.5</option>
+                </select>
+            </div>
         </div>
         
         <div class="comparison-container">
@@ -241,6 +264,7 @@
         </div>
         
         <div id="percent-change" class="percent-change">เปรียบเทียบ: -</div>
+        <div id="guideline-alert" class="guideline-alert"></div>
 
         <hr>
         <div style="font-size: 0.85em; color: var(--text-muted); text-align: left; margin-bottom: 5px;">Daily Breakdown (mg)</div>
@@ -303,98 +327,171 @@
             
             updatePercentChange();
         }
-            function updatePercentChange() {
-                        const prev = parseFloat(document.getElementById('prev-twd').value) || 0;
-                        const current = parseFloat(document.getElementById('total-weekly-dose').innerText) || 0;
-                        const inr = parseFloat(document.getElementById('current-inr').value);
-                        const target = document.getElementById('target-inr').value;
-                        
-                        const changeDisplay = document.getElementById('percent-change');
-                        const alertDisplay = document.getElementById('guideline-alert');
-                        
-                        document.getElementById('display-prev').innerText = prev.toFixed(2);
+
+        function updatePercentChange() {
+            const prev = parseFloat(document.getElementById('prev-twd').value) || 0;
+            const current = parseFloat(document.getElementById('total-weekly-dose').innerText) || 0;
+            const inr = parseFloat(document.getElementById('current-inr').value);
+            const target = document.getElementById('target-inr').value;
             
-                        alertDisplay.innerText = ""; // Clear old alert
-                        alertDisplay.className = "guideline-alert";
+            const changeDisplay = document.getElementById('percent-change');
+            const alertDisplay = document.getElementById('guideline-alert');
             
-                        if (prev === 0) {
-                            changeDisplay.innerText = "เปรียบเทียบ: -";
-                            changeDisplay.className = "percent-change";
-                            return;
-                        } 
-                        
-                        const percent = ((current - prev) / prev) * 100;
-                        const sign = percent > 0 ? "+" : "";
-                        changeDisplay.innerText = `เปลี่ยนแปลง: ${sign}${percent.toFixed(1)}%`;
-                        
-                        if (percent > 0) {
-                            changeDisplay.className = "percent-change color-red";
-                        } else if (percent < 0) {
-                            changeDisplay.className = "percent-change color-green";
-                        } else {
-                            changeDisplay.className = "percent-change";
-                        }
+            document.getElementById('display-prev').innerText = prev.toFixed(2);
+
+            alertDisplay.innerText = ""; // Clear old alert
+            alertDisplay.className = "guideline-alert";
+
+            if (prev === 0) {
+                changeDisplay.innerText = "เปรียบเทียบ: -";
+                changeDisplay.className = "percent-change";
+                return;
+            } 
             
-                        // --- Guideline Check Logic ---
-                        if (!isNaN(inr)) {
-                            let recMin = 0, recMax = 0, action = "คงเดิม"; // default
-                            let isInRange = false;
+            const percent = ((current - prev) / prev) * 100;
+            const sign = percent > 0 ? "+" : "";
+            changeDisplay.innerText = `เปลี่ยนแปลง: ${sign}${percent.toFixed(1)}%`;
             
-                            // Guideline for Target 2.0-3.0
-                            if (target === "2-3") {
-                                if (inr < 1.5) {
-                                    recMin = 10; recMax = 20; action = "เพิ่ม";
-                                } else if (inr >= 1.5 && inr < 2.0) {
-                                    recMin = 5; recMax = 10; action = "เพิ่ม";
-                                } else if (inr >= 2.0 && inr <= 3.0) {
-                                    recMin = 0; recMax = 0; action = "คงเดิม";
-                                } else if (inr > 3.0 && inr <= 3.9) {
-                                    recMin = -5; recMax = -10; action = "ลด";
-                                } else if (inr >= 4.0 && inr <= 4.9) {
-                                    recMin = -10; recMax = -20; action = "ลด";
-                                } else if (inr >= 5.0) {
-                                    recMin = -10; recMax = -20; action = "Hold & ลด"; 
-                                }
-                            } 
-                            // Guideline for Target 2.5-3.5
-                            else if (target === "2.5-3.5") {
-                                if (inr < 1.5) {
-                                    recMin = 10; recMax = 20; action = "เพิ่ม";
-                                } else if (inr >= 1.5 && inr < 2.5) {
-                                    recMin = 5; recMax = 10; action = "เพิ่ม";
-                                } else if (inr >= 2.5 && inr <= 3.5) {
-                                    recMin = 0; recMax = 0; action = "คงเดิม";
-                                } else if (inr > 3.5 && inr <= 4.5) {
-                                     recMin = -5; recMax = -10; action = "ลด";
-                                } else if (inr > 4.5) {
-                                     recMin = -10; recMax = -20; action = "Hold & ลด";
-                                }
-                            }
-            
-                            // Check if current percent is within recommended range
-                            if (action === "คงเดิม" && Math.abs(percent) < 1) { 
-                                 isInRange = true;
-                            } else if (action === "เพิ่ม" && percent >= recMin && percent <= recMax) {
-                                 isInRange = true;
-                            } else if (action.includes("ลด") && percent <= recMin && percent >= recMax) { 
-                                 isInRange = true;
-                            }
-            
-                            // แสดงผลลัพธ์พร้อมสีที่ต้องการ
-                            if (isInRange) {
-                                alertDisplay.innerText = "✅ การปรับขนาดเหมาะสมตาม Guideline";
-                                alertDisplay.className = "guideline-alert color-green";
-                            } else {
-                                let recText = "";
-                                if (action === "คงเดิม") recText = "ควรคงขนาดยาเดิม (0%)";
-                                else if (action === "เพิ่ม") recText = `ควรเพิ่มยา ${recMin}% ถึง ${recMax}%`;
-                                else recText = `ควรลดยา ${Math.abs(recMin)}% ถึง ${Math.abs(recMax)}%`;
-                                
-                                alertDisplay.innerText = `❌ การปรับไม่เหมาะสม (เป้าหมาย: ${recText})`;
-                                alertDisplay.className = "guideline-alert color-red"; // 🔴 เปลี่ยนเป็นสีแดงตรงนี้
-                            }
-                        }
+            if (percent > 0) {
+                changeDisplay.className = "percent-change color-red";
+            } else if (percent < 0) {
+                changeDisplay.className = "percent-change color-green";
+            } else {
+                changeDisplay.className = "percent-change";
+            }
+
+            // --- Guideline Check Logic ---
+            if (!isNaN(inr)) {
+                let recMin = 0, recMax = 0, action = "คงเดิม"; // default
+                let isInRange = false;
+
+                // Guideline for Target 2.0-3.0
+                if (target === "2-3") {
+                    if (inr < 1.5) {
+                        recMin = 10; recMax = 20; action = "เพิ่ม";
+                    } else if (inr >= 1.5 && inr < 2.0) {
+                        recMin = 5; recMax = 10; action = "เพิ่ม";
+                    } else if (inr >= 2.0 && inr <= 3.0) {
+                        recMin = 0; recMax = 0; action = "คงเดิม";
+                    } else if (inr > 3.0 && inr <= 3.9) {
+                        recMin = -5; recMax = -10; action = "ลด";
+                    } else if (inr >= 4.0 && inr <= 4.9) {
+                        recMin = -10; recMax = -20; action = "ลด";
+                    } else if (inr >= 5.0) {
+                        recMin = -10; recMax = -20; action = "Hold & ลด"; 
                     }
+                } 
+                // Guideline for Target 2.5-3.5
+                else if (target === "2.5-3.5") {
+                    if (inr < 1.5) {
+                        recMin = 10; recMax = 20; action = "เพิ่ม";
+                    } else if (inr >= 1.5 && inr < 2.5) {
+                        recMin = 5; recMax = 10; action = "เพิ่ม";
+                    } else if (inr >= 2.5 && inr <= 3.5) {
+                        recMin = 0; recMax = 0; action = "คงเดิม";
+                    } else if (inr > 3.5 && inr <= 4.5) {
+                         recMin = -5; recMax = -10; action = "ลด";
+                    } else if (inr > 4.5) {
+                         recMin = -10; recMax = -20; action = "Hold & ลด";
+                    }
+                }
+
+                // Check if current percent is within recommended range
+                if (action === "คงเดิม" && Math.abs(percent) < 1) { 
+                     isInRange = true;
+                } else if (action === "เพิ่ม" && percent >= recMin && percent <= recMax) {
+                     isInRange = true;
+                } else if (action.includes("ลด") && percent <= recMin && percent >= recMax) { 
+                     isInRange = true;
+                }
+
+                // แสดงผลลัพธ์พร้อมสีที่ต้องการ
+                if (isInRange) {
+                    alertDisplay.innerText = "✅ การปรับขนาดเหมาะสมตาม Guideline";
+                    alertDisplay.className = "guideline-alert color-green";
+                } else {
+                    let recText = "";
+                    if (action === "คงเดิม") recText = "ควรคงขนาดยาเดิม (0%)";
+                    else if (action === "เพิ่ม") recText = `ควรเพิ่มยา ${recMin}% ถึง ${recMax}%`;
+                    else recText = `ควรลดยา ${Math.abs(recMin)}% ถึง ${Math.abs(recMax)}%`;
+                    
+                    alertDisplay.innerText = `❌ การปรับไม่เหมาะสม (เป้าหมาย: ${recText})`;
+                    alertDisplay.className = "guideline-alert color-red"; // 🔴 เปลี่ยนเป็นสีแดงตรงนี้
+                }
+            }
+        }
+            
+            const percent = ((current - prev) / prev) * 100;
+            const sign = percent > 0 ? "+" : "";
+            changeDisplay.innerText = `เปลี่ยนแปลง: ${sign}${percent.toFixed(1)}%`;
+            
+            if (percent > 0) {
+                changeDisplay.className = "percent-change color-red";
+            } else if (percent < 0) {
+                changeDisplay.className = "percent-change color-green";
+            } else {
+                changeDisplay.className = "percent-change";
+            }
+
+            // --- Guideline Check Logic ---
+            if (!isNaN(inr)) {
+                let recMin = 0, recMax = 0, action = "คงเดิม"; // default
+                let isInRange = false;
+
+                // Guideline for Target 2.0-3.0
+                if (target === "2-3") {
+                    if (inr < 1.5) {
+                        recMin = 10; recMax = 20; action = "เพิ่ม";
+                    } else if (inr >= 1.5 && inr < 2.0) {
+                        recMin = 5; recMax = 10; action = "เพิ่ม"; // บางที่บอก 10-15 หรือให้ extra dose
+                    } else if (inr >= 2.0 && inr <= 3.0) {
+                        recMin = 0; recMax = 0; action = "คงเดิม";
+                    } else if (inr > 3.0 && inr <= 3.9) {
+                        recMin = -5; recMax = -10; action = "ลด";
+                    } else if (inr >= 4.0 && inr <= 4.9) {
+                        recMin = -10; recMax = -20; action = "ลด"; // อาจต้อง hold 1 dose
+                    } else if (inr >= 5.0) {
+                        recMin = -10; recMax = -20; action = "Hold & ลด"; // Hold แน่นอน
+                    }
+                } 
+                // Guideline for Target 2.5-3.5
+                else if (target === "2.5-3.5") {
+                    if (inr < 1.5) {
+                        recMin = 10; recMax = 20; action = "เพิ่ม";
+                    } else if (inr >= 1.5 && inr < 2.5) {
+                        recMin = 5; recMax = 10; action = "เพิ่ม";
+                    } else if (inr >= 2.5 && inr <= 3.5) {
+                        recMin = 0; recMax = 0; action = "คงเดิม";
+                    } else if (inr > 3.5 && inr <= 4.5) {
+                         recMin = -5; recMax = -10; action = "ลด";
+                    } else if (inr > 4.5) {
+                         recMin = -10; recMax = -20; action = "Hold & ลด";
+                    }
+                }
+
+                // Check if current percent is within recommended range (careful with signs)
+                if (action === "คงเดิม" && Math.abs(percent) < 1) { // allow tiny rounding diffs
+                     isInRange = true;
+                } else if (action === "เพิ่ม" && percent >= recMin && percent <= recMax) {
+                     isInRange = true;
+                } else if (action.includes("ลด") && percent <= recMin && percent >= recMax) { // since it's negative
+                     isInRange = true;
+                }
+
+                if (isInRange) {
+                    alertDisplay.innerText = "✅ การปรับขนาดเหมาะสมตาม Guideline";
+                    alertDisplay.className = "guideline-alert color-green";
+                } else {
+                    let recText = "";
+                    if (action === "คงเดิม") recText = "ควรคงขนาดยาเดิม (0%)";
+                    else if (action === "เพิ่ม") recText = `ควรเพิ่มยา ${recMin}% - ${recMax}%`;
+                    else recText = `ควรลดยา ${Math.abs(recMin)}% - ${Math.abs(recMax)}%`;
+                    
+                    alertDisplay.innerText = `⚠️ การปรับไม่เหมาะสม (เป้าหมาย: ${recText})`;
+                    alertDisplay.className = "guideline-alert color-warning";
+                }
+            }
+        }
         
         function calculateDispense() {
             const numDays = parseInt(document.getElementById('num-days').value) || 0;
@@ -490,6 +587,8 @@
             });
 
             document.getElementById('prev-twd').value = "0";
+            document.getElementById('current-inr').value = "";
+            document.getElementById('target-inr').value = "2-3";
             document.getElementById('num-days').value = "0";
 
             calculateAll();
@@ -530,6 +629,8 @@
             initTheme();
             document.querySelectorAll('.row').forEach(row => bindRowEvents(row));
             document.getElementById('prev-twd').addEventListener('input', calculateAll);
+            document.getElementById('current-inr').addEventListener('input', calculateAll);
+            document.getElementById('target-inr').addEventListener('change', calculateAll);
             document.getElementById('num-days').addEventListener('input', calculateDispense);
         };
 
