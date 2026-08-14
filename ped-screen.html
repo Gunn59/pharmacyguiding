@@ -176,7 +176,11 @@
             ],
             pseudoephedrine: [{ label: "30 mg / 5 ml (Syrup)", mg: 30, ml: 5 }],
             fexofenadine: [{ label: "30 mg / 5 ml (Suspension)", mg: 30, ml: 5 }],
-            loratadine: [{ label: "5 mg / 5 ml (Syrup)", mg: 5, ml: 5 }]
+            loratadine: [{ label: "5 mg / 5 ml (Syrup)", mg: 5, ml: 5 }],
+            dicloxacillin: [
+                { label: "62.5 mg / 5 ml", mg: 62.5, ml: 5 },
+                { label: "125 mg / 5 ml", mg: 125, ml: 5 }
+            ]
         };
 
         // --- ข้อมูลหลักของยา ---
@@ -184,6 +188,7 @@
             { id: "amoxicillin", group: "Antibiotics", name: "Amoxicillin", type: "day", dose: 30, hint: "30-90 mg/kg/day", age: "ทารกแรกเกิด", max: "Max: 3-4 g/day / Max/dose: 875-1,000 mg", div: [2,3], divName: ["q12h", "q8h"] },
             { id: "amx_clv", group: "Antibiotics", name: "Amx/Clv", type: "day", dose: 40, hint: "30-90 mg/kg/day (คิดตาม Amox)", age: "ทารกแรกเกิด", max: "Max: อิง Amox (ระวัง Clavulanate รวมไม่ควรเกิน 600 mg/day)", div: [2], divName: ["q12h"] },
             { id: "azithromycin", group: "Antibiotics", name: "Azithromycin", type: "day", dose: 10, hint: "10 mg/kg/day (x3 วัน) หรือ 10mg วันแรก ตามด้วย 5mg (x4 วัน)", age: "≥ 6 เดือน", max: "Max: 500 mg/day", div: [1], divName: ["OD (ให้วันละ 1 ครั้ง)"] },
+            { id: "dicloxacillin", group: "Antibiotics", name: "Dicloxacillin", type: "day", dose: 30, hint: "25-50 mg/kg/day (รับประทานก่อนอาหาร)", age: "เด็กเล็ก", max: "Max: 4 g/day", div: [4], divName: ["q6h"] },
             
             { id: "paracetamol", group: "Antipyretic / Analgesic", name: "Paracetamol", type: "dose", dose: 10, hint: "10-15 mg/kg/dose", age: "≥ 1 เดือน", max: "Max dose: <6 ปี 75 mg/kg/day // 6-12 ปี 1,625 mg/day // 4,000 mg/day", div: [], divName: [] },
             { id: "ibuprofen", group: "Antipyretic / Analgesic", name: "Ibuprofen", type: "dose", dose: 10, hint: "5-10 mg/kg/dose (หลังอาหารทันที)", age: "≥ 6 เดือน", max: "Max: 40 mg/kg/day (ไม่เกิน 2,400 mg/day) / Max/dose: 400 mg", div: [], divName: [] },
