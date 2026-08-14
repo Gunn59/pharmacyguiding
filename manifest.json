@@ -2,7 +2,7 @@
   "name": "Pharmacy Guiding",
   "short_name": "Rx Guide",
   "description": "เครื่องมือช่วยคำนวณและอ้างอิงขนาดยาสำหรับเภสัชกร",
-  "start_url": "/index.html",
+  "start_url": "/pharmacyguiding/index.html",
   "display": "standalone",
   "background_color": "#f2f2f7",
   "theme_color": "#007aff",
