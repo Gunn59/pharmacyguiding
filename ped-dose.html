@@ -331,21 +331,51 @@
         const webAppUrl = "https://script.google.com/macros/s/AKfycbyMo_b0Y9E4SqHCLRpl-7X1NeaIsdOh0WEEmr7pdpzYPZT7Sq5DwSSijkW_9-dHc-je/exec";
 
         function loadDrugData() {
-            const drugSelect = document.getElementById("drug");
-            drugSelect.innerHTML = "<option value=''>-- กำลังโหลดข้อมูลยาจาก Database... --</option>";
-
-            fetch(webAppUrl)
-                .then(response => response.json())
-                .then(data => {
-                    drugData = data;
-                    renderDrugSelect();
-                    updateDrugInfo(); 
-                })
-                .catch(error => {
-                    console.error("Error loading data:", error);
-                    drugSelect.innerHTML = "<option>โหลดข้อมูลล้มเหลว โปรดตรวจสอบการตั้งค่า</option>";
-                });
-        }
+                    const drugSelect = document.getElementById("drug");
+        
+                    // --- Step 1: ลองดึงข้อมูลจาก LocalStorage มาแสดงผลก่อนทันที (Stale) ---
+                    const cachedData = localStorage.getItem('cached_drugData');
+                    
+                    if (cachedData) {
+                        // ถ้ามีของเก่า ให้แปลงกลับเป็น Object แล้วแสดงผลเลย (ผู้ใช้ไม่ต้องรอ)
+                        drugData = JSON.parse(cachedData);
+                        renderDrugSelect();
+                        updateDrugInfo();
+                    } else {
+                        // ถ้าเพิ่งเข้าเว็บครั้งแรกและยังไม่มี Cache ให้ขึ้นข้อความรอ
+                        drugSelect.innerHTML = "<option value=''>-- กำลังโหลดข้อมูลยาจาก Database... --</option>";
+                    }
+        
+                    // --- Step 2: แอบไปดึงข้อมูลล่าสุดจาก Database เสมอ (Revalidate) ---
+                    fetch(webAppUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            // เมื่อได้ข้อมูลใหม่มา ให้เซฟทับของเก่าใน LocalStorage ทันที
+                            localStorage.setItem('cached_drugData', JSON.stringify(data));
+                            
+                            // อัปเดตตัวแปรและวาดหน้าจอใหม่แบบเงียบๆ ให้ข้อมูลเป็นปัจจุบันที่สุด
+                            drugData = data;
+                            
+                            // เก็บค่าที่ผู้ใช้กำลังเลือกอยู่ (ถ้ามี) จะได้ไม่เด้งกลับไปตัวแรกตอนโหลดเสร็จ
+                            const currentSelection = drugSelect.value;
+                            
+                            renderDrugSelect();
+                            
+                            // พยายามเซ็ตค่ากลับไปที่ยาตัวเดิมที่เลือกไว้
+                            if (currentSelection) {
+                                drugSelect.value = currentSelection;
+                            }
+                            
+                            updateDrugInfo(); 
+                        })
+                        .catch(error => {
+                            console.error("Error loading data:", error);
+                            // ถ้าดึงข้อมูลพัง แล้วดันไม่มี Cache เก่าอยู่เลย ค่อยแสดง Error
+                            if (!cachedData) {
+                                drugSelect.innerHTML = "<option>โหลดข้อมูลล้มเหลว โปรดตรวจสอบเน็ต</option>";
+                            }
+                        });
+                }
 
         function renderDrugSelect() {
             const drugSelect = document.getElementById("drug");
