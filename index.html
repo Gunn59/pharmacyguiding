@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pharmacy Guiding</title>
+    <!-- บอกให้บราวเซอร์รู้ว่ามี manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- กำหนดสีแถบสถานะบนมือถือ -->
+    <meta name="theme-color" content="#007aff">
+    <!-- รองรับไอคอนบน iOS -->
+    <link rel="apple-touch-icon" href="icon-192x192.png">
     <style>
         /* นำเข้าฟอนต์ Prompt จาก Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
@@ -155,6 +161,19 @@
             </div>
         </a>
     </div>
-
+        <script>
+          // ลงทะเบียน Service Worker
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                  console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                })
+                .catch(err => {
+                  console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+          }
+        </script>
 </body>
 </html>
