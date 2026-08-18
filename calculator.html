@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Date & Math Calculator</title>
+    <!-- บอกให้บราวเซอร์รู้ว่ามี manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007aff">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    
+    <style>
+        /* ================= Theme Variables ================= */
+        :root {
+            --bg-base: #f2f2f7;
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-muted: #555555;
+            --input-bg: #fafafa;
+            --border-color: #e5e5ea;
+            
+            --primary: #007aff;
+            --primary-light: #00c6ff;
+            --color-success: #34c759;
+            --color-warning: #ff9500;
+            --color-danger: #ff3b30;
+            
+            --bg-result: #f0f8ff;
+            --border-result: #e0efff;
+            
+            --btn-bg: #f4f4f4;
+            --btn-bg-hover: #e0e0e0;
+        }
+
+        html[data-theme="dark"] {
+            --bg-base: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #f5f5f5;
+            --text-muted: #aaaaaa;
+            --input-bg: #2c2c2e;
+            --border-color: #3a3a3c;
+            
+            --primary: #0a84ff;
+            --primary-light: #32d4ff;
+            --color-success: #30d158;
+            --color-warning: #ff9f0a;
+            --color-danger: #ff453a;
+            
+            --bg-result: #1c2c3e;
+            --border-result: #2a3d55;
+            
+            --btn-bg: #333333;
+            --btn-bg-hover: #444444;
+        }
+
+        /* ================= Base Styles ================= */
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
+
+        body { 
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-base); 
+            margin: 0; 
+            padding: 15px;
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .back-btn { 
+            text-decoration: none; 
+            color: var(--primary); 
+            font-weight: 500; 
+            display: inline-flex; 
+            align-items: center;
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 15px; 
+            font-size: 14px; 
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+        .back-btn:active { transform: scale(0.96); }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 24px rgba(0, 122, 255, 0.2);
+            color: white;
+        }
+        .page-header h2 { margin: 0; font-size: 24px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .page-header .subtitle { font-size: 14px; margin-top: 5px; opacity: 0.9; }
+
+        /* ================= Layout Grid ================= */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .grid-layout { grid-template-columns: 1fr 1fr; }
+        }
+
+        .card-container { 
+            background-color: var(--bg-card); 
+            padding: 20px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        /* ================= Math Calculator ================= */
+        .calc-display {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: right;
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            overflow-x: auto;
+            min-height: 40px;
+            word-wrap: break-word;
+        }
+        
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .calc-btn {
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--btn-bg);
+            color: var(--text-main);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 0;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .calc-btn:active { transform: scale(0.95); background-color: var(--btn-bg-hover); }
+        
+        .btn-op { background-color: #ff9500; color: white; }
+        .btn-op:active { background-color: #e68600; }
+        
+        .btn-clear { background-color: var(--color-danger); color: white; }
+        .btn-equal { background-color: var(--color-success); color: white; grid-column: span 2; }
+
+        /* ================= Date Calculator ================= */
+        .date-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .date-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .date-label { font-weight: 500; font-size: 14px; margin-bottom: 5px; display: block; color: var(--text-muted); }
+        .date-input {
+            width: 100%;
+            padding: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: var(--input-bg);
+            color: var(--text-main);
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .date-input:focus { border-color: var(--primary); }
+
+        .date-result {
+            background-color: var(--bg-result);
+            border: 1px solid var(--border-result);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 5px;
+            min-height: 27px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: transform 0.1s ease;
+        }
+        .action-btn:active { transform: scale(0.97); }
+
+        /* ================= Theme Toggle ================= */
+        .theme-toggle-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            transition: transform 0.2s;
+        }
+        .theme-toggle-btn:hover { transform: scale(1.1); }
+        .theme-toggle-btn:active { transform: scale(0.95); }
+
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        กลับหน้าหลัก
+    </a>
+
+    <div class="page-header">
+        <h2>Smart Calculator</h2>
+        <div class="subtitle">เครื่องคิดเลข & คำนวณวันที่ครบจบในหน้าเดียว</div>
+    </div>
+
+    <div class="grid-layout">
+        
+        <!-- ฝั่งซ้าย: Math Calculator -->
+        <div class="card-container">
+            <div class="section-title">🔢 เครื่องคิดเลข</div>
+            <div class="calc-display" id="calcDisplay">0</div>
+            <div class="calc-buttons">
+                <button class="calc-btn btn-clear" onclick="clearCalc()">C</button>
+                <button class="calc-btn" onclick="delCalc()">⌫</button>
+                <button class="calc-btn btn-op" onclick="appendCalc('%')">%</button>
+                <button class="calc-btn btn-op" onclick="appendCalc('/')">÷</button>
+                
+                <button class="calc-btn" onclick="appendCalc('7')">7</button>
+                <button class="calc-btn" onclick="appendCalc('8')">8</button>
+                <button class="calc-btn" onclick="appendCalc('9')">9</button>
+                <button class="calc-btn btn-op" onclick="appendCalc('*')">×</button>
+                
+                <button class="calc-btn" onclick="appendCalc('4')">4</button>
+                <button class="calc-btn" onclick="appendCalc('5')">5</button>
+                <button class="calc-btn" onclick="appendCalc('6')">6</button>
+                <button class="calc-btn btn-op" onclick="appendCalc('-')">−</button>
+                
+                <button class="calc-btn" onclick="appendCalc('1')">1</button>
+                <button class="calc-btn" onclick="appendCalc('2')">2</button>
+                <button class="calc-btn" onclick="appendCalc('3')">3</button>
+                <button class="calc-btn btn-op" onclick="appendCalc('+')">+</button>
+                
+                <button class="calc-btn" onclick="appendCalc('0')">0</button>
+                <button class="calc-btn" onclick="appendCalc('.')">.</button>
+                <button class="calc-btn btn-equal" onclick="calculateResult()">=</button>
+            </div>
+        </div>
+
+        <!-- ฝั่งขวา: Date Calculator -->
+        <div class="card-container">
+            <div class="section-title">📅 คำนวณวันที่</div>
+            
+            <!-- โหมด 1: หาวันที่ (จากจำนวนวัน) -->
+            <div class="date-section">
+                <label class="date-label">1. หาวันที่สิ้นสุด (ใส่วันที่เริ่มต้น + จำนวนวัน)</label>
+                <input type="date" id="targetStartDate" class="date-input">
+                <input type="number" id="targetDays" class="date-input" placeholder="จำนวนวัน (เช่น 30 หรือ -7)">
+                <button class="action-btn" onclick="calculateTargetDate()">คำนวณหาวันที่</button>
+                <div class="date-result" id="targetDateResult">--/--/----</div>
+            </div>
+
+            <!-- โหมด 2: หาระยะห่างวัน (ระหว่าง 2 วันที่) -->
+            <div class="date-section">
+                <label class="date-label">2. หาระยะห่าง (ใส่วันที่ 2 วัน)</label>
+                <input type="date" id="diffStartDate" class="date-input">
+                <input type="date" id="diffEndDate" class="date-input">
+                <button class="action-btn" onclick="calculateDateDiff()" style="background-color: var(--color-success);">คำนวณจำนวนวัน</button>
+                <div class="date-result" id="diffDateResult">-- วัน</div>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">🌙</button>
+
+    <script>
+        // ================= Math Calculator Logic =================
+        let calcExpr = "";
+        const display = document.getElementById('calcDisplay');
+
+        function updateDisplay() {
+            if (calcExpr === "") {
+                display.innerText = "0";
+            } else {
+                // แทนที่เครื่องหมายเพื่อความสวยงามตอนแสดงผล
+                display.innerText = calcExpr.replace(/\*/g, '×').replace(/\//g, '÷');
+            }
+        }
+
+        function appendCalc(val) {
+            calcExpr += val;
+            updateDisplay();
+        }
+
+        function clearCalc() {
+            calcExpr = "";
+            updateDisplay();
+        }
+
+        function delCalc() {
+            calcExpr = calcExpr.slice(0, -1);
+            updateDisplay();
+        }
+
+        function calculateResult() {
+            try {
+                // กรองอักขระเพื่อความปลอดภัย ป้องกัน XSS จาก eval
+                if (!/^[0-9+\-*/.%()\s]+$/.test(calcExpr)) throw new Error("Invalid format");
+                
+                // แปลง % ให้หาร 100
+                let exprToEval = calcExpr.replace(/%/g, '/100');
+                
+                let result = eval(exprToEval);
+                // ตัดทศนิยมไม่ให้ยาวเกินไป
+                if(result % 1 !== 0) result = parseFloat(result.toFixed(6));
+                
+                calcExpr = String(result);
+                updateDisplay();
+            } catch (e) {
+                display.innerText = "Error";
+                calcExpr = "";
+            }
+        }
+
+        // ================= Date Calculator Logic =================
+        
+        // ตั้งค่า Default Input เป็นวันปัจจุบัน
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('targetStartDate').value = todayStr;
+        document.getElementById('diffStartDate').value = todayStr;
+        
+        function formatDateThai(dateObj) {
+            return dateObj.toLocaleDateString('th-TH', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+        }
+
+        function calculateTargetDate() {
+            const startDateVal = document.getElementById('targetStartDate').value;
+            const daysVal = parseInt(document.getElementById('targetDays').value);
+            const resultBox = document.getElementById('targetDateResult');
+
+            if (!startDateVal || isNaN(daysVal)) {
+                resultBox.innerText = "กรุณาระบุวันที่และจำนวนวัน";
+                resultBox.style.color = "var(--color-danger)";
+                return;
+            }
+
+            const date = new Date(startDateVal);
+            date.setDate(date.getDate() + daysVal);
+            
+            resultBox.innerText = formatDateThai(date);
+            resultBox.style.color = "var(--primary)";
+        }
+
+        function calculateDateDiff() {
+            const startVal = document.getElementById('diffStartDate').value;
+            const endVal = document.getElementById('diffEndDate').value;
+            const resultBox = document.getElementById('diffDateResult');
+
+            if (!startVal || !endVal) {
+                resultBox.innerText = "กรุณาระบุวันที่ให้ครบ 2 ช่อง";
+                resultBox.style.color = "var(--color-danger)";
+                return;
+            }
+
+            const startDate = new Date(startVal);
+            const endDate = new Date(endVal);
+            
+            // ปัดเวลาทิ้งเพื่อความแม่นยำในการลบวัน
+            startDate.setHours(0,0,0,0);
+            endDate.setHours(0,0,0,0);
+            
+            const diffTime = endDate - startDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            resultBox.innerText = `${Math.abs(diffDays)} วัน ${diffDays < 0 ? '(ผ่านมาแล้ว)' : ''}`;
+            resultBox.style.color = "var(--primary)";
+        }
+
+        // ================= Theme Toggle Logic =================
+        function initTheme() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            
+            // อ่านค่าจาก LocalStorage หรือตั้งค่าตามระบบ (Dark/Light)
+            const savedTheme = localStorage.getItem('theme_calc');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            updateToggleIcon(initialTheme);
+
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme_calc', newTheme);
+                updateToggleIcon(newTheme);
+            });
+        }
+
+        function updateToggleIcon(theme) {
+            const toggleBtn = document.getElementById('theme-toggle');
+            toggleBtn.innerText = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        window.onload = () => {
+            initTheme();
+        };
+    </script>
+</body>
+</html>
