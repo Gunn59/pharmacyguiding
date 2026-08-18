@@ -131,7 +131,7 @@
             font-size: 28px;
             font-family: 'Prompt', sans-serif;
             font-weight: 500;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: var(--text-main);
             box-sizing: border-box;
             outline: none;
@@ -139,10 +139,28 @@
         }
         .calc-display:focus { border-color: var(--primary); }
         
+        .toggle-keypad-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            display: block;
+            margin-left: auto;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .toggle-keypad-btn:hover { background-color: var(--border-result); }
+
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
+            transition: all 0.3s ease;
         }
         
         .calc-btn {
@@ -326,7 +344,10 @@
             <input type="text" class="calc-display" id="calcDisplay" placeholder="0" 
                    oninput="validateCalcInput(this)" onkeydown="handleCalcKey(event)">
             
-            <div class="calc-buttons">
+            <!-- ปุ่ม ซ่อน/แสดง แป้นกด -->
+            <button type="button" class="toggle-keypad-btn" id="toggleKeypadBtn" onclick="toggleKeypad()">⌨️ ซ่อนแป้นกด</button>
+            
+            <div class="calc-buttons" id="calcKeypad">
                 <button class="calc-btn btn-clear" onclick="clearCalc()">C</button>
                 <button class="calc-btn" onclick="delCalc()">⌫</button>
                 <button class="calc-btn btn-op" onclick="appendCalc('%')">%</button>
@@ -405,11 +426,10 @@
     <script>
         // ================= Math Calculator Logic =================
         const display = document.getElementById('calcDisplay');
-        let isCalculated = false; // ตัวแปรเช็คว่าเพิ่งคำนวณเสร็จหรือไม่
+        let isCalculated = false; 
         let calcHistory = JSON.parse(localStorage.getItem('calc_history') || '[]');
 
         function validateCalcInput(el) {
-            // ดักพิมพ์ ถ้าเพิ่งคำนวณเสร็จ และตัวที่พิมพ์ไม่ใช่เครื่องหมาย ให้เคลียร์จอเริ่มใหม่
             if (isCalculated) {
                 const lastChar = el.value.slice(-1);
                 if (/[0-9.]/.test(lastChar)) {
@@ -426,7 +446,6 @@
                 e.preventDefault();
                 calculateResult();
             } else if (isCalculated) {
-                // ถ้าพิมพ์ตัวเลขใหม่ให้เคลียร์จอ แต่ถ้าพิมพ์เครื่องหมายให้ต่อท้ายผลลัพธ์
                 if (/^[0-9.]$/.test(e.key)) {
                     display.value = "";
                 }
@@ -436,7 +455,6 @@
 
         function appendCalc(val) {
             if (isCalculated) {
-                // หากกดปุ่มตัวเลข ให้ล้างจอเริ่มใหม่ / หากกดเครื่องหมาย ให้นำไปต่อท้าย
                 if (/[0-9.]/.test(val)) {
                     display.value = "";
                 }
@@ -480,13 +498,12 @@
                 
                 if(result % 1 !== 0) result = parseFloat(result.toFixed(8));
                 
-                // บันทึกประวัติเฉพาะกรณีที่สมการไม่ใช่ตัวเลขเดี่ยวๆ
                 if (expr !== String(result)) {
                     saveHistory(expr, result);
                 }
                 
                 display.value = String(result);
-                isCalculated = true; // เปิดโหมดเคลียร์อัตโนมัติ
+                isCalculated = true; 
                 
                 display.focus();
                 display.selectionStart = display.selectionEnd = display.value.length;
@@ -497,10 +514,37 @@
             }
         }
 
+        // ================= Hide/Show Keypad Logic =================
+        function toggleKeypad() {
+            const keypad = document.getElementById('calcKeypad');
+            const btn = document.getElementById('toggleKeypadBtn');
+            
+            if (keypad.style.display === 'none') {
+                keypad.style.display = 'grid';
+                btn.innerText = '⌨️ ซ่อนแป้นกด';
+                localStorage.setItem('show_keypad', 'true');
+            } else {
+                keypad.style.display = 'none';
+                btn.innerText = '⌨️ แสดงแป้นกด';
+                localStorage.setItem('show_keypad', 'false');
+            }
+        }
+
+        function initKeypadState() {
+            const showKeypad = localStorage.getItem('show_keypad');
+            const keypad = document.getElementById('calcKeypad');
+            const btn = document.getElementById('toggleKeypadBtn');
+            
+            if (showKeypad === 'false') {
+                keypad.style.display = 'none';
+                btn.innerText = '⌨️ แสดงแป้นกด';
+            }
+        }
+
         // ================= History Logic =================
         function saveHistory(expr, result) {
             calcHistory.unshift({ expr: expr, res: result });
-            if (calcHistory.length > 20) calcHistory.pop(); // เก็บแค่ 20 รายการล่าสุด
+            if (calcHistory.length > 20) calcHistory.pop(); 
             localStorage.setItem('calc_history', JSON.stringify(calcHistory));
             renderHistory();
         }
@@ -518,7 +562,6 @@
                 const div = document.createElement('div');
                 div.className = 'history-item';
                 div.innerHTML = `<span class="history-expr">${item.expr.replace(/\*/g, '×').replace(/\//g, '÷')} =</span><span class="history-res">${item.res}</span>`;
-                // เมื่อคลิกที่ประวัติ ให้ดึงผลลัพธ์มาใส่ช่องคำนวณ
                 div.onclick = () => {
                     display.value = String(item.res);
                     isCalculated = false;
@@ -621,6 +664,7 @@
 
         window.onload = () => {
             initTheme();
+            initKeypadState(); // ตรวจสอบว่าเคยซ่อนปุ่มไว้หรือไม่
             renderHistory();
             document.getElementById('calcDisplay').focus();
         };
