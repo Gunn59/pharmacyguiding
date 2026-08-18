@@ -123,19 +123,22 @@
 
         /* ================= Math Calculator ================= */
         .calc-display {
+            width: 100%;
             background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             padding: 15px;
             text-align: right;
             font-size: 28px;
+            font-family: 'Prompt', sans-serif;
             font-weight: 500;
             margin-bottom: 15px;
             color: var(--text-main);
-            overflow-x: auto;
-            min-height: 40px;
-            word-wrap: break-word;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
         }
+        .calc-display:focus { border-color: var(--primary); }
         
         .calc-buttons {
             display: grid;
@@ -166,15 +169,22 @@
 
         /* ================= Date Calculator ================= */
         .date-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             padding-bottom: 20px;
             border-bottom: 1px dashed var(--border-color);
         }
         .date-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        .date-label { font-weight: 500; font-size: 14px; margin-bottom: 5px; display: block; color: var(--text-muted); }
-        .date-input {
-            width: 100%;
+        .date-label { font-weight: 600; font-size: 15px; margin-bottom: 10px; display: block; color: var(--text-main); }
+        
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .date-input, .date-select {
             padding: 12px;
             font-family: 'Prompt', sans-serif;
             font-size: 16px;
@@ -182,40 +192,48 @@
             border-radius: 10px;
             background-color: var(--input-bg);
             color: var(--text-main);
-            box-sizing: border-box;
-            margin-bottom: 12px;
             outline: none;
+            box-sizing: border-box;
+            width: 100%;
         }
-        .date-input:focus { border-color: var(--primary); }
+        .date-input:focus, .date-select:focus { border-color: var(--primary); }
+        
+        .date-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
 
         .date-result {
             background-color: var(--bg-result);
             border: 1px solid var(--border-result);
             border-radius: 10px;
-            padding: 12px;
+            padding: 15px;
             text-align: center;
             font-size: 18px;
             font-weight: 600;
             color: var(--primary);
-            margin-top: 5px;
-            min-height: 27px;
+            margin-top: 10px;
         }
 
         .action-btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background-color: var(--primary);
             color: white;
             border: none;
             border-radius: 10px;
             font-family: 'Prompt', sans-serif;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            margin-bottom: 12px;
-            transition: transform 0.1s ease;
+            margin-top: 5px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
         }
-        .action-btn:active { transform: scale(0.97); }
+        .action-btn:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(0, 122, 255, 0.15); }
 
         /* ================= Theme Toggle ================= */
         .theme-toggle-btn {
@@ -259,7 +277,10 @@
         <!-- ฝั่งซ้าย: Math Calculator -->
         <div class="card-container">
             <div class="section-title">🔢 เครื่องคิดเลข</div>
-            <div class="calc-display" id="calcDisplay">0</div>
+            <!-- เปลี่ยนเป็น input text เพื่อให้พิมพ์คีย์บอร์ดได้ -->
+            <input type="text" class="calc-display" id="calcDisplay" placeholder="0" 
+                   oninput="validateCalcInput(this)" onkeydown="handleCalcKey(event)">
+            
             <div class="calc-buttons">
                 <button class="calc-btn btn-clear" onclick="clearCalc()">C</button>
                 <button class="calc-btn" onclick="delCalc()">⌫</button>
@@ -291,21 +312,36 @@
         <div class="card-container">
             <div class="section-title">📅 คำนวณวันที่</div>
             
-            <!-- โหมด 1: หาวันที่ (จากจำนวนวัน) -->
+            <!-- โหมด 1: หาวันที่ (ปรับ Layout ใหม่) -->
             <div class="date-section">
-                <label class="date-label">1. หาวันที่สิ้นสุด (ใส่วันที่เริ่มต้น + จำนวนวัน)</label>
-                <input type="date" id="targetStartDate" class="date-input">
-                <input type="number" id="targetDays" class="date-input" placeholder="จำนวนวัน (เช่น 30 หรือ -7)">
+                <label class="date-label">1. หาวันที่ข้างหน้า / ย้อนหลัง</label>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">วันที่ตั้งต้น:</div>
+                <input type="date" id="targetBaseDate" class="date-input" style="margin-bottom: 12px;">
+                
+                <div class="date-input-group">
+                    <select id="targetDirection" class="date-select" style="flex: 1;">
+                        <option value="+">➕ บวกเพิ่ม</option>
+                        <option value="-">➖ ย้อนหลัง</option>
+                    </select>
+                    <input type="number" id="targetDays" class="date-input" placeholder="จำนวนวัน" style="flex: 1.5; margin-bottom: 0;" min="0">
+                </div>
+                
                 <button class="action-btn" onclick="calculateTargetDate()">คำนวณหาวันที่</button>
                 <div class="date-result" id="targetDateResult">--/--/----</div>
             </div>
 
             <!-- โหมด 2: หาระยะห่างวัน (ระหว่าง 2 วันที่) -->
             <div class="date-section">
-                <label class="date-label">2. หาระยะห่าง (ใส่วันที่ 2 วัน)</label>
-                <input type="date" id="diffStartDate" class="date-input">
-                <input type="date" id="diffEndDate" class="date-input">
-                <button class="action-btn" onclick="calculateDateDiff()" style="background-color: var(--color-success);">คำนวณจำนวนวัน</button>
+                <label class="date-label">2. หาระยะห่างระหว่าง 2 วันที่</label>
+                <div class="date-input-group" style="margin-bottom: 8px;">
+                    <div style="flex: 1; text-align: center; font-size: 13px; color: var(--text-muted);">เริ่ม:</div>
+                    <div style="flex: 1; text-align: center; font-size: 13px; color: var(--text-muted);">สิ้นสุด:</div>
+                </div>
+                <div class="date-input-group">
+                    <input type="date" id="diffStartDate" class="date-input" style="margin-bottom: 0;">
+                    <input type="date" id="diffEndDate" class="date-input" style="margin-bottom: 0;">
+                </div>
+                <button class="action-btn" onclick="calculateDateDiff()" style="background-color: var(--color-success); box-shadow: 0 4px 12px rgba(52, 199, 89, 0.2);">คำนวณจำนวนวัน</button>
                 <div class="date-result" id="diffDateResult">-- วัน</div>
             </div>
         </div>
@@ -316,50 +352,70 @@
 
     <script>
         // ================= Math Calculator Logic =================
-        let calcExpr = "";
         const display = document.getElementById('calcDisplay');
 
-        function updateDisplay() {
-            if (calcExpr === "") {
-                display.innerText = "0";
-            } else {
-                // แทนที่เครื่องหมายเพื่อความสวยงามตอนแสดงผล
-                display.innerText = calcExpr.replace(/\*/g, '×').replace(/\//g, '÷');
+        // ป้องกันตัวอักษรพิมพ์ผิด ดักจับเฉพาะตัวเลขและเครื่องหมาย
+        function validateCalcInput(el) {
+            el.value = el.value.replace(/[^0-9+\-*/.%()\s]/g, '');
+        }
+
+        // กด Enter ในช่อง Input เพื่อคำนวณได้ทันที
+        function handleCalcKey(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                calculateResult();
             }
         }
 
         function appendCalc(val) {
-            calcExpr += val;
-            updateDisplay();
+            // ดึง cursor position ปัจจุบันเพื่อแทรกข้อความให้ถูกจุด
+            const startPos = display.selectionStart;
+            const endPos = display.selectionEnd;
+            display.value = display.value.substring(0, startPos) + val + display.value.substring(endPos, display.value.length);
+            
+            // ขยับ cursor ไปท้ายตัวที่เพิ่งแทรก
+            display.focus();
+            display.selectionStart = display.selectionEnd = startPos + val.length;
         }
 
         function clearCalc() {
-            calcExpr = "";
-            updateDisplay();
+            display.value = "";
+            display.focus();
         }
 
         function delCalc() {
-            calcExpr = calcExpr.slice(0, -1);
-            updateDisplay();
+            const startPos = display.selectionStart;
+            if (startPos > 0) {
+                display.value = display.value.substring(0, startPos - 1) + display.value.substring(startPos, display.value.length);
+                display.focus();
+                display.selectionStart = display.selectionEnd = startPos - 1;
+            } else {
+                display.focus();
+            }
         }
 
         function calculateResult() {
             try {
-                // กรองอักขระเพื่อความปลอดภัย ป้องกัน XSS จาก eval
-                if (!/^[0-9+\-*/.%()\s]+$/.test(calcExpr)) throw new Error("Invalid format");
+                let expr = display.value;
+                if (!expr) return;
                 
                 // แปลง % ให้หาร 100
-                let exprToEval = calcExpr.replace(/%/g, '/100');
+                let exprToEval = expr.replace(/%/g, '/100');
+                // เช็คความปลอดภัยก่อน eval
+                if (!/^[0-9+\-*/.%()\s]+$/.test(exprToEval)) throw new Error("Invalid format");
                 
                 let result = eval(exprToEval);
-                // ตัดทศนิยมไม่ให้ยาวเกินไป
-                if(result % 1 !== 0) result = parseFloat(result.toFixed(6));
                 
-                calcExpr = String(result);
-                updateDisplay();
+                // แก้บั๊กทศนิยมยาวๆ (เช่น 0.1 + 0.2 = 0.30000000000000004)
+                if(result % 1 !== 0) {
+                    result = parseFloat(result.toFixed(8));
+                }
+                
+                display.value = String(result);
+                display.focus();
             } catch (e) {
-                display.innerText = "Error";
-                calcExpr = "";
+                display.value = "Error";
+                setTimeout(() => { display.value = ""; display.focus(); }, 1500);
             }
         }
 
@@ -367,24 +423,34 @@
         
         // ตั้งค่า Default Input เป็นวันปัจจุบัน
         const todayStr = new Date().toISOString().split('T')[0];
-        document.getElementById('targetStartDate').value = todayStr;
+        document.getElementById('targetBaseDate').value = todayStr;
         document.getElementById('diffStartDate').value = todayStr;
+        document.getElementById('diffEndDate').value = todayStr;
         
         function formatDateThai(dateObj) {
-            return dateObj.toLocaleDateString('th-TH', {
-                year: 'numeric', month: 'short', day: 'numeric'
-            });
+            const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+            const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            
+            return `วัน${days[dateObj.getDay()]}ที่ ${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear() + 543}`;
         }
 
         function calculateTargetDate() {
-            const startDateVal = document.getElementById('targetStartDate').value;
-            const daysVal = parseInt(document.getElementById('targetDays').value);
+            const startDateVal = document.getElementById('targetBaseDate').value;
+            const direction = document.getElementById('targetDirection').value;
+            let daysVal = parseInt(document.getElementById('targetDays').value);
             const resultBox = document.getElementById('targetDateResult');
 
             if (!startDateVal || isNaN(daysVal)) {
                 resultBox.innerText = "กรุณาระบุวันที่และจำนวนวัน";
                 resultBox.style.color = "var(--color-danger)";
                 return;
+            }
+
+            // ถ้าผู้ใช้เลือกย้อนหลัง ให้แปลงค่า daysVal เป็นลบ
+            if (direction === '-') {
+                daysVal = -Math.abs(daysVal);
+            } else {
+                daysVal = Math.abs(daysVal);
             }
 
             const date = new Date(startDateVal);
@@ -415,7 +481,14 @@
             const diffTime = endDate - startDate;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             
-            resultBox.innerText = `${Math.abs(diffDays)} วัน ${diffDays < 0 ? '(ผ่านมาแล้ว)' : ''}`;
+            if (diffDays > 0) {
+                resultBox.innerHTML = `ห่างกัน <span style="font-size:24px;">${diffDays}</span> วัน`;
+            } else if (diffDays < 0) {
+                resultBox.innerHTML = `ผ่านมาแล้ว <span style="font-size:24px;">${Math.abs(diffDays)}</span> วัน`;
+            } else {
+                resultBox.innerText = "เป็นวันเดียวกัน (0 วัน)";
+            }
+            
             resultBox.style.color = "var(--primary)";
         }
 
@@ -448,6 +521,8 @@
 
         window.onload = () => {
             initTheme();
+            // ให้ Focus ที่ช่องคิดเลขตอนโหลดหน้า
+            document.getElementById('calcDisplay').focus();
         };
     </script>
 </body>
