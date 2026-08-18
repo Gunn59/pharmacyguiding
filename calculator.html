@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Date & Math Calculator</title>
-    <!-- บอกให้บราวเซอร์รู้ว่ามี manifest -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007aff">
     <link rel="apple-touch-icon" href="icon-192x192.png">
@@ -167,6 +166,52 @@
         .btn-clear { background-color: var(--color-danger); color: white; }
         .btn-equal { background-color: var(--color-success); color: white; grid-column: span 2; }
 
+        /* History System */
+        .history-container {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .clear-history-btn {
+            background: none;
+            border: none;
+            color: var(--color-danger);
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-size: 13px;
+            padding: 0;
+        }
+        .history-list {
+            max-height: 120px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            background: var(--input-bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        .history-item:hover { background: var(--border-result); }
+        .history-expr { color: var(--text-muted); }
+        .history-res { font-weight: 600; color: var(--primary); }
+
         /* ================= Date Calculator ================= */
         .date-section {
             margin-bottom: 25px;
@@ -277,7 +322,7 @@
         <!-- ฝั่งซ้าย: Math Calculator -->
         <div class="card-container">
             <div class="section-title">🔢 เครื่องคิดเลข</div>
-            <!-- เปลี่ยนเป็น input text เพื่อให้พิมพ์คีย์บอร์ดได้ -->
+            
             <input type="text" class="calc-display" id="calcDisplay" placeholder="0" 
                    oninput="validateCalcInput(this)" onkeydown="handleCalcKey(event)">
             
@@ -306,13 +351,21 @@
                 <button class="calc-btn" onclick="appendCalc('.')">.</button>
                 <button class="calc-btn btn-equal" onclick="calculateResult()">=</button>
             </div>
+
+            <!-- History Section -->
+            <div class="history-container">
+                <div class="history-header">
+                    <span>🕒 ประวัติล่าสุด</span>
+                    <button class="clear-history-btn" onclick="clearHistory()">ล้างประวัติ</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+            </div>
         </div>
 
         <!-- ฝั่งขวา: Date Calculator -->
         <div class="card-container">
             <div class="section-title">📅 คำนวณวันที่</div>
             
-            <!-- โหมด 1: หาวันที่ (ปรับ Layout ใหม่) -->
             <div class="date-section">
                 <label class="date-label">1. หาวันที่ข้างหน้า / ย้อนหลัง</label>
                 <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">วันที่ตั้งต้น:</div>
@@ -330,7 +383,6 @@
                 <div class="date-result" id="targetDateResult">--/--/----</div>
             </div>
 
-            <!-- โหมด 2: หาระยะห่างวัน (ระหว่าง 2 วันที่) -->
             <div class="date-section">
                 <label class="date-label">2. หาระยะห่างระหว่าง 2 วันที่</label>
                 <div class="date-input-group" style="margin-bottom: 8px;">
@@ -353,37 +405,59 @@
     <script>
         // ================= Math Calculator Logic =================
         const display = document.getElementById('calcDisplay');
+        let isCalculated = false; // ตัวแปรเช็คว่าเพิ่งคำนวณเสร็จหรือไม่
+        let calcHistory = JSON.parse(localStorage.getItem('calc_history') || '[]');
 
-        // ป้องกันตัวอักษรพิมพ์ผิด ดักจับเฉพาะตัวเลขและเครื่องหมาย
         function validateCalcInput(el) {
-            el.value = el.value.replace(/[^0-9+\-*/.%()\s]/g, '');
+            // ดักพิมพ์ ถ้าเพิ่งคำนวณเสร็จ และตัวที่พิมพ์ไม่ใช่เครื่องหมาย ให้เคลียร์จอเริ่มใหม่
+            if (isCalculated) {
+                const lastChar = el.value.slice(-1);
+                if (/[0-9.]/.test(lastChar)) {
+                    el.value = lastChar;
+                }
+                isCalculated = false;
+            } else {
+                el.value = el.value.replace(/[^0-9+\-*/.%()\s]/g, '');
+            }
         }
 
-        // กด Enter ในช่อง Input เพื่อคำนวณได้ทันที
         function handleCalcKey(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 calculateResult();
+            } else if (isCalculated) {
+                // ถ้าพิมพ์ตัวเลขใหม่ให้เคลียร์จอ แต่ถ้าพิมพ์เครื่องหมายให้ต่อท้ายผลลัพธ์
+                if (/^[0-9.]$/.test(e.key)) {
+                    display.value = "";
+                }
+                isCalculated = false;
             }
         }
 
         function appendCalc(val) {
-            // ดึง cursor position ปัจจุบันเพื่อแทรกข้อความให้ถูกจุด
-            const startPos = display.selectionStart;
-            const endPos = display.selectionEnd;
-            display.value = display.value.substring(0, startPos) + val + display.value.substring(endPos, display.value.length);
+            if (isCalculated) {
+                // หากกดปุ่มตัวเลข ให้ล้างจอเริ่มใหม่ / หากกดเครื่องหมาย ให้นำไปต่อท้าย
+                if (/[0-9.]/.test(val)) {
+                    display.value = "";
+                }
+                isCalculated = false;
+            }
             
-            // ขยับ cursor ไปท้ายตัวที่เพิ่งแทรก
+            const startPos = display.selectionStart || display.value.length;
+            display.value = display.value.substring(0, startPos) + val + display.value.substring(startPos, display.value.length);
+            
             display.focus();
             display.selectionStart = display.selectionEnd = startPos + val.length;
         }
 
         function clearCalc() {
             display.value = "";
+            isCalculated = false;
             display.focus();
         }
 
         function delCalc() {
+            if (isCalculated) isCalculated = false;
             const startPos = display.selectionStart;
             if (startPos > 0) {
                 display.value = display.value.substring(0, startPos - 1) + display.value.substring(startPos, display.value.length);
@@ -396,32 +470,71 @@
 
         function calculateResult() {
             try {
-                let expr = display.value;
+                let expr = display.value.trim();
                 if (!expr) return;
                 
-                // แปลง % ให้หาร 100
                 let exprToEval = expr.replace(/%/g, '/100');
-                // เช็คความปลอดภัยก่อน eval
                 if (!/^[0-9+\-*/.%()\s]+$/.test(exprToEval)) throw new Error("Invalid format");
                 
                 let result = eval(exprToEval);
                 
-                // แก้บั๊กทศนิยมยาวๆ (เช่น 0.1 + 0.2 = 0.30000000000000004)
-                if(result % 1 !== 0) {
-                    result = parseFloat(result.toFixed(8));
+                if(result % 1 !== 0) result = parseFloat(result.toFixed(8));
+                
+                // บันทึกประวัติเฉพาะกรณีที่สมการไม่ใช่ตัวเลขเดี่ยวๆ
+                if (expr !== String(result)) {
+                    saveHistory(expr, result);
                 }
                 
                 display.value = String(result);
+                isCalculated = true; // เปิดโหมดเคลียร์อัตโนมัติ
+                
                 display.focus();
+                display.selectionStart = display.selectionEnd = display.value.length;
             } catch (e) {
                 display.value = "Error";
-                setTimeout(() => { display.value = ""; display.focus(); }, 1500);
+                isCalculated = true;
+                setTimeout(() => { if(display.value === "Error") { display.value = ""; display.focus(); } }, 1500);
             }
         }
 
+        // ================= History Logic =================
+        function saveHistory(expr, result) {
+            calcHistory.unshift({ expr: expr, res: result });
+            if (calcHistory.length > 20) calcHistory.pop(); // เก็บแค่ 20 รายการล่าสุด
+            localStorage.setItem('calc_history', JSON.stringify(calcHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const listDiv = document.getElementById('historyList');
+            listDiv.innerHTML = "";
+            
+            if (calcHistory.length === 0) {
+                listDiv.innerHTML = "<div style='font-size:13px; color:var(--text-muted); text-align:center; padding:10px;'>ยังไม่มีประวัติการคำนวณ</div>";
+                return;
+            }
+
+            calcHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `<span class="history-expr">${item.expr.replace(/\*/g, '×').replace(/\//g, '÷')} =</span><span class="history-res">${item.res}</span>`;
+                // เมื่อคลิกที่ประวัติ ให้ดึงผลลัพธ์มาใส่ช่องคำนวณ
+                div.onclick = () => {
+                    display.value = String(item.res);
+                    isCalculated = false;
+                    display.focus();
+                };
+                listDiv.appendChild(div);
+            });
+        }
+
+        function clearHistory() {
+            calcHistory = [];
+            localStorage.removeItem('calc_history');
+            renderHistory();
+        }
+
         // ================= Date Calculator Logic =================
-        
-        // ตั้งค่า Default Input เป็นวันปัจจุบัน
         const todayStr = new Date().toISOString().split('T')[0];
         document.getElementById('targetBaseDate').value = todayStr;
         document.getElementById('diffStartDate').value = todayStr;
@@ -430,7 +543,6 @@
         function formatDateThai(dateObj) {
             const days = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
             const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-            
             return `วัน${days[dateObj.getDay()]}ที่ ${dateObj.getDate()} ${months[dateObj.getMonth()]} ${dateObj.getFullYear() + 543}`;
         }
 
@@ -446,12 +558,8 @@
                 return;
             }
 
-            // ถ้าผู้ใช้เลือกย้อนหลัง ให้แปลงค่า daysVal เป็นลบ
-            if (direction === '-') {
-                daysVal = -Math.abs(daysVal);
-            } else {
-                daysVal = Math.abs(daysVal);
-            }
+            if (direction === '-') daysVal = -Math.abs(daysVal);
+            else daysVal = Math.abs(daysVal);
 
             const date = new Date(startDateVal);
             date.setDate(date.getDate() + daysVal);
@@ -466,7 +574,7 @@
             const resultBox = document.getElementById('diffDateResult');
 
             if (!startVal || !endVal) {
-                resultBox.innerText = "กรุณาระบุวันที่ให้ครบ 2 ช่อง";
+                resultBox.innerText = "กรุณาระบุให้ครบ 2 ช่อง";
                 resultBox.style.color = "var(--color-danger)";
                 return;
             }
@@ -474,20 +582,15 @@
             const startDate = new Date(startVal);
             const endDate = new Date(endVal);
             
-            // ปัดเวลาทิ้งเพื่อความแม่นยำในการลบวัน
             startDate.setHours(0,0,0,0);
             endDate.setHours(0,0,0,0);
             
             const diffTime = endDate - startDate;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             
-            if (diffDays > 0) {
-                resultBox.innerHTML = `ห่างกัน <span style="font-size:24px;">${diffDays}</span> วัน`;
-            } else if (diffDays < 0) {
-                resultBox.innerHTML = `ผ่านมาแล้ว <span style="font-size:24px;">${Math.abs(diffDays)}</span> วัน`;
-            } else {
-                resultBox.innerText = "เป็นวันเดียวกัน (0 วัน)";
-            }
+            if (diffDays > 0) resultBox.innerHTML = `ห่างกัน <span style="font-size:24px;">${diffDays}</span> วัน`;
+            else if (diffDays < 0) resultBox.innerHTML = `ผ่านมาแล้ว <span style="font-size:24px;">${Math.abs(diffDays)}</span> วัน`;
+            else resultBox.innerText = "เป็นวันเดียวกัน (0 วัน)";
             
             resultBox.style.color = "var(--primary)";
         }
@@ -495,8 +598,6 @@
         // ================= Theme Toggle Logic =================
         function initTheme() {
             const toggleBtn = document.getElementById('theme-toggle');
-            
-            // อ่านค่าจาก LocalStorage หรือตั้งค่าตามระบบ (Dark/Light)
             const savedTheme = localStorage.getItem('theme_calc');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
@@ -515,13 +616,12 @@
         }
 
         function updateToggleIcon(theme) {
-            const toggleBtn = document.getElementById('theme-toggle');
-            toggleBtn.innerText = theme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('theme-toggle').innerText = theme === 'dark' ? '☀️' : '🌙';
         }
 
         window.onload = () => {
             initTheme();
-            // ให้ Focus ที่ช่องคิดเลขตอนโหลดหน้า
+            renderHistory();
             document.getElementById('calcDisplay').focus();
         };
     </script>
