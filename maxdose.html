@@ -586,10 +586,17 @@
         { name: "Folic acid", class: "Supplements", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." }
     ];
 
-    // ฟังก์ชันสร้างลิ้งก์ UpToDate รองรับยาสูตรผสม
+        // ฟังก์ชันสร้างลิ้งก์ UpToDate รองรับยาสูตรผสม และยาที่ไม่มีใน US
     function getUpToDateLink(drugName) {
         let formattedName = drugName.toLowerCase().trim().replace(/\s+/g, '-');
         
+        // 1. ดักจับยาที่ไม่มีหน้า Profile มาตรฐาน ให้ดีดไปหน้า Search ของ UpToDate แทน
+        const searchOnlyDrugs = ["molnupiravir", "favipiravir", "manidipine"];
+        if (searchOnlyDrugs.includes(formattedName)) {
+            return `https://www.uptodate.com/contents/search?search=${formattedName}+dosing`;
+        }
+        
+        // 2. ดักจับยาสูตรผสมที่ต้องเปลี่ยนชื่อ Path
         switch(formattedName) {
             case "amoxicillin/clavulanate":
                 formattedName = "amoxicillin-and-clavulanate";
@@ -613,6 +620,7 @@
 
         return `https://www.uptodate.com/contents/${formattedName}-drug-information?sectionName=Kidney%20Impairment%20(Adult)`;
     }
+
 
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
