@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Renal Dose & Max Dose Finder</title>
+    <title>Renal Dose & Max Dose Finder (Ultimate Edition)</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007aff">
     <link rel="apple-touch-icon" href="icon-192x192.png">
@@ -68,7 +68,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* ปุ่มย้อนกลับแบบ Pill */
         .back-btn { 
             text-decoration: none; 
             color: var(--primary); 
@@ -84,10 +83,7 @@
             transition: all 0.2s ease;
             border: 1px solid var(--border-color);
         }
-        .back-btn:active {
-            transform: scale(0.96);
-            opacity: 0.8;
-        }
+        .back-btn:active { transform: scale(0.96); opacity: 0.8; }
 
         /* ================= Header Box ================= */
         .page-header {
@@ -122,102 +118,41 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* ================= UI Elements (Search & Filter) ================= */
-        .controls { 
-            display: flex; 
-            gap: 15px; 
-            margin-bottom: 20px; 
-            justify-content: center; 
-            flex-wrap: wrap; 
-        }
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
         input, select { 
-            font-family: 'Prompt', sans-serif;
-            padding: 12px 16px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 12px; 
-            font-size: 15px; 
-            background-color: var(--input-bg); 
-            color: var(--text-main);
-            outline: none;
-            transition: border-color 0.2s ease, background-color 0.3s, color 0.3s;
+            font-family: 'Prompt', sans-serif; padding: 12px 16px; border: 1px solid var(--border-color); 
+            border-radius: 12px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main);
+            outline: none; transition: border-color 0.2s ease, background-color 0.3s, color 0.3s;
         }
         input { width: 100%; max-width: 400px; }
-        select { flex-grow: 1; max-width: 250px; appearance: none; }
-        
+        select { flex-grow: 1; max-width: 300px; appearance: none; }
         select {
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
+            background-repeat: no-repeat; background-position: right 14px center;
         }
-        input:focus, select:focus { 
-            border-color: var(--primary); 
-            background-color: var(--bg-card);
-        }
+        input:focus, select:focus { border-color: var(--primary); background-color: var(--bg-card); }
 
-        /* ================= Table Styles (Adapted for Theme) ================= */
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            background: var(--bg-card); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            border: 1px solid var(--border-color);
-        }
-        th, td { 
-            padding: 16px; 
-            text-align: left; 
-            border-bottom: 1px solid var(--border-color); 
-        }
-        th { 
-            background-color: var(--primary); 
-            color: white; 
-            font-weight: 500; 
-            white-space: nowrap;
-        }
+        table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { background-color: var(--primary); color: white; font-weight: 500; white-space: nowrap; }
         tr:last-child td { border-bottom: none; }
         tr:hover { background-color: var(--bg-result); }
 
-        /* --- Mobile Responsive (Card Style Table) --- */
+        /* --- Mobile Responsive --- */
         @media screen and (max-width: 768px) {
             .container { padding: 15px; }
             table, thead, tbody, th, td, tr { display: block; }
             table { border: none; background: transparent; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; } /* ซ่อน header */
-            tr { 
-                border: 1px solid var(--border-color); 
-                margin-bottom: 15px; 
-                border-radius: 12px; 
-                background: var(--bg-card);
-                padding: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            }
+            thead tr { position: absolute; top: -9999px; left: -9999px; } 
+            tr { border: 1px solid var(--border-color); margin-bottom: 15px; border-radius: 12px; background: var(--bg-card); padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
             tr:hover { background-color: var(--bg-card); }
-            td { 
-                border: none; 
-                position: relative; 
-                padding: 8px 10px; 
-                display: flex;
-                flex-direction: column;
-            }
-            td::before { 
-                content: attr(data-label); 
-                font-size: 12px; 
-                color: var(--text-muted); 
-                text-transform: uppercase; 
-                font-weight: 600; 
-                margin-bottom: 6px; 
-            }
+            td { border: none; position: relative; padding: 8px 10px; display: flex; flex-direction: column; }
+            td::before { content: attr(data-label); font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
             input, select { max-width: 100%; }
         }
 
         /* --- Tooltip & Elements --- */
-        .tooltip { 
-            position: relative; 
-            cursor: pointer; 
-            color: var(--color-warning); 
-            font-weight: 500; 
-            border-bottom: 1px dashed var(--color-warning); 
-        }
+        .tooltip { position: relative; cursor: pointer; color: var(--color-warning); font-weight: 500; border-bottom: 1px dashed var(--color-warning); }
         .tooltip .tooltiptext {
             visibility: hidden; width: 280px; background-color: var(--text-main); color: var(--bg-base); 
             border-radius: 8px; padding: 12px; position: absolute; z-index: 10;
@@ -228,39 +163,20 @@
         
         .btn-link { 
             display: inline-block; padding: 10px 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
-            color: white; text-decoration: none; border-radius: 10px; font-size: 14px; 
-            font-weight: 500; transition: 0.2s; text-align: center; width: auto;
-            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
+            color: white; text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: center; width: auto; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
         }
         @media screen and (max-width: 768px) { .btn-link { width: calc(100% - 32px); box-sizing: border-box; } }
         .btn-link:active { transform: scale(0.97); }
         
-        .tag { 
-            font-size: 12px; padding: 4px 10px; border-radius: 20px; 
-            background: var(--bg-info); color: var(--text-info); 
-            display: inline-block; margin-top: 6px; font-weight: 500; 
-        }
+        .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: var(--bg-info); color: var(--text-info); display: inline-block; margin-top: 6px; font-weight: 500; }
         .no-adjust { color: var(--color-success); border-bottom: none; cursor: default; }
 
         /* ================= FAB Theme Toggle ================= */
         .theme-toggle-btn {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            position: fixed; bottom: 24px; right: 24px; width: 50px; height: 50px; border-radius: 50%;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: #ffffff;
-            border: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            cursor: pointer;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); cursor: pointer;
+            z-index: 999; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: transform 0.2s, box-shadow 0.2s;
         }
         .theme-toggle-btn:hover { transform: scale(1.1); }
         .theme-toggle-btn:active { transform: scale(0.95); }
@@ -278,7 +194,7 @@
 
     <div class="page-header">
         <h2>💊 Renal Dose & Max Dose Finder</h2>
-        <div class="subtitle">ตรวจสอบขนาดยาสูงสุดและการปรับโดสตามค่าไต</div>
+        <div class="subtitle">ตรวจสอบขนาดยาสูงสุดและการปรับโดสตามค่าไต (Ultimate Master List)</div>
     </div>
 
     <div class="container">
@@ -286,17 +202,40 @@
         <div class="controls">
             <input type="text" id="searchInput" placeholder="🔍 พิมพ์ชื่อยาเพื่อค้นหา... (เช่น amoxicillin)" onkeyup="filterTable()">
             <select id="classFilter" onchange="filterTable()">
-                <option value="All">📑 แสดงทั้งหมด (เรียงตามอักษร)</option>
-                <option value="Beta-lactam">Beta-lactam</option>
-                <option value="Fluoroquinolone">Fluoroquinolone</option>
-                <option value="Macrolide">Macrolide</option>
-                <option value="Other Antibiotics">Other Antibiotics</option>
-                <option value="Gastrointestinal">Gastrointestinal</option>
-                <option value="Antihistamine">Antihistamine</option>
-                <option value="Analgesic/Antipyretic">Analgesic/Antipyretic</option>
-                <option value="Cardiovascular">Cardiovascular</option>
+                <option value="All">📑 แสดงทุกกลุ่มยา (เรียง A-Z)</option>
+                <option value="ACE Inhibitors">ACE Inhibitors</option>
+                <option value="ARBs">ARBs</option>
+                <option value="Beta-blockers">Beta-blockers</option>
+                <option value="Calcium Channel Blockers">Calcium Channel Blockers</option>
+                <option value="Diuretics">Diuretics</option>
+                <option value="Antiplatelets">Antiplatelets</option>
+                <option value="Anticoagulants">Anticoagulants</option>
+                <option value="Antianginal">Antianginal</option>
+                <option value="Antiarrhythmic">Antiarrhythmic</option>
+                <option value="Cardiovascular (Other)">Cardiovascular (Other)</option>
                 <option value="Diabetes">Diabetes</option>
                 <option value="Dyslipidemia">Dyslipidemia</option>
+                <option value="Gastrointestinal">Gastrointestinal</option>
+                <option value="Analgesic/Antipyretic">Analgesic/Antipyretic</option>
+                <option value="Neuropathic Pain">Neuropathic Pain</option>
+                <option value="Respiratory">Respiratory</option>
+                <option value="Antihistamine">Antihistamine</option>
+                <option value="Corticosteroids">Corticosteroids</option>
+                <option value="Beta-lactam">Antibiotics: Beta-lactam</option>
+                <option value="Fluoroquinolone">Antibiotics: Fluoroquinolone</option>
+                <option value="Macrolide">Antibiotics: Macrolide</option>
+                <option value="Other Antibiotics">Antibiotics: Other</option>
+                <option value="Antifungals">Antifungals</option>
+                <option value="Antivirals">Antivirals</option>
+                <option value="Urology">Urology / BPH / OAB</option>
+                <option value="CNS">CNS / Psychiatry</option>
+                <option value="Antiepileptics">Antiepileptics</option>
+                <option value="Migraine">Migraine</option>
+                <option value="Thyroid">Thyroid</option>
+                <option value="Osteoporosis">Osteoporosis</option>
+                <option value="Gout">Gout</option>
+                <option value="Hematology">Hematology</option>
+                <option value="Supplements">Supplements / Vitamins</option>
             </select>
         </div>
 
@@ -310,93 +249,339 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                </tbody>
+                <!-- ข้อมูลจะถูก render ผ่าน JavaScript -->
+            </tbody>
         </table>
 
     </div>
 
 <script>
-    // 1. ฐานข้อมูลยา (60+ รายการตามต้นฉบับ)
+    // ==========================================
+    // ฐานข้อมูลยา Master List (เก่าผสมใหม่ ครบสมบูรณ์)
+    // ==========================================
     const drugData = [
+        // --- 1. Cardiovascular ---
+        // ACE Inhibitors
+        { name: "Captopril", class: "ACE Inhibitors", maxDose: "150 mg/day (HTN) / 450 mg/day (HF)", renal: "CrCl < 50", ref: "FDA Label: Reduce initial dose or increase interval." },
+        { name: "Enalapril", class: "ACE Inhibitors", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 2.5 mg once daily." },
+        { name: "Lisinopril", class: "ACE Inhibitors", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 2.5-5 mg once daily." },
+        { name: "Ramipril", class: "ACE Inhibitors", maxDose: "20 mg/day", renal: "CrCl < 40", ref: "FDA Label: Initial 1.25 mg once daily, max 5 mg/day." },
+        { name: "Perindopril", class: "ACE Inhibitors", maxDose: "16 mg/day", renal: "CrCl < 60", ref: "FDA Label: Adjust dose based on CrCl." },
+        { name: "Fosinopril", class: "ACE Inhibitors", maxDose: "40 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Dual hepatic/renal clearance." },
+        { name: "Quinapril", class: "ACE Inhibitors", maxDose: "80 mg/day", renal: "CrCl < 60", ref: "FDA Label: Initial 5 mg once daily." },
+        { name: "Benazepril", class: "ACE Inhibitors", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 5 mg once daily." },
+        { name: "Imidapril", class: "ACE Inhibitors", maxDose: "20 mg/day", renal: "CrCl < 30", ref: "Product Info: Initial 2.5 mg once daily." },
+        { name: "Trandolapril", class: "ACE Inhibitors", maxDose: "8 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 0.5 mg once daily." },
+        { name: "Moexipril", class: "ACE Inhibitors", maxDose: "30 mg/day", renal: "CrCl < 40", ref: "FDA Label: Initial 3.75 mg once daily." },
+
+        // ARBs
+        { name: "Losartan", class: "ARBs", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No initial adjustment, caution in volume depletion." },
+        { name: "Valsartan", class: "ARBs", maxDose: "320 mg/day", renal: "CrCl < 30", ref: "FDA Label: Use caution in severe impairment." },
+        { name: "Irbesartan", class: "ARBs", maxDose: "300 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No initial adjustment needed." },
+        { name: "Candesartan", class: "ARBs", maxDose: "32 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 4 mg once daily (HF) or 8 mg (HTN)." },
+        { name: "Telmisartan", class: "ARBs", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Olmesartan", class: "ARBs", maxDose: "40 mg/day", renal: "CrCl < 20", ref: "FDA Label: Max 20 mg/day if CrCl < 20." },
+        { name: "Eprosartan", class: "ARBs", maxDose: "800 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Azilsartan", class: "ARBs", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+
+        // Beta-blockers
+        { name: "Atenolol", class: "Beta-blockers", maxDose: "100 mg/day", renal: "CrCl < 35", ref: "FDA Label: Max 50 mg if CrCl 15-35; Max 25 mg if CrCl < 15." },
+        { name: "Propranolol", class: "Beta-blockers", maxDose: "640 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Cautious titration in severe impairment." },
+        { name: "Metoprolol", class: "Beta-blockers", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Bisoprolol", class: "Beta-blockers", maxDose: "20 mg/day", renal: "CrCl < 40", ref: "FDA Label: Initial 2.5 mg once daily." },
+        { name: "Carvedilol", class: "Beta-blockers", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Nebivolol", class: "Beta-blockers", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 2.5 mg once daily." },
+        { name: "Betaxolol", class: "Beta-blockers", maxDose: "40 mg/day (PO)", renal: "CrCl < 10", ref: "FDA Label: Initial 5 mg once daily." },
+        { name: "Acebutolol", class: "Beta-blockers", maxDose: "1200 mg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose by 50% if CrCl < 50, 75% if < 25." },
+        { name: "Nadolol", class: "Beta-blockers", maxDose: "320 mg/day", renal: "CrCl < 50", ref: "FDA Label: Increase dosing interval based on CrCl." },
+        { name: "Pindolol", class: "Beta-blockers", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Labetalol", class: "Beta-blockers", maxDose: "2400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Sotalol", class: "Beta-blockers", maxDose: "320 mg/day", renal: "CrCl < 60", ref: "FDA Label: Increase interval. Contraindicated if CrCl < 40 (AFib)." },
+
+        // CCBs
+        { name: "Amlodipine", class: "Calcium Channel Blockers", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Nifedipine", class: "Calcium Channel Blockers", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Felodipine", class: "Calcium Channel Blockers", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Nicardipine", class: "Calcium Channel Blockers", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Titrate slowly." },
+        { name: "Nimodipine", class: "Calcium Channel Blockers", maxDose: "360 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Nitrendipine", class: "Calcium Channel Blockers", maxDose: "40 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
+        { name: "Lercanidipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "CrCl < 30", ref: "EMA Label: Use with caution, initiate at 10 mg." },
+        { name: "Isradipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Cilnidipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: Use with caution." },
+        { name: "Verapamil", class: "Calcium Channel Blockers", maxDose: "480 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Cautious titration in severe impairment." },
+        { name: "Diltiazem", class: "Calcium Channel Blockers", maxDose: "480 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Cautious titration." },
+
+        // Diuretics
+        { name: "Hydrochlorothiazide", class: "Diuretics", maxDose: "50 mg/day", renal: "CrCl < 30", ref: "FDA Label: Ineffective and generally avoid if CrCl < 30." },
+        { name: "Spironolactone", class: "Diuretics", maxDose: "400 mg/day", renal: "eGFR < 50", ref: "FDA Label: Adjust dose/interval. Avoid if eGFR < 30 in HF." },
+        { name: "Chlorthalidone", class: "Diuretics", maxDose: "100 mg/day", renal: "CrCl < 30", ref: "FDA Label: Ineffective; loop diuretic preferred." },
+        { name: "Indapamide", class: "Diuretics", maxDose: "5 mg/day", renal: "Severe impairment", ref: "FDA Label: Avoid in severe renal failure (anuria)." },
+        { name: "Bendroflumethiazide", class: "Diuretics", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid in severe renal impairment." },
+        { name: "Furosemide", class: "Diuretics", maxDose: "600 mg/day (PO)", renal: "Adjust dose", ref: "UpToDate: Higher doses often required in severe CKD." },
+        { name: "Bumetanide", class: "Diuretics", maxDose: "10 mg/day", renal: "Adjust dose", ref: "UpToDate: Higher doses may be required in CKD." },
+        { name: "Torsemide", class: "Diuretics", maxDose: "200 mg/day", renal: "Adjust dose", ref: "UpToDate: Higher doses may be required in CKD." },
+        { name: "Ethacrynic acid", class: "Diuretics", maxDose: "400 mg/day", renal: "Severe impairment", ref: "FDA Label: Contraindicated in anuria." },
+        { name: "Eplerenone", class: "Diuretics", maxDose: "100 mg/day", renal: "CrCl < 50", ref: "FDA Label: Contraindicated in HTN if CrCl < 50 or HF if ≤ 30." },
+        { name: "Amiloride", class: "Diuretics", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: Avoid if CrCl < 50." },
+        { name: "Triamterene", class: "Diuretics", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: Avoid in severe renal impairment." },
+        { name: "Mannitol", class: "Diuretics", maxDose: "Varies (IV)", renal: "Severe impairment", ref: "FDA Label: Contraindicated in severe renal disease/anuria." },
+
+        // Antiplatelets
+        { name: "Aspirin", class: "Antiplatelets", maxDose: "4000 mg/day", renal: "CrCl < 10", ref: "FDA Label: Avoid in severe renal failure." },
+        { name: "Clopidogrel", class: "Antiplatelets", maxDose: "75 mg/day (Maint.)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Prasugrel", class: "Antiplatelets", maxDose: "10 mg/day (Maint.)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Ticagrelor", class: "Antiplatelets", maxDose: "90 mg bid", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Ticlopidine", class: "Antiplatelets", maxDose: "500 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use with caution." },
+        { name: "Cangrelor", class: "Antiplatelets", maxDose: "IV Infusion", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Dipyridamole", class: "Antiplatelets", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Cilostazol", class: "Antiplatelets", maxDose: "200 mg/day", renal: "CrCl < 25", ref: "FDA Label: Contraindicated in severe renal impairment." },
+        { name: "Abciximab", class: "Antiplatelets", maxDose: "IV Infusion", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Eptifibatide", class: "Antiplatelets", maxDose: "IV Infusion", renal: "CrCl < 50", ref: "FDA Label: Reduce infusion rate by 50%." },
+        { name: "Tirofiban", class: "Antiplatelets", maxDose: "IV Infusion", renal: "CrCl ≤ 60", ref: "FDA Label: Reduce dose by 50%." },
+
+        // Anticoagulants
+        { name: "Rivaroxaban", class: "Anticoagulants", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: AFib: 15 mg if CrCl 15-50. Avoid if < 15." },
+        { name: "Dabigatran", class: "Anticoagulants", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: 75 mg bid if CrCl 15-30. Avoid if CrCl < 15." },
+        { name: "Warfarin", class: "Anticoagulants", maxDose: "Titrate to INR", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Monitor INR closely in severe impairment." },
+        { name: "Heparin", class: "Anticoagulants", maxDose: "Titrate to aPTT", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Increased bleeding risk in CKD." },
+        { name: "Enoxaparin", class: "Anticoagulants", maxDose: "Varies by weight", renal: "CrCl < 30", ref: "FDA Label: Reduce dose to 1 mg/kg QD (Tx) or 30 mg QD (Prophylaxis)." },
+        { name: "Dalteparin", class: "Anticoagulants", maxDose: "Varies by weight", renal: "CrCl < 30", ref: "FDA Label: Use caution, anti-Xa monitoring recommended." },
+        { name: "Fondaparinux", class: "Anticoagulants", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: Contraindicated if CrCl < 30." },
+        { name: "Apixaban", class: "Anticoagulants", maxDose: "10 mg/day", renal: "Special criteria", ref: "FDA Label: 2.5 mg bid if ≥2 criteria: Age ≥80, Wt ≤60kg, SCr ≥1.5." },
+        { name: "Edoxaban", class: "Anticoagulants", maxDose: "60 mg/day", renal: "CrCl < 50 or > 95", ref: "FDA Label: Reduce to 30 mg if CrCl 15-50. Avoid if CrCl > 95 in AFib." },
+
+        // Dyslipidemia
+        { name: "Atorvastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Rosuvastatin", class: "Dyslipidemia", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 5 mg, max 10 mg/day if CrCl < 30." },
+        { name: "Simvastatin", class: "Dyslipidemia", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 5 mg/day if CrCl < 30." },
+        { name: "Fenofibrate", class: "Dyslipidemia", maxDose: "Varies by salt", renal: "eGFR < 60", ref: "FDA Label: Reduce dose. Contraindicated if eGFR < 30." },
+        { name: "Ezetimibe", class: "Dyslipidemia", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Pravastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 10 mg/day if CrCl < 30." },
+        { name: "Fluvastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Use caution in severe impairment." },
+        { name: "Pitavastatin", class: "Dyslipidemia", maxDose: "4 mg/day", renal: "eGFR < 60", ref: "FDA Label: Initial 1 mg, max 2 mg/day if eGFR 15-59." },
+        { name: "Gemfibrozil", class: "Dyslipidemia", maxDose: "1200 mg/day", renal: "CrCl < 10", ref: "FDA Label: Contraindicated in severe renal impairment." },
+        { name: "Bezafibrate", class: "Dyslipidemia", maxDose: "600 mg/day", renal: "CrCl < 60", ref: "Product Info: Adjust dose. Contraindicated if CrCl < 15." },
+        { name: "Omega-3-acid ethyl esters", class: "Dyslipidemia", maxDose: "4 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+
+        // Antianginal & Antiarrhythmic & Other CV
+        { name: "Digoxin", class: "Cardiovascular (Other)", maxDose: "0.25 mg/day (Maint.)", renal: "CrCl < 50", ref: "UpToDate: Decrease dose/increase interval." },
+        { name: "Nitroglycerin", class: "Antianginal", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Isosorbide dinitrate", class: "Antianginal", maxDose: "160 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Isosorbide mononitrate", class: "Antianginal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Nicorandil", class: "Antianginal", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "EMA Label: No dosage adjustment necessary." },
+        { name: "Ranolazine", class: "Antianginal", maxDose: "2000 mg/day", renal: "CrCl < 30", ref: "FDA Label: Contraindicated in severe renal impairment." },
+        { name: "Trimetazidine", class: "Antianginal", maxDose: "70 mg/day (MR)", renal: "CrCl < 60", ref: "EMA Label: 35 mg QD if CrCl 30-60. Avoid if < 30." },
+        { name: "Amiodarone", class: "Antiarrhythmic", maxDose: "1200 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Lidocaine", class: "Antiarrhythmic", maxDose: "Varies (IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Active metabolites may accumulate." },
+        { name: "Adenosine", class: "Antiarrhythmic", maxDose: "12 mg (Rapid IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Flecainide", class: "Antiarrhythmic", maxDose: "400 mg/day", renal: "CrCl < 35", ref: "FDA Label: Initial 50 mg bid; titrate cautiously." },
+        { name: "Propafenone", class: "Antiarrhythmic", maxDose: "900 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use caution." },
+        { name: "Quinidine", class: "Antiarrhythmic", maxDose: "Varies", renal: "CrCl < 10", ref: "UpToDate: Cautious use in severe impairment." },
+        { name: "Procainamide", class: "Antiarrhythmic", maxDose: "Varies", renal: "CrCl < 50", ref: "FDA Label: Adjust dose to prevent NAPA accumulation." },
+        { name: "Disopyramide", class: "Antiarrhythmic", maxDose: "800 mg/day", renal: "CrCl < 40", ref: "FDA Label: Alter dosing interval based on CrCl." },
+
+        // --- 2. Diabetes ---
+        { name: "Metformin", class: "Diabetes", maxDose: "2550 mg/day", renal: "eGFR < 45", ref: "FDA Label: Do not initiate if eGFR 30-45. Contraindicated if eGFR < 30." },
+        { name: "Glipizide", class: "Diabetes", maxDose: "40 mg/day", renal: "CrCl < 50", ref: "FDA Label: Initial 2.5 mg; titrate carefully." },
+        { name: "Glimepiride", class: "Diabetes", maxDose: "8 mg/day", renal: "CrCl < 22", ref: "FDA Label: Initial 1 mg; titrate carefully." },
+        { name: "Glibenclamide", class: "Diabetes", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "UpToDate: Avoid use (high risk of prolonged hypoglycemia)." },
+        { name: "Gliclazide", class: "Diabetes", maxDose: "320 mg/day", renal: "Severe impairment", ref: "EMA Label: Contraindicated in severe renal failure." },
+        { name: "Pioglitazone", class: "Diabetes", maxDose: "45 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Sitagliptin", class: "Diabetes", maxDose: "100 mg/day", renal: "eGFR < 45", ref: "FDA Label: 50 mg if eGFR 30-44; 25 mg if eGFR < 30." },
+        { name: "Linagliptin", class: "Diabetes", maxDose: "5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Saxagliptin", class: "Diabetes", maxDose: "5 mg/day", renal: "eGFR < 45", ref: "FDA Label: 2.5 mg once daily if eGFR < 45." },
+        { name: "Alogliptin", class: "Diabetes", maxDose: "25 mg/day", renal: "CrCl < 60", ref: "FDA Label: 12.5 mg if CrCl 30-59; 6.25 mg if CrCl < 30." },
+        { name: "Vildagliptin", class: "Diabetes", maxDose: "100 mg/day", renal: "CrCl < 50", ref: "EMA Label: 50 mg once daily if CrCl < 50." },
+        { name: "Empagliflozin", class: "Diabetes", maxDose: "25 mg/day", renal: "eGFR < 30 (DM)", ref: "FDA Label: Avoid for glycemic control if eGFR < 30." },
+        { name: "Dapagliflozin", class: "Diabetes", maxDose: "10 mg/day", renal: "eGFR < 45 (DM)", ref: "FDA Label: Avoid for glycemic control if eGFR < 45." },
+        { name: "Canagliflozin", class: "Diabetes", maxDose: "300 mg/day", renal: "eGFR < 60", ref: "FDA Label: Max 100 mg if eGFR < 60." },
+        { name: "Liraglutide", class: "Diabetes", maxDose: "1.8 mg/day", renal: "Severe impairment", ref: "FDA Label: Use caution when initiating in ESRD." },
+        { name: "Semaglutide", class: "Diabetes", maxDose: "2 mg/wk (SC) / 14 mg (PO)", renal: "Severe impairment", ref: "FDA Label: Use caution in severe impairment." },
+        { name: "Dulaglutide", class: "Diabetes", maxDose: "4.5 mg/week", renal: "Severe impairment", ref: "FDA Label: Use caution in severe impairment." },
+        { name: "Acarbose", class: "Diabetes", maxDose: "300 mg/day", renal: "SCr > 2.0", ref: "FDA Label: Not recommended if SCr > 2.0 mg/dL." },
+        { name: "Regular insulin", class: "Diabetes", maxDose: "Titrated", renal: "Adjust dose", ref: "UpToDate: Insulin requirements generally decrease as GFR declines." },
+        { name: "Insulin glargine", class: "Diabetes", maxDose: "Titrated", renal: "Adjust dose", ref: "UpToDate: Monitor closely, risk of hypoglycemia increases." },
+
+        // --- 3. Gastrointestinal ---
+        { name: "Omeprazole", class: "Gastrointestinal", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Esomeprazole", class: "Gastrointestinal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Pantoprazole", class: "Gastrointestinal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Lansoprazole", class: "Gastrointestinal", maxDose: "180 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Dexlansoprazole", class: "Gastrointestinal", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Rabeprazole", class: "Gastrointestinal", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Famotidine", class: "Gastrointestinal", maxDose: "40 mg/day", renal: "CrCl < 50", ref: "FDA Label: 20 mg at bedtime or increase interval." },
+        { name: "Cimetidine", class: "Gastrointestinal", maxDose: "1600 mg/day", renal: "CrCl < 30", ref: "FDA Label: Reduce dose by 50%." },
+        { name: "Nizatidine", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose to 150 mg/day if CrCl 20-50." },
+        { name: "Roxatidine", class: "Gastrointestinal", maxDose: "150 mg/day", renal: "CrCl < 50", ref: "Product Info: Reduce dose." },
+        { name: "Lafutidine", class: "Gastrointestinal", maxDose: "20 mg/day", renal: "Impaired function", ref: "Product Info: Use with caution." },
+        { name: "Ranitidine", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: 150 mg once daily." },
+        { name: "Aluminum hydroxide", class: "Gastrointestinal", maxDose: "Varies", renal: "Severe impairment", ref: "FDA Label: Risk of toxicity; avoid prolonged use." },
+        { name: "Magnesium hydroxide", class: "Gastrointestinal", maxDose: "Varies", renal: "Severe impairment", ref: "FDA Label: Risk of hypermagnesemia; avoid." },
+        { name: "Calcium carbonate", class: "Gastrointestinal", maxDose: "2500 mg Ca/day", renal: "CrCl < 25", ref: "UpToDate: Monitor closely for hypercalcemia." },
+        { name: "Alum Milk", class: "Gastrointestinal", maxDose: "Varies", renal: "Severe impairment", ref: "FDA Label: Risk of Mg/Al toxicity." },
+        { name: "Sucralfate", class: "Gastrointestinal", maxDose: "4 g/day", renal: "Severe impairment", ref: "FDA Label: Aluminum absorption risk." },
+        { name: "Bismuth subsalicylate", class: "Gastrointestinal", maxDose: "4200 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid due to salicylate toxicity risk." },
+        { name: "Misoprostol", class: "Gastrointestinal", maxDose: "800 mcg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose if not tolerated." },
+        { name: "Metoclopramide", class: "Gastrointestinal", maxDose: "40 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose by 50%." },
+        { name: "Domperidone", class: "Gastrointestinal", maxDose: "30 mg/day", renal: "Severe impairment", ref: "EMA Label: Extend interval to once/twice daily." },
+        { name: "Mosapride", class: "Gastrointestinal", maxDose: "15 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
+        { name: "Itopride", class: "Gastrointestinal", maxDose: "150 mg/day", renal: "Impaired function", ref: "Product Info: Use with caution." },
+        { name: "Levosulpiride", class: "Gastrointestinal", maxDose: "75 mg/day", renal: "CrCl < 30", ref: "Product Info: Reduce dose." },
+        { name: "Prucalopride", class: "Gastrointestinal", maxDose: "2 mg/day", renal: "CrCl < 30", ref: "FDA Label: 1 mg once daily." },
+        { name: "Hyoscine", class: "Gastrointestinal", maxDose: "80 mg/day", renal: "Caution", ref: "Product Info: Excreted renally; caution recommended." },
+        { name: "Mebeverine", class: "Gastrointestinal", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
+        { name: "Dicyclomine", class: "Gastrointestinal", maxDose: "160 mg/day", renal: "Caution", ref: "FDA Label: Excreted renally; caution recommended." },
+        { name: "Simethicone", class: "Gastrointestinal", maxDose: "500 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Not absorbed systemically." },
+        { name: "Bisacodyl", class: "Gastrointestinal", maxDose: "15 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Senna", class: "Gastrointestinal", maxDose: "34.2 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Lactulose", class: "Gastrointestinal", maxDose: "60 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Polyethylene glycol", class: "Gastrointestinal", maxDose: "34 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Loperamide", class: "Gastrointestinal", maxDose: "16 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Racecadotril", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "Caution", ref: "Product Info: Administer with caution." },
+        { name: "Ondansetron", class: "Gastrointestinal", maxDose: "24 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Granisetron", class: "Gastrointestinal", maxDose: "2 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Dimenhydrinate", class: "Gastrointestinal", maxDose: "400 mg/day", renal: "Caution", ref: "Product Info: Use caution in severe impairment." },
+
+        // --- 4. Analgesics / Pain / Neuropathic ---
+        { name: "Paracetamol", class: "Analgesic/Antipyretic", maxDose: "4000 mg/day", renal: "CrCl < 10", ref: "UpToDate: Increase dosing interval to q8h if CrCl < 10." },
+        { name: "Ibuprofen", class: "Analgesic/Antipyretic", maxDose: "3200 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid in advanced renal disease." },
+        { name: "Naproxen", class: "Analgesic/Antipyretic", maxDose: "1500 mg/day", renal: "CrCl < 30", ref: "FDA Label: Not recommended if CrCl < 30." },
+        { name: "Diclofenac", class: "Analgesic/Antipyretic", maxDose: "150 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in advanced renal disease." },
+        { name: "Mefenamic acid", class: "Analgesic/Antipyretic", maxDose: "1000 mg/day", renal: "CrCl < 50", ref: "FDA Label: Contraindicated in preexisting renal disease." },
+        { name: "Indomethacin", class: "Analgesic/Antipyretic", maxDose: "200 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in advanced renal disease." },
+        { name: "Ketoprofen", class: "Analgesic/Antipyretic", maxDose: "300 mg/day", renal: "Mild/Mod", ref: "FDA Label: Reduce dose. Avoid in severe." },
+        { name: "Ketorolac", class: "Analgesic/Antipyretic", maxDose: "40 mg (PO) / 120 mg (IV)", renal: "Advanced disease", ref: "FDA Label: Contraindicated in advanced renal impairment." },
+        { name: "Piroxicam", class: "Analgesic/Antipyretic", maxDose: "20 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in advanced renal disease." },
+        { name: "Meloxicam", class: "Analgesic/Antipyretic", maxDose: "15 mg/day", renal: "Severe impairment", ref: "FDA Label: Avoid unless on hemodialysis." },
+        { name: "Celecoxib", class: "Analgesic/Antipyretic", maxDose: "400 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in severe renal impairment." },
+        { name: "Etoricoxib", class: "Analgesic/Antipyretic", maxDose: "120 mg/day", renal: "CrCl < 30", ref: "EMA Label: Contraindicated if CrCl < 30." },
+        { name: "Parecoxib", class: "Analgesic/Antipyretic", maxDose: "80 mg/day", renal: "Severe impairment", ref: "EMA Label: Avoid in severe renal impairment." },
+        { name: "Tramadol", class: "Analgesic/Antipyretic", maxDose: "400 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 200 mg/day, interval q12h." },
+        { name: "Morphine", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 50", ref: "UpToDate: Reduce dose 25-50%, active metabolites." },
+        { name: "Fentanyl", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 50", ref: "UpToDate: Reduce dose 25-50%." },
+        { name: "Oxycodone", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 60", ref: "FDA Label: Initiate cautiously." },
+        { name: "Methadone", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 10", ref: "UpToDate: Reduce dose by 50-75%." },
+        { name: "Pethidine", class: "Analgesic/Antipyretic", maxDose: "Varies", renal: "CrCl < 50", ref: "UpToDate: Avoid (normeperidine toxicity)." },
+        { name: "Gabapentin", class: "Neuropathic Pain", maxDose: "3600 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose/frequency based on CrCl." },
+        { name: "Pregabalin", class: "Neuropathic Pain", maxDose: "600 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose based on CrCl tiers." },
+        { name: "Amitriptyline", class: "Neuropathic Pain", maxDose: "150 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use caution." },
+        { name: "Duloxetine", class: "Neuropathic Pain", maxDose: "120 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid use." },
+
+        // --- 5. Respiratory ---
+        { name: "Salbutamol", class: "Respiratory", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: Inhaler absorption is minimal." },
+        { name: "Terbutaline", class: "Respiratory", maxDose: "15 mg/day (PO)", renal: "CrCl < 50 (PO)", ref: "UpToDate: Reduce oral dose by 50% if CrCl 10-50." },
+        { name: "Salmeterol", class: "Respiratory", maxDose: "100 mcg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
+        { name: "Formoterol", class: "Respiratory", maxDose: "24 mcg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
+        { name: "Ipratropium", class: "Respiratory", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
+        { name: "Tiotropium", class: "Respiratory", maxDose: "18 mcg/day", renal: "CrCl < 50", ref: "FDA Label: Monitor closely due to renal excretion." },
+        { name: "Budesonide", class: "Respiratory", maxDose: "Varies (Inhaled)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
+        { name: "Fluticasone", class: "Respiratory", maxDose: "Varies (Inhaled)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
+        { name: "Montelukast", class: "Respiratory", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Theophylline", class: "Respiratory", maxDose: "Monitor levels", renal: "Caution in severe", ref: "UpToDate: Metabolites may accumulate." },
+        { name: "Acetylcysteine", class: "Respiratory", maxDose: "1800 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
+        { name: "Bromhexine", class: "Respiratory", maxDose: "48 mg/day", renal: "Severe impairment", ref: "Product Info: Cautious use or dose reduction." },
+        { name: "Ambroxol", class: "Respiratory", maxDose: "120 mg/day", renal: "Severe impairment", ref: "Product Info: Cautious use or dose reduction." },
+
+        // --- 6. Antihistamine & Corticosteroids ---
+        { name: "Cetirizine", class: "Antihistamine", maxDose: "10 mg/day", renal: "CrCl < 50", ref: "FDA Label: 5 mg once daily." },
+        { name: "Fexofenadine", class: "Antihistamine", maxDose: "180 mg/day", renal: "CrCl < 80", ref: "FDA Label: Start with 60 mg once daily." },
+        { name: "Chlorpheniramine", class: "Antihistamine", maxDose: "24 mg/day", renal: "Caution", ref: "FDA Label: Use with caution in severe impairment." },
+        { name: "Diphenhydramine", class: "Antihistamine", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "UpToDate: Increase dosing interval." },
+        { name: "Hydroxyzine", class: "Antihistamine", maxDose: "400 mg/day", renal: "CrCl < 50", ref: "UpToDate: Reduce dose by 50%." },
+        { name: "Levocetirizine", class: "Antihistamine", maxDose: "5 mg/day", renal: "CrCl < 50", ref: "FDA Label: Adjust based on CrCl tiers. Avoid if < 10." },
+        { name: "Loratadine", class: "Antihistamine", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: 10 mg every other day." },
+        { name: "Desloratadine", class: "Antihistamine", maxDose: "5 mg/day", renal: "CrCl < 50", ref: "FDA Label: 5 mg every other day." },
+        { name: "Bilastine", class: "Antihistamine", maxDose: "20 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "EMA Label: No dosage adjustment necessary." },
+        
+        { name: "Prednisolone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Prednisone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Dexamethasone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Hydrocortisone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+
+        // --- 7. Antibiotics, Antifungals, Antivirals ---
         { name: "Amoxicillin", class: "Beta-lactam", maxDose: "4 g/day", renal: "CrCl < 30", ref: "UpToDate: Extend interval to q12h. Avoid 875 mg tablets." },
-        { name: "Amoxicillin/clavulanate", class: "Beta-lactam", maxDose: "Varies by formulation", renal: "CrCl < 30", ref: "FDA Label: Do not use 875 mg or XR formulation if CrCl < 30." },
-        { name: "Cefepime", class: "Beta-lactam", maxDose: "6 g/day", renal: "CrCl ≤ 60", ref: "FDA Label: Decrease dose and/or increase interval based on CrCl." },
+        { name: "Amoxicillin/clavulanate", class: "Beta-lactam", maxDose: "Varies", renal: "CrCl < 30", ref: "FDA Label: Do not use 875 mg or XR formulation if CrCl < 30." },
+        { name: "Cefepime", class: "Beta-lactam", maxDose: "6 g/day", renal: "CrCl ≤ 60", ref: "FDA Label: Decrease dose and/or increase interval." },
         { name: "Cefotaxime", class: "Beta-lactam", maxDose: "12 g/day", renal: "CrCl < 20", ref: "FDA Label: Reduce dose by 50% if CrCl < 20." },
-        { name: "Ceftriaxone", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No general adjustment</span>", ref: "FDA Label: Max 2 g/day only if severe combined renal and hepatic failure." },
-        { name: "Dicloxacillin", class: "Beta-lactam", maxDose: "4 g/day (6 g in severe)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Ceftriaxone", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No general adjustment</span>", ref: "FDA Label: Max 2 g/day only if severe combined renal/hepatic failure." },
+        { name: "Dicloxacillin", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
         { name: "Cloxacillin", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
         { name: "Cefalexin", class: "Beta-lactam", maxDose: "4 g/day", renal: "CrCl < 50", ref: "FDA Label: Reduce frequency based on CrCl." },
         { name: "Cefdinir", class: "Beta-lactam", maxDose: "600 mg/day", renal: "CrCl < 30", ref: "FDA Label: 300 mg once daily if CrCl < 30." },
         { name: "Meropenem", class: "Beta-lactam", maxDose: "6 g/day", renal: "CrCl ≤ 50", ref: "FDA Label: Decrease dose and extend interval." },
+        { name: "Ampicillin/sulbactam", class: "Beta-lactam", maxDose: "12 g/day (IV)", renal: "CrCl < 30", ref: "FDA Label: Extend interval based on CrCl." },
+        { name: "Piperacillin/tazobactam", class: "Beta-lactam", maxDose: "18 g/day (IV)", renal: "CrCl < 40", ref: "FDA Label: Adjust dose and interval." },
 
-        { name: "Ciprofloxacin", class: "Fluoroquinolone", maxDose: "1500 mg/day (PO)", renal: "CrCl < 50", ref: "FDA Label: 250-500 mg q18-24h if CrCl 30-50; q24h if CrCl < 30." },
-        { name: "Levofloxacin", class: "Fluoroquinolone", maxDose: "750 mg/day", renal: "CrCl < 50", ref: "FDA Label: Alter frequency or dose depending on indication." },
+        { name: "Ciprofloxacin", class: "Fluoroquinolone", maxDose: "1500 mg/day (PO)", renal: "CrCl < 50", ref: "FDA Label: Adjust dose/interval." },
+        { name: "Levofloxacin", class: "Fluoroquinolone", maxDose: "750 mg/day", renal: "CrCl < 50", ref: "FDA Label: Alter frequency or dose." },
         { name: "Norfloxacin", class: "Fluoroquinolone", maxDose: "800 mg/day", renal: "CrCl ≤ 30", ref: "FDA Label: 400 mg once daily if CrCl ≤ 30." },
         { name: "Ofloxacin", class: "Fluoroquinolone", maxDose: "800 mg/day", renal: "CrCl ≤ 50", ref: "FDA Label: Prolong interval or reduce dose." },
         { name: "Moxifloxacin", class: "Fluoroquinolone", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
 
-        { name: "Azithromycin", class: "Macrolide", maxDose: "500 mg/day (usually)", renal: "Use caution in severe impairment", ref: "FDA Label: Caution if GFR < 10 mL/min." },
+        { name: "Azithromycin", class: "Macrolide", maxDose: "500 mg/day", renal: "Severe impairment", ref: "FDA Label: Caution if GFR < 10." },
         { name: "Clarithromycin", class: "Macrolide", maxDose: "1000 mg/day", renal: "CrCl < 30", ref: "FDA Label: Reduce dose by 50% or double the interval." },
-        { name: "Roxithromycin", class: "Macrolide", maxDose: "300 mg/day", renal: "Severe impairment", ref: "Product Info: Modify dose in severe renal impairment (e.g. 150 mg/day)." },
+        { name: "Roxithromycin", class: "Macrolide", maxDose: "300 mg/day", renal: "Severe impairment", ref: "Product Info: Modify dose." },
 
-        { name: "Doxycycline", class: "Other Antibiotics", maxDose: "200 mg/day (PO)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Does not accumulate in renal failure." },
-        { name: "Clindamycin", class: "Other Antibiotics", maxDose: "1.8 g/day (PO) / 4.8 g (IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Cotrimoxazole", class: "Other Antibiotics", maxDose: "Based on TMP component", renal: "CrCl < 30", ref: "FDA Label: Reduce dose 50% if CrCl 15-30. Contraindicated if CrCl < 15." },
-        { name: "Nitrofurantoin", class: "Other Antibiotics", maxDose: "400 mg/day", renal: "Contraindicated CrCl < 60", ref: "FDA Label: Avoid if CrCl < 60. Beers Criteria allows if CrCl ≥ 30 for short term." },
+        { name: "Doxycycline", class: "Other Antibiotics", maxDose: "200 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Does not accumulate in renal failure." },
+        { name: "Clindamycin", class: "Other Antibiotics", maxDose: "1.8 g (PO) / 4.8 g (IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Cotrimoxazole", class: "Other Antibiotics", maxDose: "Varies", renal: "CrCl < 30", ref: "FDA Label: Reduce dose 50% if CrCl 15-30. Contraindicated if < 15." },
+        { name: "Nitrofurantoin", class: "Other Antibiotics", maxDose: "400 mg/day", renal: "CrCl < 60", ref: "FDA Label: Avoid if CrCl < 60. (Beers Criteria allows if CrCl ≥ 30 short term)." },
         { name: "Metronidazole", class: "Other Antibiotics", maxDose: "4 g/day", renal: "CrCl < 10", ref: "UpToDate: Administer 50% of dose if CrCl < 10." },
+        { name: "Gentamicin", class: "Other Antibiotics", maxDose: "Weight-based", renal: "CrCl < 60", ref: "UpToDate: Extend interval based on level monitoring." },
 
-        { name: "Domperidone", class: "Gastrointestinal", maxDose: "30 mg/day", renal: "Severe impairment", ref: "EMA: Extend dosing frequency in severe renal impairment." },
-        { name: "Metoclopramide", class: "Gastrointestinal", maxDose: "40 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose by 50%." },
-        { name: "Famotidine", class: "Gastrointestinal", maxDose: "40 mg/day", renal: "CrCl < 50", ref: "FDA Label: 20 mg at bedtime or increase interval to 36-48h." },
-        { name: "Omeprazole", class: "Gastrointestinal", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Pantoprazole", class: "Gastrointestinal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Esomeprazole", class: "Gastrointestinal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Lansoprazole", class: "Gastrointestinal", maxDose: "180 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Ondansetron", class: "Gastrointestinal", maxDose: "24 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Loperamide", class: "Gastrointestinal", maxDose: "16 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Hyoscine", class: "Gastrointestinal", maxDose: "80 mg/day", renal: "Use with caution", ref: "Product Info: Excreted renally; use with caution." },
-        { name: "Simethicone", class: "Gastrointestinal", maxDose: "500 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Not absorbed systemically." },
-        { name: "Racecadotril", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "Caution", ref: "Product Info: Limited data; administer with caution in renal impairment." },
-        { name: "Alum Milk", class: "Gastrointestinal", maxDose: "Varies", renal: "Avoid in severe impairment", ref: "FDA Label: Risk of magnesium/aluminum toxicity in severe renal impairment." },
-        { name: "Senna", class: "Gastrointestinal", maxDose: "34.2 mg sennosides/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Bisacodyl", class: "Gastrointestinal", maxDose: "15 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
+        { name: "Fluconazole", class: "Antifungals", maxDose: "800 mg/day", renal: "CrCl ≤ 50", ref: "FDA Label: Give 50% of recommended dose after loading." },
+        { name: "Itraconazole", class: "Antifungals", maxDose: "400 mg/day", renal: "CrCl < 30 (IV)", ref: "FDA Label: IV formulation contraindicated (cyclodextrin)." },
+        { name: "Ketoconazole", class: "Antifungals", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Voriconazole", class: "Antifungals", maxDose: "Varies", renal: "CrCl < 50 (IV)", ref: "FDA Label: Avoid IV due to vehicle accumulation. PO is fine." },
+        
+        { name: "Acyclovir", class: "Antivirals", maxDose: "4000 mg/day (PO)", renal: "CrCl < 50", ref: "FDA Label: Increase interval based on CrCl." },
+        { name: "Valacyclovir", class: "Antivirals", maxDose: "4000 mg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose/extend interval." },
+        { name: "Oseltamivir", class: "Antivirals", maxDose: "150 mg/day", renal: "CrCl ≤ 60", ref: "FDA Label: Dose reduction required." },
 
-        { name: "Cetirizine", class: "Antihistamine", maxDose: "10 mg/day", renal: "CrCl < 50", ref: "FDA Label: 5 mg once daily." },
-        { name: "Fexofenadine", class: "Antihistamine", maxDose: "180 mg/day", renal: "CrCl < 80", ref: "FDA Label: Start with 60 mg once daily." },
+        // --- 8. Urology, CNS, Misc ---
+        { name: "Tamsulosin", class: "Urology", maxDose: "0.8 mg/day", renal: "CrCl < 10", ref: "FDA Label: Use with caution in ESRD." },
+        { name: "Doxazosin", class: "Urology", maxDose: "8 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Finasteride", class: "Urology", maxDose: "5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Dutasteride", class: "Urology", maxDose: "0.5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Oxybutynin", class: "Urology", maxDose: "30 mg/day", renal: "Caution", ref: "FDA Label: Use with caution." },
+        { name: "Solifenacin", class: "Urology", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 5 mg/day." },
+        { name: "Mirabegron", class: "Urology", maxDose: "50 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 25 mg/day if CrCl 15-29. Avoid if < 15." },
+        { name: "Sildenafil", class: "Urology", maxDose: "100 mg/day", renal: "CrCl < 30", ref: "FDA Label: Consider starting at 25 mg." },
+        { name: "Tadalafil", class: "Urology", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: Max 10 mg PRN if CrCl 30-50. Max 5 mg every 72h if <30." },
 
-        { name: "Ibuprofen", class: "Analgesic/Antipyretic", maxDose: "3200 mg/day", renal: "Avoid if CrCl < 30", ref: "FDA Label: Avoid in advanced renal disease." },
-        { name: "Paracetamol", class: "Analgesic/Antipyretic", maxDose: "4000 mg/day", renal: "CrCl < 10", ref: "UpToDate: Increase dosing interval to q8h if CrCl < 10." },
+        { name: "Fluoxetine", class: "CNS", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use caution in severe impairment." },
+        { name: "Sertraline", class: "CNS", maxDose: "200 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Escitalopram", class: "CNS", maxDose: "20 mg/day", renal: "CrCl < 20", ref: "FDA Label: Use caution." },
+        { name: "Venlafaxine", class: "CNS", maxDose: "225 mg/day", renal: "CrCl < 90", ref: "FDA Label: Reduce dose 25-50% if CrCl 30-89; 50% if < 30." },
+        { name: "Diazepam", class: "CNS", maxDose: "40 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Metabolites may accumulate." },
+        { name: "Lorazepam", class: "CNS", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment (PO)</span>", ref: "FDA Label: IV formulation vehicle may accumulate." },
+        { name: "Haloperidol", class: "CNS", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Cautious use." },
+        { name: "Risperidone", class: "CNS", maxDose: "16 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 0.5 mg bid, titrate slowly." },
 
-        { name: "Rivaroxaban", class: "Cardiovascular", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: Varies by indication. Afib: 15 mg if CrCl 15-50. Avoid if < 15." },
-        { name: "Dabigatran", class: "Cardiovascular", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: Varies by indication. Afib: 75 mg bid if CrCl 15-30." },
-        { name: "Spironolactone", class: "Cardiovascular", maxDose: "400 mg/day", renal: "eGFR < 50", ref: "FDA Label: Adjust dose or interval. Avoid if eGFR < 30 in HF." },
-        { name: "Atenolol", class: "Cardiovascular", maxDose: "100 mg/day", renal: "CrCl < 35", ref: "FDA Label: Max 50 mg if CrCl 15-35; Max 25 mg if CrCl < 15." },
-        { name: "Digoxin", class: "Cardiovascular", maxDose: "0.25 mg/day (Maintenance)", renal: "CrCl < 50", ref: "UpToDate: Decrease dose and/or increase interval based on CrCl." },
-        { name: "Hydrochlorothiazide", class: "Cardiovascular", maxDose: "50 mg/day", renal: "CrCl < 30", ref: "FDA Label: Ineffective and generally avoid if CrCl < 30." },
-        { name: "Amlodipine", class: "Cardiovascular", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Losartan", class: "Cardiovascular", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No initial adjustment needed." },
+        { name: "Carbamazepine", class: "Antiepileptics", maxDose: "1600 mg/day", renal: "CrCl < 10", ref: "UpToDate: Reduce dose by 25%." },
+        { name: "Valproic acid", class: "Antiepileptics", maxDose: "60 mg/kg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Protein binding altered, monitor free levels." },
+        { name: "Levetiracetam", class: "Antiepileptics", maxDose: "3000 mg/day", renal: "CrCl ≤ 80", ref: "FDA Label: Reduce dose based on CrCl tiers." },
+        { name: "Phenytoin", class: "Antiepileptics", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Altered protein binding in uremia." },
+        { name: "Topiramate", class: "Antiepileptics", maxDose: "400 mg/day", renal: "CrCl < 70", ref: "FDA Label: Reduce dose by 50%." },
 
-        { name: "Metformin", class: "Diabetes", maxDose: "2550 mg/day", renal: "eGFR < 45", ref: "FDA Label: Do not initiate if eGFR 30-45. Contraindicated if eGFR < 30." },
-        { name: "Glipizide", class: "Diabetes", maxDose: "40 mg/day", renal: "CrCl < 50", ref: "FDA Label: Initial 2.5 mg; titrate carefully." },
-        { name: "Glimepiride", class: "Diabetes", maxDose: "8 mg/day", renal: "CrCl < 22", ref: "FDA Label: Initial 1 mg; titrate carefully." },
-        { name: "Pioglitazone", class: "Diabetes", maxDose: "45 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Dapagliflozin", class: "Diabetes", maxDose: "10 mg/day", renal: "eGFR < 45 (for glycemic control)", ref: "FDA Label: Not recommended for glycemic control if eGFR < 45." },
-        { name: "Empagliflozin", class: "Diabetes", maxDose: "25 mg/day", renal: "eGFR < 30 (for glycemic control)", ref: "FDA Label: Contraindicated for glycemic control if eGFR < 30." },
-        { name: "Canagliflozin", class: "Diabetes", maxDose: "300 mg/day", renal: "eGFR < 60", ref: "FDA Label: Max 100 mg if eGFR < 60." },
-        { name: "Linagliptin", class: "Diabetes", maxDose: "5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Sitagliptin", class: "Diabetes", maxDose: "100 mg/day", renal: "eGFR < 45", ref: "FDA Label: 50 mg if eGFR 30-44; 25 mg if eGFR < 30." },
-        { name: "Vildagliptin", class: "Diabetes", maxDose: "100 mg/day", renal: "CrCl < 50", ref: "EMA Label: 50 mg once daily if CrCl < 50." },
-        { name: "Saxagliptin", class: "Diabetes", maxDose: "5 mg/day", renal: "eGFR < 45", ref: "FDA Label: 2.5 mg once daily if eGFR < 45." },
-        { name: "Alogliptin", class: "Diabetes", maxDose: "25 mg/day", renal: "CrCl < 60", ref: "FDA Label: 12.5 mg if CrCl 30-59; 6.25 mg if CrCl < 30." },
+        { name: "Sumatriptan", class: "Migraine", maxDose: "200 mg/day (PO)", renal: "Severe impairment", ref: "UpToDate: Use caution." },
+        { name: "Flunarizine", class: "Migraine", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No formal guidelines." },
 
-        { name: "Rosuvastatin", class: "Dyslipidemia", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 5 mg, max 10 mg/day if CrCl < 30." },
-        { name: "Atorvastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Simvastatin", class: "Dyslipidemia", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 5 mg/day if CrCl < 30." },
-        { name: "Fenofibrate", class: "Dyslipidemia", maxDose: "Varies by salt", renal: "Mild-Mod impairment", ref: "FDA Label: Reduce dose. Contraindicated if severe impairment." },
-        { name: "Ezetimibe", class: "Dyslipidemia", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." }
+        { name: "Levothyroxine", class: "Thyroid", maxDose: "Titrated", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        { name: "Methimazole", class: "Thyroid", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+        
+        { name: "Alendronate", class: "Osteoporosis", maxDose: "70 mg/week", renal: "CrCl < 35", ref: "FDA Label: Not recommended if CrCl < 35." },
+        
+        { name: "Colchicine", class: "Gout", maxDose: "Varies", renal: "CrCl < 30", ref: "FDA Label: Reduce dose. Avoid if hepatic + renal impairment." },
+        { name: "Allopurinol", class: "Gout", maxDose: "800 mg/day", renal: "CrCl < 20", ref: "FDA Label: Max 200 mg/day if CrCl 10-20, 100 mg if < 10." },
+        { name: "Febuxostat", class: "Gout", maxDose: "120 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 40 mg/day." },
+
+        { name: "Tranexamic acid", class: "Hematology", maxDose: "3900 mg/day", renal: "SCr > 1.36", ref: "FDA Label: Dose adjust based on serum creatinine." },
+        
+        { name: "Folic acid", class: "Supplements", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." }
     ];
 
-    // 2. ฟังก์ชันสร้างลิ้งก์ UpToDate
+    // ฟังก์ชันสร้างลิ้งก์ UpToDate รองรับยาสูตรผสม
     function getUpToDateLink(drugName) {
         let formattedName = drugName.toLowerCase().trim().replace(/\s+/g, '-');
         
@@ -413,18 +598,22 @@
             case "ciprofloxacin":
                 formattedName = "ciprofloxacin-systemic"; 
                 break;
+            case "ampicillin/sulbactam":
+                formattedName = "ampicillin-and-sulbactam";
+                break;
+            case "piperacillin/tazobactam":
+                formattedName = "piperacillin-and-tazobactam";
+                break;
         }
 
         return `https://www.uptodate.com/contents/${formattedName}-drug-information?sectionName=Kidney%20Impairment%20(Adult)`;
     }
 
-    // 3. ฟังก์ชันแสดงผลตาราง
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
         
         data.forEach(drug => {
-            // เช็คว่าถ้ามี span 'no-adjust' ให้แสดงแบบธรรมดา
             let renalContent = drug.renal;
             if(!drug.renal.includes('no-adjust')) {
                 renalContent = `
@@ -445,7 +634,6 @@
         });
     }
 
-    // 4. ฟังก์ชันค้นหาและกรองข้อมูล
     function filterTable() {
         const searchText = document.getElementById('searchInput').value.toLowerCase();
         const selectedClass = document.getElementById('classFilter').value;
@@ -463,7 +651,6 @@
         renderTable(filteredData);
     }
 
-    // 5. ฟังก์ชันจัดการ Dark Mode/Light Mode
     function toggleTheme() {
         const htmlTag = document.documentElement;
         const btn = document.getElementById('themeToggleBtn');
@@ -480,16 +667,13 @@
         }
     }
 
-    // โหลดหน้าต่างครั้งแรก
     window.onload = () => {
-        // เช็ค Theme
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('themeToggleBtn').innerText = '☀️';
         }
 
-        // จัดเรียงและเรนเดอร์ตาราง
         drugData.sort((a, b) => a.name.localeCompare(b.name));
         renderTable(drugData);
     };
