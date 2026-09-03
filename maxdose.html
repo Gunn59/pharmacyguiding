@@ -303,7 +303,7 @@ const drugData = [
 {name:"Nimodipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"360 mg/day",renal:"ไม่ต้องปรับตามไต"},
 {name:"Nitrendipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"40 mg/day",renal:"ไม่ต้องปรับตามไต"},
 {name:"Isradipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
-{name:"Lercanidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
+{name:"Lercanidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"CrCl <30: ห้ามใช้"},
 {name:"Manidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
 {name:"Cilnidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
 {name:"Diltiazem",class:"CCB (Non-dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"480 mg/day",renal:"ไม่ต้องปรับตามไต"},
@@ -766,6 +766,35 @@ document.getElementById("favToggleBtn").addEventListener("click", ()=>{
 document.getElementById("exportPdfBtn").addEventListener("click", ()=>{
   window.print();
 });
+
+function saveState() {
+  sessionStorage.setItem("appState", JSON.stringify({
+    activeCategory,
+    activeSubset,
+    searchTerm,
+    currentRef,
+    showFavoritesOnly
+  }));
+}
+
+const savedState = sessionStorage.getItem("appState");
+if (savedState) {
+  const state = JSON.parse(savedState);
+  activeCategory = state.activeCategory;
+  activeSubset = state.activeSubset;
+  searchTerm = state.searchTerm;
+  currentRef = state.currentRef || "uptodate";
+  showFavoritesOnly = state.showFavoritesOnly || false;
+
+  // คืนค่า UI ของช่องค้นหา
+  if (searchTerm) {
+    document.getElementById("searchInput").value = searchTerm;
+    document.getElementById("clearSearch").style.display = "flex";
+  }
+  if (showFavoritesOnly) {
+    document.getElementById("favToggleBtn").classList.add("on");
+  }
+}
 
 const refToggleBtn = document.getElementById("refToggleBtn");
 function updateRefUI() {
