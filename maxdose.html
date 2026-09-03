@@ -1,697 +1,642 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Renal Dose & Max Dose Finder (Ultimate Edition)</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007aff">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
-    
-    <style>
-        /* ================= Theme Variables ================= */
-        :root {
-            --bg-base: #f2f2f7;
-            --bg-card: #ffffff;
-            --text-main: #333333;
-            --text-muted: #555555;
-            --input-bg: #fafafa;
-            --border-color: #e5e5ea;
-            
-            --primary: #007aff;
-            --primary-light: #00c6ff;
-            --color-success: #34c759;
-            --color-warning: #ff9500;
-            
-            --bg-result: #f0f8ff;
-            --border-result: #e0efff;
-            
-            --bg-info: #e3f2fd;
-            --text-info: #1565c0;
-            
-            --bg-danger: #ffebee;
-            --text-danger: #d32f2f;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d9488">
+<title>Fast Dose Screening | Full Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2f6; --bg-grad-b:#e4ecf5;
+    --surface:#ffffff; --surface-2:#f8fafc;
+    --text:#0f172a; --text-muted:#64748b; --text-faint:#94a3b8;
+    --border:#e6ebf1;
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06);
+    --shadow-md:0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.04);
+    --radius-lg:20px; --radius-md:14px;
+    --brand-1:#0891b2; --brand-2:#0d9488;
+    --opd-c:#2563eb; --opd-bg:#eff6ff;
+    --ipd-c:#dc2626; --ipd-bg:#fef2f2;
+    --both-c:#d97706; --both-bg:#fffbeb;
+    --af-c:#6d28d9; --af-bg:#ede9fe;
+    --av-c:#0e7490; --av-bg:#cffafe;
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220; --bg-grad-b:#111a2c;
+    --surface:#161f32; --surface-2:#1c273d;
+    --text:#e8edf5; --text-muted:#9aa8c0; --text-faint:#6b7a95;
+    --border:#26314a;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+    --shadow-md:0 6px 16px rgba(0,0,0,.35);
+    --opd-bg:rgba(37,99,235,.16); --ipd-bg:rgba(220,38,38,.16); --both-bg:rgba(217,119,6,.16);
+    --af-bg:rgba(109,40,217,.18); --av-bg:rgba(14,116,144,.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; font-family:'Prompt','Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, var(--bg-grad-b) 0%, transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, var(--bg-grad-b) 0%, transparent 55%),
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--text); transition:background .3s,color .3s;
+    min-height:100vh; padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  }
+  header{
+    position:sticky; top:0; z-index:30;
+    padding:calc(14px + env(safe-area-inset-top)) 16px 16px;
+    background:linear-gradient(135deg,var(--brand-1),var(--brand-2));
+    box-shadow:0 6px 24px rgba(8,145,178,.25);
+    border-radius:0 0 24px 24px;
+  }
+  .header-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-icon{
+    width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.22);
+    display:flex; align-items:center; justify-content:center; font-size:1.25rem; flex-shrink:0;
+  }
+  .brand h1{color:#fff; font-size:1.02rem; font-weight:700; margin:0;}
+  .brand p{color:rgba(255,255,255,.85); font-size:.68rem; margin:1px 0 0; font-weight:400;}
+  .theme-btn{
+    background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:12px;
+    width:40px; height:40px; font-size:1.1rem; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; transition:.2s;
+  }
+  .theme-btn:active{transform:scale(.9);}
+  .search-wrap{position:relative;}
+  .search-wrap .icon-prefix{position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1rem; opacity:.5;}
+  .search-wrap input{
+    width:100%; padding:13px 40px 13px 40px; border-radius:16px; border:none;
+    font-family:inherit; font-size:.9rem; outline:none; background:rgba(255,255,255,.96); color:#0f172a;
+    box-shadow:0 4px 14px rgba(0,0,0,.15);
+  }
+  .search-wrap input::placeholder{color:#94a3b8;}
+  .search-wrap .clear-btn{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    background:#e2e8f0; border:none; width:24px; height:24px; border-radius:50%; font-size:.85rem;
+    color:#64748b; cursor:pointer; display:none; align-items:center; justify-content:center;
+  }
+  main{max-width:1200px; margin:0 auto; padding:18px 16px 0;}
 
-        html[data-theme="dark"] {
-            --bg-base: #121212;
-            --bg-card: #1e1e1e;
-            --text-main: #f5f5f5;
-            --text-muted: #aaaaaa;
-            --input-bg: #2c2c2e;
-            --border-color: #3a3a3c;
-            
-            --primary: #0a84ff;
-            --primary-light: #32d4ff;
-            --color-success: #30d158;
-            --color-warning: #ff9f0a;
-            
-            --bg-result: #1c2c3e;
-            --border-result: #2a3d55;
-            
-            --bg-info: #162b44;
-            --text-info: #64b5f6;
-            
-            --bg-danger: #3b1c1e;
-            --text-danger: #ef5350;
-        }
+  .category-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:16px;}
+  .cat-btn{
+    background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius-md);
+    padding:13px 6px 11px; cursor:pointer; text-align:center; box-shadow:var(--shadow-sm);
+    transition:.18s ease; color:var(--text);
+  }
+  .cat-btn:active{transform:scale(.96);}
+  .cat-btn .icon-circle{
+    width:38px; height:38px; margin:0 auto 6px; border-radius:12px; display:flex; align-items:center;
+    justify-content:center; font-size:1.15rem; background:var(--surface-2); transition:.2s;
+  }
+  .cat-btn .label{font-size:.71rem; font-weight:600; display:block; line-height:1.25;}
+  .cat-btn .count-badge{font-size:.6rem; font-weight:500; color:var(--text-faint); margin-top:2px; display:block;}
+  .cat-btn.active{box-shadow:var(--shadow-md); transform:translateY(-2px);}
 
-        /* ================= Base Styles & Typography ================= */
-        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
+  .subset-row{
+    display:flex; gap:8px; overflow-x:auto; padding:2px 2px 14px; scrollbar-width:none;
+    mask-image:linear-gradient(90deg,#000 92%,transparent);
+  }
+  .subset-row::-webkit-scrollbar{display:none;}
+  .subset-chip{
+    flex-shrink:0; padding:8px 16px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-muted); font-size:.79rem; cursor:pointer; white-space:nowrap;
+    font-weight:500; font-family:inherit; transition:.18s; box-shadow:var(--shadow-sm);
+  }
+  .result-meta{display:flex; justify-content:space-between; align-items:center; margin:2px 0 14px; color:var(--text-muted); font-size:.8rem; font-weight:500;}
+  .result-meta .count-pill{background:var(--surface-2); padding:4px 12px; border-radius:999px; font-weight:600; color:var(--text);}
 
-        body { 
-            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: var(--bg-base); 
-            margin: 0; 
-            padding: 15px;
-            color: var(--text-main);
-            transition: background-color 0.3s, color 0.3s;
-        }
+  .drug-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px;}
+  .drug-card{
+    background:var(--surface); border-radius:var(--radius-md); padding:15px;
+    box-shadow:var(--shadow-sm); border:1px solid var(--border);
+    border-top:3px solid var(--card-accent,#0d9488);
+    transition:.2s ease; animation:fadeUp .3s ease backwards;
+  }
+  .drug-card:hover{box-shadow:var(--shadow-md); transform:translateY(-2px);}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:9px;}
+  .card-top h3{margin:0 0 5px; font-size:.96rem; font-weight:700; line-height:1.3;}
+  .badge-row{display:flex; flex-wrap:wrap; gap:5px; align-items:center;}
+  .tag{display:inline-block; font-size:.65rem; padding:3px 8px; border-radius:7px; background:var(--surface-2); color:var(--text-muted); font-weight:600;}
+  .setting-badge{font-size:.62rem; padding:3px 8px; border-radius:7px; font-weight:700;}
+  .setting-badge.opd{background:var(--opd-bg); color:var(--opd-c);}
+  .setting-badge.ipd{background:var(--ipd-bg); color:var(--ipd-c);}
+  .setting-badge.both{background:var(--both-bg); color:var(--both-c);}
+  .setting-badge.antifungal{background:var(--af-bg); color:var(--af-c);}
+  .setting-badge.antiviral{background:var(--av-bg); color:var(--av-c);}
+  .ud-btn{
+    flex-shrink:0; background:var(--surface-2); color:var(--brand-2); border:1.5px solid var(--brand-2);
+    border-radius:10px; padding:7px 10px; font-size:.68rem; font-weight:700; cursor:pointer;
+    white-space:nowrap; font-family:inherit; display:flex; align-items:center; gap:4px; transition:.18s;
+  }
+  .ud-btn:hover{background:var(--brand-2); color:#fff;}
+  .ud-btn:active{transform:scale(.94);}
+  .divider{height:1px; background:var(--border); margin:9px 0;}
+  .info-row{display:flex; gap:7px; margin:7px 0; align-items:flex-start;}
+  .info-row .info-icon{font-size:.85rem; flex-shrink:0; margin-top:1px; opacity:.7;}
+  .info-row .info-text{flex:1;}
+  .info-row .info-label{font-size:.64rem; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:2px;}
+  .info-row .info-value{font-size:.82rem; line-height:1.4; color:var(--text);}
 
-        .back-btn { 
-            text-decoration: none; 
-            color: var(--primary); 
-            font-weight: 500; 
-            display: inline-flex; 
-            align-items: center;
-            background: var(--bg-card);
-            padding: 8px 16px;
-            border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 20px; 
-            font-size: 14px; 
-            transition: all 0.2s ease;
-            border: 1px solid var(--border-color);
-        }
-        .back-btn:active { transform: scale(0.96); opacity: 0.8; }
+  .empty-state{text-align:center; padding:56px 24px; color:var(--text-muted); background:var(--surface); border-radius:var(--radius-lg); border:1px dashed var(--border);}
+  .empty-state .big-icon{font-size:2.6rem; display:block; margin-bottom:12px; opacity:.6;}
+  .empty-state p{font-size:.85rem; margin:0; line-height:1.6;}
 
-        /* ================= Header Box ================= */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 20px;
-            padding: 25px 20px;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 24px rgba(0, 122, 255, 0.2);
-        }
-        .page-header h2 { 
-            color: #ffffff; 
-            font-size: 26px; 
-            font-weight: 600; 
-            margin: 0; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .page-header .subtitle { 
-            color: rgba(255, 255, 255, 0.9); 
-            font-size: 14px; 
-            margin-top: 8px; 
-            font-weight: 400;
-        }
+  footer{max-width:1200px; margin:26px auto 0; padding:16px 20px; color:var(--text-faint); font-size:.7rem; text-align:center; line-height:1.6; border-top:1px solid var(--border);}
 
-        /* ================= Main Container ================= */
-        .container { 
-            background-color: var(--bg-card); 
-            padding: 24px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .controls { display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
-        input, select { 
-            font-family: 'Prompt', sans-serif; padding: 12px 16px; border: 1px solid var(--border-color); 
-            border-radius: 12px; font-size: 15px; background-color: var(--input-bg); color: var(--text-main);
-            outline: none; transition: border-color 0.2s ease, background-color 0.3s, color 0.3s;
-        }
-        input { width: 100%; max-width: 400px; }
-        select { flex-grow: 1; max-width: 300px; appearance: none; }
-        select {
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: right 14px center;
-        }
-        input:focus, select:focus { border-color: var(--primary); background-color: var(--bg-card); }
-
-        table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
-        th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
-        th { background-color: var(--primary); color: white; font-weight: 500; white-space: nowrap; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover { background-color: var(--bg-result); }
-
-        /* --- Mobile Responsive --- */
-        @media screen and (max-width: 768px) {
-            .container { padding: 15px; }
-            table, thead, tbody, th, td, tr { display: block; }
-            table { border: none; background: transparent; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; } 
-            tr { border: 1px solid var(--border-color); margin-bottom: 15px; border-radius: 12px; background: var(--bg-card); padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-            tr:hover { background-color: var(--bg-card); }
-            td { border: none; position: relative; padding: 8px 10px; display: flex; flex-direction: column; }
-            td::before { content: attr(data-label); font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-            input, select { max-width: 100%; }
-        }
-
-        /* --- Tooltip & Elements --- */
-        .tooltip { position: relative; cursor: pointer; color: var(--color-warning); font-weight: 500; border-bottom: 1px dashed var(--color-warning); }
-        .tooltip .tooltiptext {
-            visibility: hidden; width: 280px; background-color: var(--text-main); color: var(--bg-base); 
-            border-radius: 8px; padding: 12px; position: absolute; z-index: 10;
-            bottom: 125%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.2s;
-            font-weight: 400; font-size: 13px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); line-height: 1.5;
-        }
-        .tooltip:hover .tooltiptext, .tooltip:active .tooltiptext { visibility: visible; opacity: 1; }
-        
-        .btn-link { 
-            display: inline-block; padding: 10px 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
-            color: white; text-decoration: none; border-radius: 10px; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: center; width: auto; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
-        }
-        @media screen and (max-width: 768px) { .btn-link { width: calc(100% - 32px); box-sizing: border-box; } }
-        .btn-link:active { transform: scale(0.97); }
-        
-        .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: var(--bg-info); color: var(--text-info); display: inline-block; margin-top: 6px; font-weight: 500; }
-        .no-adjust { color: var(--color-success); border-bottom: none; cursor: default; }
-
-        /* ================= FAB Theme Toggle ================= */
-        .theme-toggle-btn {
-            position: fixed; bottom: 24px; right: 24px; width: 50px; height: 50px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); cursor: pointer;
-            z-index: 999; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .theme-toggle-btn:hover { transform: scale(1.1); }
-        .theme-toggle-btn:active { transform: scale(0.95); }
-
-    </style>
+  @media(min-width:640px){
+    .category-grid{grid-template-columns:repeat(5,1fr); gap:12px;}
+    .cat-btn .icon-circle{width:44px; height:44px; font-size:1.3rem;}
+    .cat-btn .label{font-size:.76rem;}
+  }
+  @media(min-width:1024px){
+    .category-grid{grid-template-columns:repeat(9,1fr);}
+  }
+  @media(max-width:380px){ .drug-list{grid-template-columns:1fr;} }
+</style>
 </head>
 <body>
 
-    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle Theme">🌙</button>
-
-    <a href="#" class="back-btn" onclick="history.back(); return false;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        กลับหน้าหลัก
-    </a>
-
-    <div class="page-header">
-        <h2>💊 Renal Dose & Max Dose Finder</h2>
-        <div class="subtitle">ตรวจสอบขนาดยาสูงสุดและการปรับโดสตามค่าไต (Ultimate Master List)</div>
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div><h1>Fast Dose Screening</h1><p>ฐานข้อมูลยาครบชุด + เชื่อม UpToDate</p></div>
     </div>
+    <button class="theme-btn" id="themeToggle" title="สลับธีม">🌙</button>
+  </div>
+  <div class="search-wrap">
+    <span class="icon-prefix">🔍</span>
+    <input type="text" id="searchInput" placeholder="ค้นหาชื่อยา เช่น Enalapril, Meropenem, Omeprazole...">
+    <button class="clear-btn" id="clearSearch">✕</button>
+  </div>
+</header>
 
-    <div class="container">
-        
-        <div class="controls">
-            <input type="text" id="searchInput" placeholder="🔍 พิมพ์ชื่อยาเพื่อค้นหา... (เช่น amoxicillin)" onkeyup="filterTable()">
-            <select id="classFilter" onchange="filterTable()">
-                <option value="All">📑 แสดงทุกกลุ่มยา (เรียง A-Z)</option>
-                <option value="ACE Inhibitors">ACE Inhibitors</option>
-                <option value="ARBs">ARBs</option>
-                <option value="Beta-blockers">Beta-blockers</option>
-                <option value="Calcium Channel Blockers">Calcium Channel Blockers</option>
-                <option value="Diuretics">Diuretics</option>
-                <option value="Antiplatelets">Antiplatelets</option>
-                <option value="Anticoagulants">Anticoagulants</option>
-                <option value="Antianginal">Antianginal</option>
-                <option value="Antiarrhythmic">Antiarrhythmic</option>
-                <option value="Cardiovascular (Other)">Cardiovascular (Other)</option>
-                <option value="Diabetes">Diabetes</option>
-                <option value="Dyslipidemia">Dyslipidemia</option>
-                <option value="Gastrointestinal">Gastrointestinal</option>
-                <option value="Analgesic/Antipyretic">Analgesic/Antipyretic</option>
-                <option value="Neuropathic Pain">Neuropathic Pain</option>
-                <option value="Respiratory">Respiratory</option>
-                <option value="Antihistamine">Antihistamine</option>
-                <option value="Corticosteroids">Corticosteroids</option>
-                <option value="Beta-lactam">Antibiotics: Beta-lactam</option>
-                <option value="Fluoroquinolone">Antibiotics: Fluoroquinolone</option>
-                <option value="Macrolide">Antibiotics: Macrolide</option>
-                <option value="Other Antibiotics">Antibiotics: Other</option>
-                <option value="Antifungals">Antifungals</option>
-                <option value="Antivirals">Antivirals</option>
-                <option value="Urology">Urology / BPH / OAB</option>
-                <option value="CNS">CNS / Psychiatry</option>
-                <option value="Antiepileptics">Antiepileptics</option>
-                <option value="Migraine">Migraine</option>
-                <option value="Thyroid">Thyroid</option>
-                <option value="Osteoporosis">Osteoporosis</option>
-                <option value="Gout">Gout</option>
-                <option value="Hematology">Hematology</option>
-                <option value="Supplements">Supplements / Vitamins</option>
-            </select>
-        </div>
+<main>
+  <div class="category-grid" id="categoryGrid"></div>
+  <div class="subset-row" id="subsetRow"></div>
+  <div class="result-meta"><span id="resultCount">เลือกกลุ่มยา หรือค้นหาชื่อยาด้านบน</span></div>
+  <div class="drug-list" id="drugList"></div>
+</main>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Drug Name</th>
-                    <th>Max Dose</th>
-                    <th>Renal Adjustment</th>
-                    <th>Reference</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <!-- ข้อมูลจะถูก render ผ่าน JavaScript -->
-            </tbody>
-        </table>
-
-    </div>
+<footer>
+  ⚠️ ข้อมูลนี้จัดทำเพื่อการคัดกรองเบื้องต้นหน้างานเท่านั้น (รวบรวม+จัดหมวดหมู่จากฐานข้อมูลยาที่ใช้บ่อยในระบบบัตรทอง/ข้าราชการ) กรุณายืนยันความถูกต้องและปรับตามผู้ป่วยรายบุคคลผ่าน UpToDate หรือแหล่งอ้างอิงมาตรฐานก่อนใช้ทางคลินิกจริงเสมอ รายการที่ระบุ "ตรวจสอบ UpToDate โดยตรง" หมายถึงข้อมูลต้นฉบับไม่เพียงพอสำหรับสรุปในหน้านี้
+</footer>
 
 <script>
-    // ==========================================
-    // ฐานข้อมูลยา Master List (เก่าผสมใหม่ ครบสมบูรณ์)
-    // ==========================================
-    const drugData = [
-        // --- 1. Cardiovascular ---
-        // ACE Inhibitors
-        { name: "Captopril", class: "ACE Inhibitors", maxDose: "150 mg/day (HTN) / 450 mg/day (HF)", renal: "CrCl < 50", ref: "FDA Label: Reduce initial dose or increase interval." },
-        { name: "Enalapril", class: "ACE Inhibitors", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 2.5 mg once daily." },
-        { name: "Lisinopril", class: "ACE Inhibitors", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 2.5-5 mg once daily." },
-        { name: "Ramipril", class: "ACE Inhibitors", maxDose: "20 mg/day", renal: "CrCl < 40", ref: "FDA Label: Initial 1.25 mg once daily, max 5 mg/day." },
-        { name: "Perindopril", class: "ACE Inhibitors", maxDose: "16 mg/day", renal: "CrCl < 60", ref: "FDA Label: Adjust dose based on CrCl." },
-        { name: "Fosinopril", class: "ACE Inhibitors", maxDose: "40 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Dual hepatic/renal clearance." },
-        { name: "Quinapril", class: "ACE Inhibitors", maxDose: "80 mg/day", renal: "CrCl < 60", ref: "FDA Label: Initial 5 mg once daily." },
-        { name: "Benazepril", class: "ACE Inhibitors", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 5 mg once daily." },
-        { name: "Imidapril", class: "ACE Inhibitors", maxDose: "20 mg/day", renal: "CrCl < 30", ref: "Product Info: Initial 2.5 mg once daily." },
-        { name: "Trandolapril", class: "ACE Inhibitors", maxDose: "8 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 0.5 mg once daily." },
-        { name: "Moexipril", class: "ACE Inhibitors", maxDose: "30 mg/day", renal: "CrCl < 40", ref: "FDA Label: Initial 3.75 mg once daily." },
+const categoryMeta = {
+  cv:{label:"Cardiovascular",icon:"❤️",color:"#e11d48",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"acei",label:"ACE Inhibitor"},{key:"arb",label:"ARB"},
+    {key:"betablocker",label:"Beta-blocker"},{key:"ccb",label:"CCB"},{key:"diuretic",label:"Diuretic"},
+    {key:"antiarrhythmic",label:"Antiarrhythmic"},{key:"antianginal",label:"Antianginal"},
+    {key:"antiplatelet",label:"Antiplatelet"},{key:"anticoagulant",label:"Anticoagulant"},
+    {key:"dyslipidemia",label:"Dyslipidemia"},{key:"othercv",label:"Other CV"}]},
+  endo:{label:"Endocrine",icon:"🦋",color:"#7c3aed",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"diabetes",label:"Antidiabetic"},{key:"thyroid",label:"Thyroid"},
+    {key:"corticosteroid",label:"Corticosteroid"},{key:"bone",label:"Osteoporosis"},{key:"gout",label:"Gout"}]},
+  abx:{label:"Anti-infectives",icon:"💊",color:"#059669",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"opd",label:"OPD focused"},{key:"ipd",label:"IPD focused"},
+    {key:"antifungal",label:"Antifungal"},{key:"antiviral",label:"Antiviral"}]},
+  painneuro:{label:"Analgesic & Pain",icon:"💉",color:"#ea580c",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"nsaid",label:"NSAID"},{key:"opioid",label:"Opioid"},
+    {key:"neuropathic",label:"Neuropathic Pain"},{key:"migraine",label:"Migraine"}]},
+  cnspsych:{label:"CNS & Psych",icon:"🧠",color:"#2563eb",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"antiepileptic",label:"Antiepileptic"},
+    {key:"psych",label:"Antidepressant/Anxiolytic"},{key:"other",label:"Other"}]},
+  gi:{label:"Gastrointestinal",icon:"🍽️",color:"#ca8a04",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"acidsuppress",label:"Acid Suppression"},
+    {key:"antiemetic",label:"Antiemetic/Prokinetic"},{key:"laxative",label:"Laxative"},{key:"othergi",label:"Other GI"}]},
+  resp:{label:"Respiratory",icon:"🫁",color:"#0891b2",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"bronchodilator",label:"Bronchodilator/ICS"},
+    {key:"mucolytic",label:"Mucolytic"},{key:"antihistamine",label:"Antihistamine"}]},
+  uro:{label:"Urology",icon:"🚻",color:"#db2777",subsets:[
+    {key:"all",label:"ทั้งหมด"},{key:"bph",label:"BPH"},{key:"oab",label:"OAB"},{key:"ed",label:"ED"}]},
+  misc:{label:"Hematology/Suppl.",icon:"🩸",color:"#64748b",subsets:[{key:"all",label:"ทั้งหมด"}]}
+};
 
-        // ARBs
-        { name: "Losartan", class: "ARBs", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No initial adjustment, caution in volume depletion." },
-        { name: "Valsartan", class: "ARBs", maxDose: "320 mg/day", renal: "CrCl < 30", ref: "FDA Label: Use caution in severe impairment." },
-        { name: "Irbesartan", class: "ARBs", maxDose: "300 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No initial adjustment needed." },
-        { name: "Candesartan", class: "ARBs", maxDose: "32 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 4 mg once daily (HF) or 8 mg (HTN)." },
-        { name: "Telmisartan", class: "ARBs", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Olmesartan", class: "ARBs", maxDose: "40 mg/day", renal: "CrCl < 20", ref: "FDA Label: Max 20 mg/day if CrCl < 20." },
-        { name: "Eprosartan", class: "ARBs", maxDose: "800 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Azilsartan", class: "ARBs", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+const drugData = [
+// ============ CARDIOVASCULAR ============
+{name:"Enalapril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"40 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Captopril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"150 mg/day (HTN) / 450 mg/day (HF)",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Benazepril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"80 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Fosinopril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"40 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Imidapril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"20 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Lisinopril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"80 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Moexipril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"30 mg/day",renal:"CrCl <40: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Perindopril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"16 mg/day",renal:"CrCl <60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Quinapril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"80 mg/day",renal:"CrCl <60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Ramipril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"20 mg/day",renal:"CrCl <40: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Trandolapril",class:"ACE Inhibitor",category:"cv",subset:["acei"],maxDose:"8 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Losartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"100 mg/day",renal:"ไม่ต้องปรับตามไต ติดตาม K+/Cr"},
+{name:"Valsartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"320 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
+{name:"Candesartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"32 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
+{name:"Irbesartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"300 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Telmisartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"80 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Olmesartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"40 mg/day",renal:"CrCl <20: ใช้ด้วยความระมัดระวัง"},
+{name:"Azilsartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"80 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Eprosartan",class:"ARB",category:"cv",subset:["arb"],maxDose:"800 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Amlodipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"10 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nifedipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"120 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Felodipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"10 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nicardipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"120 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nimodipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"360 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nitrendipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"40 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Isradipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Lercanidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
+{name:"Manidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Cilnidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Diltiazem",class:"CCB (Non-dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"480 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Verapamil",class:"CCB (Non-dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"480 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Atenolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"100 mg/day",renal:"CrCl <35: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Bisoprolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"20 mg/day",renal:"CrCl <40: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Metoprolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"400 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Propranolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"640 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Carvedilol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"100 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Acebutolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"1200 mg/day (HTN มักไม่เกิน 800 mg/day)",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Betaxolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"40 mg/day (PO)",renal:"CrCl <10: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Labetalol",class:"Beta-blocker (Alpha/Beta)",category:"cv",subset:["betablocker"],maxDose:"2400 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nadolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"320 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Nebivolol",class:"Beta-blocker",category:"cv",subset:["betablocker"],maxDose:"40 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Sotalol",class:"Beta-blocker / Antiarrhythmic",category:"cv",subset:["betablocker","antiarrhythmic"],maxDose:"320 mg/day",renal:"CrCl <60: ต้องปรับขนาดอย่างมีนัยสำคัญ"},
+{name:"Hydrochlorothiazide (HCTZ)",class:"Thiazide Diuretic",category:"cv",subset:["diuretic"],maxDose:"50 mg/day",renal:"CrCl <30: ประสิทธิภาพลดลง"},
+{name:"Bendroflumethiazide",class:"Thiazide Diuretic",category:"cv",subset:["diuretic"],maxDose:"10 mg/day",renal:"CrCl <30: หลีกเลี่ยง"},
+{name:"Chlorthalidone",class:"Thiazide-like Diuretic",category:"cv",subset:["diuretic"],maxDose:"100 mg/day",renal:"CrCl <30: ประสิทธิภาพลดลง"},
+{name:"Indapamide",class:"Thiazide-like Diuretic",category:"cv",subset:["diuretic"],maxDose:"5 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Furosemide",class:"Loop Diuretic",category:"cv",subset:["diuretic"],maxDose:"600 mg/day (PO)",renal:"อาจต้องเพิ่มขนาดเมื่อ CrCl ลดลง"},
+{name:"Bumetanide",class:"Loop Diuretic",category:"cv",subset:["diuretic"],maxDose:"10 mg/day",renal:"ต้องปรับขนาดตามการทำงานของไต"},
+{name:"Torsemide",class:"Loop Diuretic",category:"cv",subset:["diuretic"],maxDose:"200 mg/day",renal:"ต้องปรับขนาดตามการทำงานของไต"},
+{name:"Ethacrynic Acid",class:"Loop Diuretic",category:"cv",subset:["diuretic"],maxDose:"400 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Spironolactone",class:"Aldosterone Antagonist",category:"cv",subset:["diuretic"],maxDose:"400 mg/day",renal:"eGFR <50: เสี่ยง hyperkalemia สูง"},
+{name:"Eplerenone",class:"Aldosterone Antagonist",category:"cv",subset:["diuretic"],maxDose:"100 mg/day",renal:"CrCl <50: หลีกเลี่ยง/ลดขนาด"},
+{name:"Amiloride",class:"Potassium-sparing Diuretic",category:"cv",subset:["diuretic"],maxDose:"20 mg/day",renal:"CrCl <50: หลีกเลี่ยง"},
+{name:"Triamterene",class:"Potassium-sparing Diuretic",category:"cv",subset:["diuretic"],maxDose:"300 mg/day",renal:"CrCl <50: หลีกเลี่ยง"},
+{name:"Mannitol",class:"Osmotic Diuretic",category:"cv",subset:["diuretic"],maxDose:"ปรับตามข้อบ่งใช้ (IV)",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Amiodarone",class:"Antiarrhythmic (Class III)",category:"cv",subset:["antiarrhythmic"],maxDose:"1200 mg/day",renal:"ไม่ต้องปรับตามไต (ระวังตับ/ปอด/ไทรอยด์)"},
+{name:"Adenosine",class:"Antiarrhythmic",category:"cv",subset:["antiarrhythmic"],maxDose:"12 mg (Rapid IV push)",renal:"ไม่ต้องปรับตามไต"},
+{name:"Disopyramide",class:"Antiarrhythmic (Class Ia)",category:"cv",subset:["antiarrhythmic"],maxDose:"800 mg/day",renal:"CrCl <40: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Flecainide",class:"Antiarrhythmic (Class Ic)",category:"cv",subset:["antiarrhythmic"],maxDose:"400 mg/day",renal:"CrCl <35: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Lidocaine",class:"Antiarrhythmic (Class Ib)",category:"cv",subset:["antiarrhythmic"],maxDose:"ปรับตามข้อบ่งใช้ (IV)",renal:"ไม่ต้องปรับตามไต"},
+{name:"Procainamide",class:"Antiarrhythmic (Class Ia)",category:"cv",subset:["antiarrhythmic"],maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Propafenone",class:"Antiarrhythmic (Class Ic)",category:"cv",subset:["antiarrhythmic"],maxDose:"900 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Quinidine",class:"Antiarrhythmic (Class Ia)",category:"cv",subset:["antiarrhythmic"],maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <10: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Isosorbide Dinitrate",class:"Nitrate",category:"cv",subset:["antianginal"],maxDose:"160 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Isosorbide Mononitrate",class:"Nitrate",category:"cv",subset:["antianginal"],maxDose:"240 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nitroglycerin",class:"Nitrate",category:"cv",subset:["antianginal"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Nicorandil",class:"Potassium Channel Opener",category:"cv",subset:["antianginal"],maxDose:"60 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Ranolazine",class:"Metabolic Antianginal",category:"cv",subset:["antianginal"],maxDose:"2000 mg/day",renal:"CrCl <30: หลีกเลี่ยง"},
+{name:"Trimetazidine",class:"Metabolic Antianginal",category:"cv",subset:["antianginal"],maxDose:"70 mg/day (MR)",renal:"CrCl <60: ลดขนาด"},
+{name:"Aspirin",class:"Antiplatelet",category:"cv",subset:["antiplatelet"],maxDose:"4000 mg/day (มักใช้ 81-325 mg/day antiplatelet)",renal:"CrCl <10: ใช้ด้วยความระมัดระวัง"},
+{name:"Clopidogrel",class:"Antiplatelet (P2Y12)",category:"cv",subset:["antiplatelet"],maxDose:"75 mg/day (maintenance)",renal:"ไม่ต้องปรับตามไต"},
+{name:"Ticagrelor",class:"Antiplatelet (P2Y12)",category:"cv",subset:["antiplatelet"],maxDose:"90 mg BID",renal:"ไม่ต้องปรับตามไต"},
+{name:"Ticlopidine",class:"Antiplatelet (P2Y12)",category:"cv",subset:["antiplatelet"],maxDose:"500 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Cilostazol",class:"Antiplatelet",category:"cv",subset:["antiplatelet"],maxDose:"200 mg/day",renal:"CrCl <25: หลีกเลี่ยง"},
+{name:"Dipyridamole",class:"Antiplatelet",category:"cv",subset:["antiplatelet"],maxDose:"400 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Cangrelor",class:"Antiplatelet (IV)",category:"cv",subset:["antiplatelet"],maxDose:"IV Infusion ตามน้ำหนัก",renal:"ไม่ต้องปรับตามไต"},
+{name:"Eptifibatide",class:"Antiplatelet (GP IIb/IIIa)",category:"cv",subset:["antiplatelet"],maxDose:"IV Infusion",renal:"CrCl <50: ลดขนาด"},
+{name:"Tirofiban",class:"Antiplatelet (GP IIb/IIIa)",category:"cv",subset:["antiplatelet"],maxDose:"IV Infusion",renal:"CrCl ≤60: ลดขนาด"},
+{name:"Warfarin",class:"Anticoagulant (VKA)",category:"cv",subset:["anticoagulant"],maxDose:"ปรับตาม INR เป้าหมาย",renal:"ไม่ต้องปรับตามไต แต่ติดตาม INR ถี่ขึ้น"},
+{name:"Heparin",class:"Anticoagulant",category:"cv",subset:["anticoagulant"],maxDose:"ปรับตาม aPTT เป้าหมาย",renal:"ไม่ต้องปรับตามไต"},
+{name:"Enoxaparin",class:"Anticoagulant (LMWH)",category:"cv",subset:["anticoagulant"],maxDose:"ปรับตามน้ำหนักตัว",renal:"CrCl <30: ปรับเป็น once daily dosing"},
+{name:"Dalteparin",class:"Anticoagulant (LMWH)",category:"cv",subset:["anticoagulant"],maxDose:"ปรับตามน้ำหนักตัว",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
+{name:"Fondaparinux",class:"Anticoagulant",category:"cv",subset:["anticoagulant"],maxDose:"10 mg/day",renal:"CrCl <30: ห้ามใช้"},
+{name:"Apixaban",class:"Anticoagulant (DOAC)",category:"cv",subset:["anticoagulant"],maxDose:"10 mg/day",renal:"ปรับตามเกณฑ์ Cr/น้ำหนัก/อายุ"},
+{name:"Dabigatran",class:"Anticoagulant (DOAC)",category:"cv",subset:["anticoagulant"],maxDose:"300 mg/day",renal:"CrCl <50: พิจารณาลดขนาด"},
+{name:"Edoxaban",class:"Anticoagulant (DOAC)",category:"cv",subset:["anticoagulant"],maxDose:"60 mg/day",renal:"CrCl <50 หรือ >95: ปรับขนาด"},
+{name:"Rivaroxaban",class:"Anticoagulant (DOAC)",category:"cv",subset:["anticoagulant"],maxDose:"20 mg/day",renal:"CrCl <50: พิจารณาลดขนาด"},
+{name:"Atorvastatin",class:"Statin",category:"cv",subset:["dyslipidemia"],maxDose:"80 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Rosuvastatin",class:"Statin",category:"cv",subset:["dyslipidemia"],maxDose:"40 mg/day",renal:"CrCl <30: max 10 mg/day"},
+{name:"Simvastatin",class:"Statin",category:"cv",subset:["dyslipidemia"],maxDose:"40 mg/day",renal:"CrCl <30: เริ่มขนาดต่ำ"},
+{name:"Pravastatin",class:"Statin",category:"cv",subset:["dyslipidemia"],maxDose:"80 mg/day",renal:"CrCl <30: เริ่มขนาดต่ำ"},
+{name:"Fluvastatin",class:"Statin",category:"cv",subset:["dyslipidemia"],maxDose:"80 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
+{name:"Pitavastatin",class:"Statin",category:"cv",subset:["dyslipidemia"],maxDose:"4 mg/day",renal:"eGFR <60: max 1-2 mg/day"},
+{name:"Gemfibrozil",class:"Fibrate",category:"cv",subset:["dyslipidemia"],maxDose:"1200 mg/day",renal:"CrCl <10: ห้ามใช้"},
+{name:"Fenofibrate",class:"Fibrate",category:"cv",subset:["dyslipidemia"],maxDose:"ปรับตามชนิดเกลือ",renal:"eGFR <60: ลดขนาด/หลีกเลี่ยง"},
+{name:"Bezafibrate",class:"Fibrate",category:"cv",subset:["dyslipidemia"],maxDose:"600 mg/day",renal:"CrCl <60: ลดขนาด/หลีกเลี่ยง"},
+{name:"Ezetimibe",class:"Cholesterol Absorption Inhibitor",category:"cv",subset:["dyslipidemia"],maxDose:"10 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Omega-3-acid",class:"Dyslipidemia (Fish oil)",category:"cv",subset:["dyslipidemia"],maxDose:"4 g/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Digoxin",class:"Cardiac Glycoside",category:"cv",subset:["othercv"],maxDose:"0.25 mg/day (maintenance)",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง + ติดตามระดับยา"},
 
-        // Beta-blockers
-        { name: "Atenolol", class: "Beta-blockers", maxDose: "100 mg/day", renal: "CrCl < 35", ref: "FDA Label: Max 50 mg if CrCl 15-35; Max 25 mg if CrCl < 15." },
-        { name: "Propranolol", class: "Beta-blockers", maxDose: "640 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Cautious titration in severe impairment." },
-        { name: "Metoprolol", class: "Beta-blockers", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Bisoprolol", class: "Beta-blockers", maxDose: "20 mg/day", renal: "CrCl < 40", ref: "FDA Label: Initial 2.5 mg once daily." },
-        { name: "Carvedilol", class: "Beta-blockers", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Nebivolol", class: "Beta-blockers", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Initial 2.5 mg once daily." },
-        { name: "Betaxolol", class: "Beta-blockers", maxDose: "40 mg/day (PO)", renal: "CrCl < 10", ref: "FDA Label: Initial 5 mg once daily." },
-        { name: "Acebutolol", class: "Beta-blockers", maxDose: "1200 mg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose by 50% if CrCl < 50, 75% if < 25." },
-        { name: "Nadolol", class: "Beta-blockers", maxDose: "320 mg/day", renal: "CrCl < 50", ref: "FDA Label: Increase dosing interval based on CrCl." },
-        { name: "Pindolol", class: "Beta-blockers", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Labetalol", class: "Beta-blockers", maxDose: "2400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Sotalol", class: "Beta-blockers", maxDose: "320 mg/day", renal: "CrCl < 60", ref: "FDA Label: Increase interval. Contraindicated if CrCl < 40 (AFib)." },
+// ============ ENDOCRINE ============
+{name:"Metformin",class:"Biguanide",category:"endo",subset:["diabetes"],maxDose:"2550 mg/day",renal:"eGFR <45: ลดขนาด; eGFR <30: ห้ามใช้"},
+{name:"Glibenclamide",class:"Sulfonylurea",category:"endo",subset:["diabetes"],maxDose:"20 mg/day",renal:"CrCl <50: หลีกเลี่ยง เสี่ยง hypoglycemia"},
+{name:"Gliclazide",class:"Sulfonylurea",category:"endo",subset:["diabetes"],maxDose:"320 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Glimepiride",class:"Sulfonylurea",category:"endo",subset:["diabetes"],maxDose:"8 mg/day",renal:"CrCl <22: ลดขนาด/หลีกเลี่ยง"},
+{name:"Glipizide",class:"Sulfonylurea",category:"endo",subset:["diabetes"],maxDose:"40 mg/day",renal:"CrCl <50: ใช้ด้วยความระมัดระวัง"},
+{name:"Acarbose",class:"Alpha-glucosidase Inhibitor",category:"endo",subset:["diabetes"],maxDose:"300 mg/day",renal:"Cr >2.0 mg/dL: หลีกเลี่ยง"},
+{name:"Pioglitazone",class:"Thiazolidinedione",category:"endo",subset:["diabetes"],maxDose:"45 mg/day",renal:"ไม่ต้องปรับตามไต (ห้ามใช้ใน HF)"},
+{name:"Sitagliptin",class:"DPP-4 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"100 mg/day",renal:"eGFR <45: ลดขนาด"},
+{name:"Vildagliptin",class:"DPP-4 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"100 mg/day",renal:"CrCl <50: ลดขนาดครึ่งหนึ่ง"},
+{name:"Linagliptin",class:"DPP-4 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"5 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Saxagliptin",class:"DPP-4 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"5 mg/day",renal:"eGFR <45: ลดขนาด"},
+{name:"Alogliptin",class:"DPP-4 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"25 mg/day",renal:"CrCl <60: ลดขนาด"},
+{name:"Dapagliflozin",class:"SGLT2 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"10 mg/day",renal:"eGFR <45: หลีกเลี่ยงในข้อบ่งใช้เบาหวาน"},
+{name:"Empagliflozin",class:"SGLT2 Inhibitor",category:"endo",subset:["diabetes"],maxDose:"25 mg/day",renal:"eGFR <30: หลีกเลี่ยงในข้อบ่งใช้เบาหวาน"},
+{name:"Liraglutide",class:"GLP-1 Agonist",category:"endo",subset:["diabetes"],maxDose:"1.8 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Dulaglutide",class:"GLP-1 Agonist",category:"endo",subset:["diabetes"],maxDose:"4.5 mg/สัปดาห์",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Semaglutide",class:"GLP-1 Agonist",category:"endo",subset:["diabetes"],maxDose:"2 mg/สัปดาห์ (SC) / 14 mg/day (PO)",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Insulin Glargine",class:"Long-acting Insulin",category:"endo",subset:["diabetes"],maxDose:"ปรับตามระดับน้ำตาล",renal:"ไตเสื่อมอาจต้องลดขนาด"},
+{name:"Regular Insulin",class:"Short-acting Insulin",category:"endo",subset:["diabetes"],maxDose:"ปรับตามระดับน้ำตาล",renal:"ไตเสื่อมอาจต้องลดขนาด"},
+{name:"Levothyroxine",class:"Thyroid Hormone",category:"endo",subset:["thyroid"],maxDose:"ปรับตาม TSH เป้าหมาย",renal:"ไม่ต้องปรับตามไต"},
+{name:"Methimazole",class:"Antithyroid",category:"endo",subset:["thyroid"],maxDose:"60 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Dexamethasone",class:"Corticosteroid",category:"endo",subset:["corticosteroid"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Hydrocortisone",class:"Corticosteroid",category:"endo",subset:["corticosteroid"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Prednisolone",class:"Corticosteroid",category:"endo",subset:["corticosteroid"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Prednisone",class:"Corticosteroid",category:"endo",subset:["corticosteroid"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Alendronate",class:"Bisphosphonate",category:"endo",subset:["bone"],maxDose:"70 mg/สัปดาห์",renal:"CrCl <35: หลีกเลี่ยง"},
+{name:"Colchicine",class:"Antigout",category:"endo",subset:["gout"],maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Febuxostat",class:"Xanthine Oxidase Inhibitor",category:"endo",subset:["gout"],maxDose:"120 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
 
-        // CCBs
-        { name: "Amlodipine", class: "Calcium Channel Blockers", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Nifedipine", class: "Calcium Channel Blockers", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Felodipine", class: "Calcium Channel Blockers", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Nicardipine", class: "Calcium Channel Blockers", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Titrate slowly." },
-        { name: "Nimodipine", class: "Calcium Channel Blockers", maxDose: "360 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Nitrendipine", class: "Calcium Channel Blockers", maxDose: "40 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
-        { name: "Lercanidipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "CrCl < 30", ref: "EMA Label: Use with caution, initiate at 10 mg." },
-        { name: "Isradipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Cilnidipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: Use with caution." },
-        { name: "Verapamil", class: "Calcium Channel Blockers", maxDose: "480 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Cautious titration in severe impairment." },
-        { name: "Diltiazem", class: "Calcium Channel Blockers", maxDose: "480 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Cautious titration." },
-        { name: "Manidipine", class: "Calcium Channel Blockers", maxDose: "20 mg/day", renal: "Severe impairment", ref: "Product Info: No general adjustment, but use with caution in severe renal impairment." },
+// ============ ANTI-INFECTIVES ============
+{name:"Amoxicillin",class:"Aminopenicillin",category:"abx",type:"antibacterial",setting:"opd",maxDose:"4 g/day",renal:"CrCl <30: เพิ่มระยะห่างมื้อยา"},
+{name:"Amoxicillin/Clavulanate",class:"Beta-lactam/BLI",category:"abx",type:"antibacterial",setting:"both",maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <30: เพิ่มระยะห่างมื้อยา"},
+{name:"Ampicillin/Sulbactam",class:"Beta-lactam/BLI",category:"abx",type:"antibacterial",setting:"ipd",maxDose:"12 g/day (IV)",renal:"CrCl <30: เพิ่มระยะห่างมื้อยา"},
+{name:"Cloxacillin",class:"Penicillinase-resistant Penicillin",category:"abx",type:"antibacterial",setting:"opd",maxDose:"4 g/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Dicloxacillin",class:"Penicillinase-resistant Penicillin",category:"abx",type:"antibacterial",setting:"opd",maxDose:"4 g/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Cefalexin",class:"1st-gen Cephalosporin",category:"abx",type:"antibacterial",setting:"opd",maxDose:"4 g/day",renal:"CrCl <50: เพิ่มระยะห่างมื้อยา"},
+{name:"Cefdinir",class:"3rd-gen Cephalosporin (Oral)",category:"abx",type:"antibacterial",setting:"opd",maxDose:"600 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Cefepime",class:"4th-gen Cephalosporin",category:"abx",type:"antibacterial",setting:"ipd",maxDose:"6 g/day",renal:"CrCl ≤60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Cefotaxime",class:"3rd-gen Cephalosporin",category:"abx",type:"antibacterial",setting:"ipd",maxDose:"12 g/day",renal:"CrCl <20: เพิ่มระยะห่างมื้อยา"},
+{name:"Ceftriaxone",class:"3rd-gen Cephalosporin",category:"abx",type:"antibacterial",setting:"both",maxDose:"4 g/day",renal:"ไม่ต้องปรับตามไต (ขับทางน้ำดี)"},
+{name:"Meropenem",class:"Carbapenem",category:"abx",type:"antibacterial",setting:"ipd",maxDose:"6 g/day",renal:"CrCl ≤50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Piperacillin/Tazobactam",class:"Extended-spectrum Penicillin/BLI",category:"abx",type:"antibacterial",setting:"ipd",maxDose:"18 g/day (IV)",renal:"CrCl <40: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Gentamicin",class:"Aminoglycoside",category:"abx",type:"antibacterial",setting:"ipd",maxDose:"ปรับตามน้ำหนักตัว",renal:"CrCl <60: ปรับขนาด+ติดตามระดับยา"},
+{name:"Ciprofloxacin",class:"Fluoroquinolone",category:"abx",type:"antibacterial",setting:"both",maxDose:"1500 mg/day (PO)",renal:"CrCl <50: ลดขนาด 50%"},
+{name:"Levofloxacin",class:"Fluoroquinolone",category:"abx",type:"antibacterial",setting:"both",maxDose:"750 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Moxifloxacin",class:"Fluoroquinolone",category:"abx",type:"antibacterial",setting:"both",maxDose:"400 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Norfloxacin",class:"Fluoroquinolone",category:"abx",type:"antibacterial",setting:"opd",maxDose:"800 mg/day",renal:"CrCl ≤30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Ofloxacin",class:"Fluoroquinolone",category:"abx",type:"antibacterial",setting:"opd",maxDose:"800 mg/day",renal:"CrCl ≤50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Azithromycin",class:"Macrolide",category:"abx",type:"antibacterial",setting:"opd",maxDose:"500 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Clarithromycin",class:"Macrolide",category:"abx",type:"antibacterial",setting:"opd",maxDose:"1000 mg/day",renal:"CrCl <30: ลดขนาด 50%"},
+{name:"Roxithromycin",class:"Macrolide",category:"abx",type:"antibacterial",setting:"opd",maxDose:"300 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Doxycycline",class:"Tetracycline",category:"abx",type:"antibacterial",setting:"opd",maxDose:"200 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Clindamycin",class:"Lincosamide",category:"abx",type:"antibacterial",setting:"both",maxDose:"1.8 g/day (PO) / 4.8 g/day (IV)",renal:"ไม่ต้องปรับตามไต"},
+{name:"Cotrimoxazole (TMP-SMX)",class:"Sulfonamide Combination",category:"abx",type:"antibacterial",setting:"both",maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Metronidazole",class:"Nitroimidazole",category:"abx",type:"antibacterial",setting:"both",maxDose:"4 g/day",renal:"CrCl <10: ลดขนาด"},
+{name:"Nitrofurantoin",class:"Urinary Antiseptic",category:"abx",type:"antibacterial",setting:"opd",maxDose:"400 mg/day",renal:"CrCl <60: หลีกเลี่ยง"},
+{name:"Fluconazole",class:"Antifungal (Azole)",category:"abx",type:"antifungal",maxDose:"800 mg/day",renal:"CrCl ≤50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Itraconazole",class:"Antifungal (Azole)",category:"abx",type:"antifungal",maxDose:"400 mg/day",renal:"CrCl <30: หลีกเลี่ยงรูปแบบ IV"},
+{name:"Ketoconazole",class:"Antifungal (Azole)",category:"abx",type:"antifungal",maxDose:"400 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Voriconazole",class:"Antifungal (Azole)",category:"abx",type:"antifungal",maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <50: หลีกเลี่ยงรูปแบบ IV"},
+{name:"Acyclovir",class:"Antiviral (Herpes)",category:"abx",type:"antiviral",maxDose:"4 g/day (PO)",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Valacyclovir",class:"Antiviral (Herpes)",category:"abx",type:"antiviral",maxDose:"4 g/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Oseltamivir",class:"Antiviral (Influenza)",category:"abx",type:"antiviral",maxDose:"150 mg/day",renal:"CrCl ≤60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Favipiravir",class:"Antiviral",category:"abx",type:"antiviral",maxDose:"3600 mg/day (Day 1)",renal:"ไม่ต้องปรับตามไต"},
+{name:"Molnupiravir",class:"Antiviral",category:"abx",type:"antiviral",maxDose:"1600 mg/day",renal:"ไม่ต้องปรับตามไต"},
 
+// ============ ANALGESIC & PAIN ============
+{name:"Ibuprofen",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"3200 mg/day",renal:"CrCl <30: หลีกเลี่ยง/ระมัดระวัง"},
+{name:"Diclofenac",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"150 mg/day",renal:"หลีกเลี่ยงในไตเสื่อมระยะท้าย"},
+{name:"Naproxen",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"1500 mg/day",renal:"CrCl <30: หลีกเลี่ยง"},
+{name:"Mefenamic Acid",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"1000 mg/day",renal:"CrCl <50: หลีกเลี่ยง/ระมัดระวัง"},
+{name:"Ketoprofen",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"300 mg/day",renal:"ลดขนาดในไตเสื่อมระดับเล็กน้อย-ปานกลาง"},
+{name:"Ketorolac",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"40 mg/day (PO) / 120 mg/day (IV)",renal:"หลีกเลี่ยงในไตเสื่อมระยะท้าย"},
+{name:"Meloxicam",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"15 mg/day",renal:"หลีกเลี่ยงในไตเสื่อมรุนแรง"},
+{name:"Piroxicam",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"20 mg/day",renal:"หลีกเลี่ยงในไตเสื่อมระยะท้าย"},
+{name:"Indomethacin",class:"NSAID",category:"painneuro",subset:["nsaid"],maxDose:"200 mg/day",renal:"หลีกเลี่ยงในไตเสื่อมระยะท้าย"},
+{name:"Celecoxib",class:"NSAID (COX-2 Inhibitor)",category:"painneuro",subset:["nsaid"],maxDose:"400 mg/day",renal:"หลีกเลี่ยงในไตเสื่อมระยะท้าย"},
+{name:"Etoricoxib",class:"NSAID (COX-2 Inhibitor)",category:"painneuro",subset:["nsaid"],maxDose:"120 mg/day",renal:"CrCl <30: หลีกเลี่ยง"},
+{name:"Parecoxib",class:"NSAID (COX-2 Inhibitor, IV)",category:"painneuro",subset:["nsaid"],maxDose:"80 mg/day",renal:"หลีกเลี่ยงในไตเสื่อมรุนแรง"},
+{name:"Morphine",class:"Opioid",category:"painneuro",subset:["opioid"],maxDose:"ปรับตามการตอบสนอง (titrate)",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Fentanyl",class:"Opioid",category:"painneuro",subset:["opioid"],maxDose:"ปรับตามการตอบสนอง (titrate)",renal:"CrCl <50: ระมัดระวัง"},
+{name:"Oxycodone",class:"Opioid",category:"painneuro",subset:["opioid"],maxDose:"ปรับตามการตอบสนอง (titrate)",renal:"CrCl <60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Tramadol",class:"Opioid (Weak)",category:"painneuro",subset:["opioid"],maxDose:"400 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Methadone",class:"Opioid",category:"painneuro",subset:["opioid"],maxDose:"ปรับตามการตอบสนอง (titrate)",renal:"CrCl <10: ระมัดระวัง"},
+{name:"Pethidine",class:"Opioid",category:"painneuro",subset:["opioid"],maxDose:"ปรับตามข้อบ่งใช้",renal:"CrCl <50: หลีกเลี่ยง (metabolite สะสม)"},
+{name:"Amitriptyline",class:"TCA (Neuropathic Pain)",category:"painneuro",subset:["neuropathic"],maxDose:"150 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Duloxetine",class:"SNRI (Neuropathic Pain)",category:"painneuro",subset:["neuropathic"],maxDose:"120 mg/day",renal:"CrCl <30: หลีกเลี่ยง"},
+{name:"Gabapentin",class:"Anticonvulsant (Neuropathic Pain)",category:"painneuro",subset:["neuropathic"],maxDose:"3600 mg/day",renal:"CrCl <60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Pregabalin",class:"Anticonvulsant (Neuropathic Pain)",category:"painneuro",subset:["neuropathic"],maxDose:"600 mg/day",renal:"CrCl <60: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Flunarizine",class:"Migraine Prophylaxis",category:"painneuro",subset:["migraine"],maxDose:"10 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Sumatriptan",class:"Triptan (Migraine Abortive)",category:"painneuro",subset:["migraine"],maxDose:"200 mg/day (PO)",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
 
-        // Diuretics
-        { name: "Hydrochlorothiazide", class: "Diuretics", maxDose: "50 mg/day", renal: "CrCl < 30", ref: "FDA Label: Ineffective and generally avoid if CrCl < 30." },
-        { name: "Spironolactone", class: "Diuretics", maxDose: "400 mg/day", renal: "eGFR < 50", ref: "FDA Label: Adjust dose/interval. Avoid if eGFR < 30 in HF." },
-        { name: "Chlorthalidone", class: "Diuretics", maxDose: "100 mg/day", renal: "CrCl < 30", ref: "FDA Label: Ineffective; loop diuretic preferred." },
-        { name: "Indapamide", class: "Diuretics", maxDose: "5 mg/day", renal: "Severe impairment", ref: "FDA Label: Avoid in severe renal failure (anuria)." },
-        { name: "Bendroflumethiazide", class: "Diuretics", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid in severe renal impairment." },
-        { name: "Furosemide", class: "Diuretics", maxDose: "600 mg/day (PO)", renal: "Adjust dose", ref: "UpToDate: Higher doses often required in severe CKD." },
-        { name: "Bumetanide", class: "Diuretics", maxDose: "10 mg/day", renal: "Adjust dose", ref: "UpToDate: Higher doses may be required in CKD." },
-        { name: "Torsemide", class: "Diuretics", maxDose: "200 mg/day", renal: "Adjust dose", ref: "UpToDate: Higher doses may be required in CKD." },
-        { name: "Ethacrynic acid", class: "Diuretics", maxDose: "400 mg/day", renal: "Severe impairment", ref: "FDA Label: Contraindicated in anuria." },
-        { name: "Eplerenone", class: "Diuretics", maxDose: "100 mg/day", renal: "CrCl < 50", ref: "FDA Label: Contraindicated in HTN if CrCl < 50 or HF if ≤ 30." },
-        { name: "Amiloride", class: "Diuretics", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: Avoid if CrCl < 50." },
-        { name: "Triamterene", class: "Diuretics", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: Avoid in severe renal impairment." },
-        { name: "Mannitol", class: "Diuretics", maxDose: "Varies (IV)", renal: "Severe impairment", ref: "FDA Label: Contraindicated in severe renal disease/anuria." },
+// ============ CNS & PSYCHIATRIC ============
+{name:"Carbamazepine",class:"Anticonvulsant",category:"cnspsych",subset:["antiepileptic"],maxDose:"1600 mg/day",renal:"CrCl <10: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Levetiracetam",class:"Anticonvulsant",category:"cnspsych",subset:["antiepileptic"],maxDose:"3000 mg/day",renal:"CrCl ≤80: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Phenytoin",class:"Anticonvulsant",category:"cnspsych",subset:["antiepileptic"],maxDose:"ปรับตามระดับยาในเลือด",renal:"ไม่ต้องปรับตามไต (ระวัง protein binding)"},
+{name:"Topiramate",class:"Anticonvulsant",category:"cnspsych",subset:["antiepileptic"],maxDose:"400 mg/day",renal:"CrCl <70: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Valproic Acid",class:"Anticonvulsant",category:"cnspsych",subset:["antiepileptic"],maxDose:"60 mg/kg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Diazepam",class:"Benzodiazepine",category:"cnspsych",subset:["psych"],maxDose:"40 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Lorazepam",class:"Benzodiazepine",category:"cnspsych",subset:["psych"],maxDose:"10 mg/day",renal:"ไม่ต้องปรับตามไต (PO)"},
+{name:"Flunitrazepam",class:"Benzodiazepine (Hypnotic)",category:"cnspsych",subset:["psych"],maxDose:"ข้อมูลต้นฉบับไม่ระบุชัดเจน",renal:"กรุณาตรวจสอบ UpToDate โดยตรง"},
+{name:"Escitalopram",class:"SSRI",category:"cnspsych",subset:["psych"],maxDose:"20 mg/day",renal:"CrCl <20: ใช้ด้วยความระมัดระวัง"},
+{name:"Fluoxetine",class:"SSRI",category:"cnspsych",subset:["psych"],maxDose:"80 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Sertraline",class:"SSRI",category:"cnspsych",subset:["psych"],maxDose:"200 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Venlafaxine",class:"SNRI",category:"cnspsych",subset:["psych"],maxDose:"225 mg/day",renal:"CrCl <90: ลดขนาด"},
+{name:"Haloperidol",class:"Antipsychotic (Typical)",category:"cnspsych",subset:["psych"],maxDose:"100 mg/day (ทั่วไปทางจิตเวชมักไม่เกิน 20-30 mg/day)",renal:"ไม่ต้องปรับตามไต"},
+{name:"Risperidone",class:"Antipsychotic (Atypical)",category:"cnspsych",subset:["psych"],maxDose:"16 mg/day",renal:"CrCl <30: ลดขนาด"},
+{name:"Levodopa",class:"Antiparkinsonian",category:"cnspsych",subset:["other"],maxDose:"ข้อมูลต้นฉบับไม่ระบุชัดเจน",renal:"กรุณาตรวจสอบ UpToDate โดยตรง"},
 
-        // Antiplatelets
-        { name: "Aspirin", class: "Antiplatelets", maxDose: "4000 mg/day", renal: "CrCl < 10", ref: "FDA Label: Avoid in severe renal failure." },
-        { name: "Clopidogrel", class: "Antiplatelets", maxDose: "75 mg/day (Maint.)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Prasugrel", class: "Antiplatelets", maxDose: "10 mg/day (Maint.)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Ticagrelor", class: "Antiplatelets", maxDose: "90 mg bid", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Ticlopidine", class: "Antiplatelets", maxDose: "500 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use with caution." },
-        { name: "Cangrelor", class: "Antiplatelets", maxDose: "IV Infusion", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Dipyridamole", class: "Antiplatelets", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Cilostazol", class: "Antiplatelets", maxDose: "200 mg/day", renal: "CrCl < 25", ref: "FDA Label: Contraindicated in severe renal impairment." },
-        { name: "Abciximab", class: "Antiplatelets", maxDose: "IV Infusion", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Eptifibatide", class: "Antiplatelets", maxDose: "IV Infusion", renal: "CrCl < 50", ref: "FDA Label: Reduce infusion rate by 50%." },
-        { name: "Tirofiban", class: "Antiplatelets", maxDose: "IV Infusion", renal: "CrCl ≤ 60", ref: "FDA Label: Reduce dose by 50%." },
+// ============ GASTROINTESTINAL ============
+{name:"Omeprazole",class:"Proton Pump Inhibitor",category:"gi",subset:["acidsuppress"],maxDose:"120 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Esomeprazole",class:"Proton Pump Inhibitor",category:"gi",subset:["acidsuppress"],maxDose:"240 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Pantoprazole",class:"Proton Pump Inhibitor",category:"gi",subset:["acidsuppress"],maxDose:"240 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Lansoprazole",class:"Proton Pump Inhibitor",category:"gi",subset:["acidsuppress"],maxDose:"180 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Dexlansoprazole",class:"Proton Pump Inhibitor",category:"gi",subset:["acidsuppress"],maxDose:"60 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Rabeprazole",class:"Proton Pump Inhibitor",category:"gi",subset:["acidsuppress"],maxDose:"120 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Cimetidine",class:"H2-Receptor Antagonist",category:"gi",subset:["acidsuppress"],maxDose:"1600 mg/day",renal:"CrCl <30: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Famotidine",class:"H2-Receptor Antagonist",category:"gi",subset:["acidsuppress"],maxDose:"40 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Ranitidine",class:"H2-Receptor Antagonist",category:"gi",subset:["acidsuppress"],maxDose:"300 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Nizatidine",class:"H2-Receptor Antagonist",category:"gi",subset:["acidsuppress"],maxDose:"300 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Roxatidine",class:"H2-Receptor Antagonist",category:"gi",subset:["acidsuppress"],maxDose:"150 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Lafutidine",class:"H2-Receptor Antagonist",category:"gi",subset:["acidsuppress"],maxDose:"20 mg/day",renal:"ระมัดระวังในไตเสื่อม"},
+{name:"Domperidone",class:"Antiemetic/Prokinetic",category:"gi",subset:["antiemetic"],maxDose:"30 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Metoclopramide",class:"Antiemetic/Prokinetic",category:"gi",subset:["antiemetic"],maxDose:"40 mg/day",renal:"CrCl <60: ลดขนาด"},
+{name:"Ondansetron",class:"Antiemetic (5-HT3)",category:"gi",subset:["antiemetic"],maxDose:"24 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Granisetron",class:"Antiemetic (5-HT3)",category:"gi",subset:["antiemetic"],maxDose:"2 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Dimenhydrinate",class:"Antiemetic (Antihistamine)",category:"gi",subset:["antiemetic"],maxDose:"400 mg/day",renal:"ใช้ด้วยความระมัดระวัง"},
+{name:"Mosapride",class:"Prokinetic",category:"gi",subset:["antiemetic"],maxDose:"15 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Itopride",class:"Prokinetic",category:"gi",subset:["antiemetic"],maxDose:"150 mg/day",renal:"ระมัดระวังในไตเสื่อม"},
+{name:"Levosulpiride",class:"Prokinetic",category:"gi",subset:["antiemetic"],maxDose:"75 mg/day",renal:"CrCl <30: ลดขนาด"},
+{name:"Bisacodyl",class:"Stimulant Laxative",category:"gi",subset:["laxative"],maxDose:"15 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Senna",class:"Stimulant Laxative",category:"gi",subset:["laxative"],maxDose:"34.2 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Lactulose",class:"Osmotic Laxative",category:"gi",subset:["laxative"],maxDose:"60 g/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Polyethylene Glycol",class:"Osmotic Laxative",category:"gi",subset:["laxative"],maxDose:"34 g/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Prucalopride",class:"Prokinetic Laxative",category:"gi",subset:["laxative"],maxDose:"2 mg/day",renal:"CrCl <30: ลดขนาด"},
+{name:"Loperamide",class:"Antidiarrheal",category:"gi",subset:["laxative"],maxDose:"16 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Aluminum Hydroxide",class:"Antacid",category:"gi",subset:["othergi"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Aluminum-Magnesium Antacid (Alum Milk)",class:"Antacid",category:"gi",subset:["othergi"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Magnesium Hydroxide",class:"Antacid/Laxative",category:"gi",subset:["othergi"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Calcium Carbonate",class:"Antacid/Supplement",category:"gi",subset:["othergi"],maxDose:"2500 mg Ca/day",renal:"CrCl <25: ระมัดระวัง"},
+{name:"Bismuth Subsalicylate",class:"Antidiarrheal/Antacid",category:"gi",subset:["othergi"],maxDose:"4200 mg/day",renal:"CrCl <30: หลีกเลี่ยง"},
+{name:"Sucralfate",class:"Mucosal Protectant",category:"gi",subset:["othergi"],maxDose:"4 g/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Misoprostol",class:"Prostaglandin Analog",category:"gi",subset:["othergi"],maxDose:"800 mcg/day",renal:"CrCl <50: ลดขนาด"},
+{name:"Simethicone",class:"Antiflatulent",category:"gi",subset:["othergi"],maxDose:"500 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Dicyclomine",class:"Antispasmodic",category:"gi",subset:["othergi"],maxDose:"160 mg/day",renal:"ใช้ด้วยความระมัดระวัง"},
+{name:"Hyoscine",class:"Antispasmodic",category:"gi",subset:["othergi"],maxDose:"80 mg/day",renal:"ใช้ด้วยความระมัดระวัง"},
+{name:"Mebeverine",class:"Antispasmodic",category:"gi",subset:["othergi"],maxDose:"400 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Racecadotril",class:"Antidiarrheal",category:"gi",subset:["othergi"],maxDose:"300 mg/day",renal:"ใช้ด้วยความระมัดระวัง"},
 
-        // Anticoagulants
-        { name: "Rivaroxaban", class: "Anticoagulants", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: AFib: 15 mg if CrCl 15-50. Avoid if < 15." },
-        { name: "Dabigatran", class: "Anticoagulants", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: 75 mg bid if CrCl 15-30. Avoid if CrCl < 15." },
-        { name: "Warfarin", class: "Anticoagulants", maxDose: "Titrate to INR", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Monitor INR closely in severe impairment." },
-        { name: "Heparin", class: "Anticoagulants", maxDose: "Titrate to aPTT", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Increased bleeding risk in CKD." },
-        { name: "Enoxaparin", class: "Anticoagulants", maxDose: "Varies by weight", renal: "CrCl < 30", ref: "FDA Label: Reduce dose to 1 mg/kg QD (Tx) or 30 mg QD (Prophylaxis)." },
-        { name: "Dalteparin", class: "Anticoagulants", maxDose: "Varies by weight", renal: "CrCl < 30", ref: "FDA Label: Use caution, anti-Xa monitoring recommended." },
-        { name: "Fondaparinux", class: "Anticoagulants", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: Contraindicated if CrCl < 30." },
-        { name: "Apixaban", class: "Anticoagulants", maxDose: "10 mg/day", renal: "Special criteria", ref: "FDA Label: 2.5 mg bid if ≥2 criteria: Age ≥80, Wt ≤60kg, SCr ≥1.5." },
-        { name: "Edoxaban", class: "Anticoagulants", maxDose: "60 mg/day", renal: "CrCl < 50 or > 95", ref: "FDA Label: Reduce to 30 mg if CrCl 15-50. Avoid if CrCl > 95 in AFib." },
+// ============ RESPIRATORY & ALLERGY ============
+{name:"Salbutamol",class:"SABA",category:"resp",subset:["bronchodilator"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Terbutaline",class:"SABA",category:"resp",subset:["bronchodilator"],maxDose:"15 mg/day (PO)",renal:"CrCl <50: ลดขนาด (PO)"},
+{name:"Salmeterol",class:"LABA",category:"resp",subset:["bronchodilator"],maxDose:"100 mcg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Formoterol",class:"LABA",category:"resp",subset:["bronchodilator"],maxDose:"24 mcg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Tiotropium",class:"LAMA",category:"resp",subset:["bronchodilator"],maxDose:"18 mcg/day",renal:"CrCl <50: ระมัดระวัง"},
+{name:"Ipratropium",class:"SAMA",category:"resp",subset:["bronchodilator"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Budesonide",class:"Inhaled Corticosteroid",category:"resp",subset:["bronchodilator"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Fluticasone",class:"Inhaled Corticosteroid",category:"resp",subset:["bronchodilator"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Montelukast",class:"Leukotriene Receptor Antagonist",category:"resp",subset:["bronchodilator"],maxDose:"10 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Theophylline",class:"Methylxanthine",category:"resp",subset:["bronchodilator"],maxDose:"ติดตามระดับยาในเลือด",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Acetylcysteine",class:"Mucolytic",category:"resp",subset:["mucolytic"],maxDose:"1800 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Ambroxol",class:"Mucolytic",category:"resp",subset:["mucolytic"],maxDose:"120 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Bromhexine",class:"Mucolytic",category:"resp",subset:["mucolytic"],maxDose:"48 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
+{name:"Cetirizine",class:"Antihistamine (2nd gen)",category:"resp",subset:["antihistamine"],maxDose:"10 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Levocetirizine",class:"Antihistamine (2nd gen)",category:"resp",subset:["antihistamine"],maxDose:"5 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
+{name:"Loratadine",class:"Antihistamine (2nd gen)",category:"resp",subset:["antihistamine"],maxDose:"10 mg/day",renal:"CrCl <30: เพิ่มระยะห่างมื้อยา"},
+{name:"Desloratadine",class:"Antihistamine (2nd gen)",category:"resp",subset:["antihistamine"],maxDose:"5 mg/day",renal:"CrCl <50: เพิ่มระยะห่างมื้อยา"},
+{name:"Fexofenadine",class:"Antihistamine (2nd gen)",category:"resp",subset:["antihistamine"],maxDose:"180 mg/day",renal:"CrCl <80: ลดขนาด"},
+{name:"Bilastine",class:"Antihistamine (2nd gen)",category:"resp",subset:["antihistamine"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Chlorpheniramine",class:"Antihistamine (1st gen)",category:"resp",subset:["antihistamine"],maxDose:"24 mg/day",renal:"ใช้ด้วยความระมัดระวัง"},
+{name:"Hydroxyzine",class:"Antihistamine (1st gen)",category:"resp",subset:["antihistamine"],maxDose:"400 mg/day",renal:"CrCl <50: ลดขนาด"},
 
-        // Dyslipidemia
-        { name: "Atorvastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Rosuvastatin", class: "Dyslipidemia", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 5 mg, max 10 mg/day if CrCl < 30." },
-        { name: "Simvastatin", class: "Dyslipidemia", maxDose: "40 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 5 mg/day if CrCl < 30." },
-        { name: "Fenofibrate", class: "Dyslipidemia", maxDose: "Varies by salt", renal: "eGFR < 60", ref: "FDA Label: Reduce dose. Contraindicated if eGFR < 30." },
-        { name: "Ezetimibe", class: "Dyslipidemia", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Pravastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 10 mg/day if CrCl < 30." },
-        { name: "Fluvastatin", class: "Dyslipidemia", maxDose: "80 mg/day", renal: "CrCl < 30", ref: "FDA Label: Use caution in severe impairment." },
-        { name: "Pitavastatin", class: "Dyslipidemia", maxDose: "4 mg/day", renal: "eGFR < 60", ref: "FDA Label: Initial 1 mg, max 2 mg/day if eGFR 15-59." },
-        { name: "Gemfibrozil", class: "Dyslipidemia", maxDose: "1200 mg/day", renal: "CrCl < 10", ref: "FDA Label: Contraindicated in severe renal impairment." },
-        { name: "Bezafibrate", class: "Dyslipidemia", maxDose: "600 mg/day", renal: "CrCl < 60", ref: "Product Info: Adjust dose. Contraindicated if CrCl < 15." },
-        { name: "Omega-3-acid ethyl esters", class: "Dyslipidemia", maxDose: "4 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
+// ============ UROLOGY ============
+{name:"Doxazosin",class:"Alpha-1 Blocker (BPH)",category:"uro",subset:["bph"],maxDose:"8 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Tamsulosin",class:"Alpha-1 Blocker (BPH)",category:"uro",subset:["bph"],maxDose:"0.8 mg/day",renal:"CrCl <10: ใช้ด้วยความระมัดระวัง"},
+{name:"Finasteride",class:"5-alpha Reductase Inhibitor",category:"uro",subset:["bph"],maxDose:"5 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Dutasteride",class:"5-alpha Reductase Inhibitor",category:"uro",subset:["bph"],maxDose:"0.5 mg/day",renal:"ไม่ต้องปรับตามไต"},
+{name:"Oxybutynin",class:"Antimuscarinic (OAB)",category:"uro",subset:["oab"],maxDose:"30 mg/day",renal:"ใช้ด้วยความระมัดระวัง"},
+{name:"Solifenacin",class:"Antimuscarinic (OAB)",category:"uro",subset:["oab"],maxDose:"10 mg/day",renal:"CrCl <30: max 5 mg/day"},
+{name:"Mirabegron",class:"Beta-3 Agonist (OAB)",category:"uro",subset:["oab"],maxDose:"50 mg/day",renal:"CrCl <30: ลดขนาด"},
+{name:"Sildenafil",class:"PDE5 Inhibitor (ED)",category:"uro",subset:["ed"],maxDose:"100 mg/day",renal:"CrCl <30: ลดขนาด"},
+{name:"Tadalafil",class:"PDE5 Inhibitor (ED)",category:"uro",subset:["ed"],maxDose:"20 mg/day",renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง"},
 
-        // Antianginal & Antiarrhythmic & Other CV
-        { name: "Digoxin", class: "Cardiovascular (Other)", maxDose: "0.25 mg/day (Maint.)", renal: "CrCl < 50", ref: "UpToDate: Decrease dose/increase interval." },
-        { name: "Nitroglycerin", class: "Antianginal", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Isosorbide dinitrate", class: "Antianginal", maxDose: "160 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Isosorbide mononitrate", class: "Antianginal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Nicorandil", class: "Antianginal", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "EMA Label: No dosage adjustment necessary." },
-        { name: "Ranolazine", class: "Antianginal", maxDose: "2000 mg/day", renal: "CrCl < 30", ref: "FDA Label: Contraindicated in severe renal impairment." },
-        { name: "Trimetazidine", class: "Antianginal", maxDose: "70 mg/day (MR)", renal: "CrCl < 60", ref: "EMA Label: 35 mg QD if CrCl 30-60. Avoid if < 30." },
-        { name: "Amiodarone", class: "Antiarrhythmic", maxDose: "1200 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Lidocaine", class: "Antiarrhythmic", maxDose: "Varies (IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Active metabolites may accumulate." },
-        { name: "Adenosine", class: "Antiarrhythmic", maxDose: "12 mg (Rapid IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Flecainide", class: "Antiarrhythmic", maxDose: "400 mg/day", renal: "CrCl < 35", ref: "FDA Label: Initial 50 mg bid; titrate cautiously." },
-        { name: "Propafenone", class: "Antiarrhythmic", maxDose: "900 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use caution." },
-        { name: "Quinidine", class: "Antiarrhythmic", maxDose: "Varies", renal: "CrCl < 10", ref: "UpToDate: Cautious use in severe impairment." },
-        { name: "Procainamide", class: "Antiarrhythmic", maxDose: "Varies", renal: "CrCl < 50", ref: "FDA Label: Adjust dose to prevent NAPA accumulation." },
-        { name: "Disopyramide", class: "Antiarrhythmic", maxDose: "800 mg/day", renal: "CrCl < 40", ref: "FDA Label: Alter dosing interval based on CrCl." },
+// ============ HEMATOLOGY / SUPPLEMENT ============
+{name:"Folic Acid",class:"Supplement",category:"misc",subset:["all"],maxDose:"ปรับตามข้อบ่งใช้",renal:"ไม่ต้องปรับตามไต"},
+{name:"Tranexamic Acid",class:"Antifibrinolytic",category:"misc",subset:["all"],maxDose:"3900 mg/day",renal:"Cr >1.36 mg/dL: ลดขนาด"}
+];
 
-        // --- 2. Diabetes ---
-        { name: "Metformin", class: "Diabetes", maxDose: "2550 mg/day", renal: "eGFR < 45", ref: "FDA Label: Do not initiate if eGFR 30-45. Contraindicated if eGFR < 30." },
-        { name: "Glipizide", class: "Diabetes", maxDose: "40 mg/day", renal: "CrCl < 50", ref: "FDA Label: Initial 2.5 mg; titrate carefully." },
-        { name: "Glimepiride", class: "Diabetes", maxDose: "8 mg/day", renal: "CrCl < 22", ref: "FDA Label: Initial 1 mg; titrate carefully." },
-        { name: "Glibenclamide", class: "Diabetes", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "UpToDate: Avoid use (high risk of prolonged hypoglycemia)." },
-        { name: "Gliclazide", class: "Diabetes", maxDose: "320 mg/day", renal: "Severe impairment", ref: "EMA Label: Contraindicated in severe renal failure." },
-        { name: "Pioglitazone", class: "Diabetes", maxDose: "45 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Sitagliptin", class: "Diabetes", maxDose: "100 mg/day", renal: "eGFR < 45", ref: "FDA Label: 50 mg if eGFR 30-44; 25 mg if eGFR < 30." },
-        { name: "Linagliptin", class: "Diabetes", maxDose: "5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Saxagliptin", class: "Diabetes", maxDose: "5 mg/day", renal: "eGFR < 45", ref: "FDA Label: 2.5 mg once daily if eGFR < 45." },
-        { name: "Alogliptin", class: "Diabetes", maxDose: "25 mg/day", renal: "CrCl < 60", ref: "FDA Label: 12.5 mg if CrCl 30-59; 6.25 mg if CrCl < 30." },
-        { name: "Vildagliptin", class: "Diabetes", maxDose: "100 mg/day", renal: "CrCl < 50", ref: "EMA Label: 50 mg once daily if CrCl < 50." },
-        { name: "Empagliflozin", class: "Diabetes", maxDose: "25 mg/day", renal: "eGFR < 30 (DM)", ref: "FDA Label: Avoid for glycemic control if eGFR < 30." },
-        { name: "Dapagliflozin", class: "Diabetes", maxDose: "10 mg/day", renal: "eGFR < 45 (DM)", ref: "FDA Label: Avoid for glycemic control if eGFR < 45." },
-        { name: "Canagliflozin", class: "Diabetes", maxDose: "300 mg/day", renal: "eGFR < 60", ref: "FDA Label: Max 100 mg if eGFR < 60." },
-        { name: "Liraglutide", class: "Diabetes", maxDose: "1.8 mg/day", renal: "Severe impairment", ref: "FDA Label: Use caution when initiating in ESRD." },
-        { name: "Semaglutide", class: "Diabetes", maxDose: "2 mg/wk (SC) / 14 mg (PO)", renal: "Severe impairment", ref: "FDA Label: Use caution in severe impairment." },
-        { name: "Dulaglutide", class: "Diabetes", maxDose: "4.5 mg/week", renal: "Severe impairment", ref: "FDA Label: Use caution in severe impairment." },
-        { name: "Acarbose", class: "Diabetes", maxDose: "300 mg/day", renal: "SCr > 2.0", ref: "FDA Label: Not recommended if SCr > 2.0 mg/dL." },
-        { name: "Regular insulin", class: "Diabetes", maxDose: "Titrated", renal: "Adjust dose", ref: "UpToDate: Insulin requirements generally decrease as GFR declines." },
-        { name: "Insulin glargine", class: "Diabetes", maxDose: "Titrated", renal: "Adjust dose", ref: "UpToDate: Monitor closely, risk of hypoglycemia increases." },
+let activeCategory=null, activeSubset="all", searchTerm="";
 
-        // --- 3. Gastrointestinal ---
-        { name: "Omeprazole", class: "Gastrointestinal", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Esomeprazole", class: "Gastrointestinal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Pantoprazole", class: "Gastrointestinal", maxDose: "240 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Lansoprazole", class: "Gastrointestinal", maxDose: "180 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Dexlansoprazole", class: "Gastrointestinal", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Rabeprazole", class: "Gastrointestinal", maxDose: "120 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Famotidine", class: "Gastrointestinal", maxDose: "40 mg/day", renal: "CrCl < 50", ref: "FDA Label: 20 mg at bedtime or increase interval." },
-        { name: "Cimetidine", class: "Gastrointestinal", maxDose: "1600 mg/day", renal: "CrCl < 30", ref: "FDA Label: Reduce dose by 50%." },
-        { name: "Nizatidine", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose to 150 mg/day if CrCl 20-50." },
-        { name: "Roxatidine", class: "Gastrointestinal", maxDose: "150 mg/day", renal: "CrCl < 50", ref: "Product Info: Reduce dose." },
-        { name: "Lafutidine", class: "Gastrointestinal", maxDose: "20 mg/day", renal: "Impaired function", ref: "Product Info: Use with caution." },
-        { name: "Ranitidine", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "FDA Label: 150 mg once daily." },
-        { name: "Aluminum hydroxide", class: "Gastrointestinal", maxDose: "Varies", renal: "Severe impairment", ref: "FDA Label: Risk of toxicity; avoid prolonged use." },
-        { name: "Magnesium hydroxide", class: "Gastrointestinal", maxDose: "Varies", renal: "Severe impairment", ref: "FDA Label: Risk of hypermagnesemia; avoid." },
-        { name: "Calcium carbonate", class: "Gastrointestinal", maxDose: "2500 mg Ca/day", renal: "CrCl < 25", ref: "UpToDate: Monitor closely for hypercalcemia." },
-        { name: "Alum Milk", class: "Gastrointestinal", maxDose: "Varies", renal: "Severe impairment", ref: "FDA Label: Risk of Mg/Al toxicity." },
-        { name: "Sucralfate", class: "Gastrointestinal", maxDose: "4 g/day", renal: "Severe impairment", ref: "FDA Label: Aluminum absorption risk." },
-        { name: "Bismuth subsalicylate", class: "Gastrointestinal", maxDose: "4200 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid due to salicylate toxicity risk." },
-        { name: "Misoprostol", class: "Gastrointestinal", maxDose: "800 mcg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose if not tolerated." },
-        { name: "Metoclopramide", class: "Gastrointestinal", maxDose: "40 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose by 50%." },
-        { name: "Domperidone", class: "Gastrointestinal", maxDose: "30 mg/day", renal: "Severe impairment", ref: "EMA Label: Extend interval to once/twice daily." },
-        { name: "Mosapride", class: "Gastrointestinal", maxDose: "15 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
-        { name: "Itopride", class: "Gastrointestinal", maxDose: "150 mg/day", renal: "Impaired function", ref: "Product Info: Use with caution." },
-        { name: "Levosulpiride", class: "Gastrointestinal", maxDose: "75 mg/day", renal: "CrCl < 30", ref: "Product Info: Reduce dose." },
-        { name: "Prucalopride", class: "Gastrointestinal", maxDose: "2 mg/day", renal: "CrCl < 30", ref: "FDA Label: 1 mg once daily." },
-        { name: "Hyoscine", class: "Gastrointestinal", maxDose: "80 mg/day", renal: "Caution", ref: "Product Info: Excreted renally; caution recommended." },
-        { name: "Mebeverine", class: "Gastrointestinal", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
-        { name: "Dicyclomine", class: "Gastrointestinal", maxDose: "160 mg/day", renal: "Caution", ref: "FDA Label: Excreted renally; caution recommended." },
-        { name: "Simethicone", class: "Gastrointestinal", maxDose: "500 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Not absorbed systemically." },
-        { name: "Bisacodyl", class: "Gastrointestinal", maxDose: "15 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Senna", class: "Gastrointestinal", maxDose: "34.2 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Lactulose", class: "Gastrointestinal", maxDose: "60 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Polyethylene glycol", class: "Gastrointestinal", maxDose: "34 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Loperamide", class: "Gastrointestinal", maxDose: "16 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Racecadotril", class: "Gastrointestinal", maxDose: "300 mg/day", renal: "Caution", ref: "Product Info: Administer with caution." },
-        { name: "Ondansetron", class: "Gastrointestinal", maxDose: "24 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Granisetron", class: "Gastrointestinal", maxDose: "2 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Dimenhydrinate", class: "Gastrointestinal", maxDose: "400 mg/day", renal: "Caution", ref: "Product Info: Use caution in severe impairment." },
+function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+function getUpToDateLink(name){const clean=name.split("(")[0].trim();return "https://www.uptodate.com/contents/search?search="+encodeURIComponent(clean);}
+function countInCategory(k){return drugData.filter(d=>d.category===k).length;}
 
-        // --- 4. Analgesics / Pain / Neuropathic ---
-        { name: "Paracetamol", class: "Analgesic/Antipyretic", maxDose: "4000 mg/day", renal: "CrCl < 10", ref: "UpToDate: Increase dosing interval to q8h if CrCl < 10." },
-        { name: "Ibuprofen", class: "Analgesic/Antipyretic", maxDose: "3200 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid in advanced renal disease." },
-        { name: "Naproxen", class: "Analgesic/Antipyretic", maxDose: "1500 mg/day", renal: "CrCl < 30", ref: "FDA Label: Not recommended if CrCl < 30." },
-        { name: "Diclofenac", class: "Analgesic/Antipyretic", maxDose: "150 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in advanced renal disease." },
-        { name: "Mefenamic acid", class: "Analgesic/Antipyretic", maxDose: "1000 mg/day", renal: "CrCl < 50", ref: "FDA Label: Contraindicated in preexisting renal disease." },
-        { name: "Indomethacin", class: "Analgesic/Antipyretic", maxDose: "200 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in advanced renal disease." },
-        { name: "Ketoprofen", class: "Analgesic/Antipyretic", maxDose: "300 mg/day", renal: "Mild/Mod", ref: "FDA Label: Reduce dose. Avoid in severe." },
-        { name: "Ketorolac", class: "Analgesic/Antipyretic", maxDose: "40 mg (PO) / 120 mg (IV)", renal: "Advanced disease", ref: "FDA Label: Contraindicated in advanced renal impairment." },
-        { name: "Piroxicam", class: "Analgesic/Antipyretic", maxDose: "20 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in advanced renal disease." },
-        { name: "Meloxicam", class: "Analgesic/Antipyretic", maxDose: "15 mg/day", renal: "Severe impairment", ref: "FDA Label: Avoid unless on hemodialysis." },
-        { name: "Celecoxib", class: "Analgesic/Antipyretic", maxDose: "400 mg/day", renal: "Advanced disease", ref: "FDA Label: Avoid in severe renal impairment." },
-        { name: "Etoricoxib", class: "Analgesic/Antipyretic", maxDose: "120 mg/day", renal: "CrCl < 30", ref: "EMA Label: Contraindicated if CrCl < 30." },
-        { name: "Parecoxib", class: "Analgesic/Antipyretic", maxDose: "80 mg/day", renal: "Severe impairment", ref: "EMA Label: Avoid in severe renal impairment." },
-        { name: "Tramadol", class: "Analgesic/Antipyretic", maxDose: "400 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 200 mg/day, interval q12h." },
-        { name: "Morphine", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 50", ref: "UpToDate: Reduce dose 25-50%, active metabolites." },
-        { name: "Fentanyl", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 50", ref: "UpToDate: Reduce dose 25-50%." },
-        { name: "Oxycodone", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 60", ref: "FDA Label: Initiate cautiously." },
-        { name: "Methadone", class: "Analgesic/Antipyretic", maxDose: "Titrated", renal: "CrCl < 10", ref: "UpToDate: Reduce dose by 50-75%." },
-        { name: "Pethidine", class: "Analgesic/Antipyretic", maxDose: "Varies", renal: "CrCl < 50", ref: "UpToDate: Avoid (normeperidine toxicity)." },
-        { name: "Gabapentin", class: "Neuropathic Pain", maxDose: "3600 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose/frequency based on CrCl." },
-        { name: "Pregabalin", class: "Neuropathic Pain", maxDose: "600 mg/day", renal: "CrCl < 60", ref: "FDA Label: Reduce dose based on CrCl tiers." },
-        { name: "Amitriptyline", class: "Neuropathic Pain", maxDose: "150 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use caution." },
-        { name: "Duloxetine", class: "Neuropathic Pain", maxDose: "120 mg/day", renal: "CrCl < 30", ref: "FDA Label: Avoid use." },
+function settingBadgeHTML(d){
+  if(d.category!=="abx") return "";
+  if(d.type==="antifungal") return '<span class="setting-badge antifungal">Antifungal</span>';
+  if(d.type==="antiviral") return '<span class="setting-badge antiviral">Antiviral</span>';
+  const map={opd:"OPD",ipd:"IPD",both:"OPD+IPD"};
+  return d.setting ? '<span class="setting-badge '+d.setting+'">'+map[d.setting]+'</span>' : "";
+}
 
-        // --- 5. Respiratory ---
-        { name: "Salbutamol", class: "Respiratory", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: Inhaler absorption is minimal." },
-        { name: "Terbutaline", class: "Respiratory", maxDose: "15 mg/day (PO)", renal: "CrCl < 50 (PO)", ref: "UpToDate: Reduce oral dose by 50% if CrCl 10-50." },
-        { name: "Salmeterol", class: "Respiratory", maxDose: "100 mcg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
-        { name: "Formoterol", class: "Respiratory", maxDose: "24 mcg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
-        { name: "Ipratropium", class: "Respiratory", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
-        { name: "Tiotropium", class: "Respiratory", maxDose: "18 mcg/day", renal: "CrCl < 50", ref: "FDA Label: Monitor closely due to renal excretion." },
-        { name: "Budesonide", class: "Respiratory", maxDose: "Varies (Inhaled)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
-        { name: "Fluticasone", class: "Respiratory", maxDose: "Varies (Inhaled)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Minimal systemic absorption." },
-        { name: "Montelukast", class: "Respiratory", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Theophylline", class: "Respiratory", maxDose: "Monitor levels", renal: "Caution in severe", ref: "UpToDate: Metabolites may accumulate." },
-        { name: "Acetylcysteine", class: "Respiratory", maxDose: "1800 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary." },
-        { name: "Bromhexine", class: "Respiratory", maxDose: "48 mg/day", renal: "Severe impairment", ref: "Product Info: Cautious use or dose reduction." },
-        { name: "Ambroxol", class: "Respiratory", maxDose: "120 mg/day", renal: "Severe impairment", ref: "Product Info: Cautious use or dose reduction." },
-
-        // --- 6. Antihistamine & Corticosteroids ---
-        { name: "Cetirizine", class: "Antihistamine", maxDose: "10 mg/day", renal: "CrCl < 50", ref: "FDA Label: 5 mg once daily." },
-        { name: "Fexofenadine", class: "Antihistamine", maxDose: "180 mg/day", renal: "CrCl < 80", ref: "FDA Label: Start with 60 mg once daily." },
-        { name: "Chlorpheniramine", class: "Antihistamine", maxDose: "24 mg/day", renal: "Caution", ref: "FDA Label: Use with caution in severe impairment." },
-        { name: "Diphenhydramine", class: "Antihistamine", maxDose: "300 mg/day", renal: "CrCl < 50", ref: "UpToDate: Increase dosing interval." },
-        { name: "Hydroxyzine", class: "Antihistamine", maxDose: "400 mg/day", renal: "CrCl < 50", ref: "UpToDate: Reduce dose by 50%." },
-        { name: "Levocetirizine", class: "Antihistamine", maxDose: "5 mg/day", renal: "CrCl < 50", ref: "FDA Label: Adjust based on CrCl tiers. Avoid if < 10." },
-        { name: "Loratadine", class: "Antihistamine", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: 10 mg every other day." },
-        { name: "Desloratadine", class: "Antihistamine", maxDose: "5 mg/day", renal: "CrCl < 50", ref: "FDA Label: 5 mg every other day." },
-        { name: "Bilastine", class: "Antihistamine", maxDose: "20 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "EMA Label: No dosage adjustment necessary." },
-        
-        { name: "Prednisolone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Prednisone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Dexamethasone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Hydrocortisone", class: "Corticosteroids", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-
-        // --- 7. Antibiotics, Antifungals, Antivirals ---
-        { name: "Amoxicillin", class: "Beta-lactam", maxDose: "4 g/day", renal: "CrCl < 30", ref: "UpToDate: Extend interval to q12h. Avoid 875 mg tablets." },
-        { name: "Amoxicillin/clavulanate", class: "Beta-lactam", maxDose: "Varies", renal: "CrCl < 30", ref: "FDA Label: Do not use 875 mg or XR formulation if CrCl < 30." },
-        { name: "Cefepime", class: "Beta-lactam", maxDose: "6 g/day", renal: "CrCl ≤ 60", ref: "FDA Label: Decrease dose and/or increase interval." },
-        { name: "Cefotaxime", class: "Beta-lactam", maxDose: "12 g/day", renal: "CrCl < 20", ref: "FDA Label: Reduce dose by 50% if CrCl < 20." },
-        { name: "Ceftriaxone", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No general adjustment</span>", ref: "FDA Label: Max 2 g/day only if severe combined renal/hepatic failure." },
-        { name: "Dicloxacillin", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Cloxacillin", class: "Beta-lactam", maxDose: "4 g/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." },
-        { name: "Cefalexin", class: "Beta-lactam", maxDose: "4 g/day", renal: "CrCl < 50", ref: "FDA Label: Reduce frequency based on CrCl." },
-        { name: "Cefdinir", class: "Beta-lactam", maxDose: "600 mg/day", renal: "CrCl < 30", ref: "FDA Label: 300 mg once daily if CrCl < 30." },
-        { name: "Meropenem", class: "Beta-lactam", maxDose: "6 g/day", renal: "CrCl ≤ 50", ref: "FDA Label: Decrease dose and extend interval." },
-        { name: "Ampicillin/sulbactam", class: "Beta-lactam", maxDose: "12 g/day (IV)", renal: "CrCl < 30", ref: "FDA Label: Extend interval based on CrCl." },
-        { name: "Piperacillin/tazobactam", class: "Beta-lactam", maxDose: "18 g/day (IV)", renal: "CrCl < 40", ref: "FDA Label: Adjust dose and interval." },
-
-        { name: "Ciprofloxacin", class: "Fluoroquinolone", maxDose: "1500 mg/day (PO)", renal: "CrCl < 50", ref: "FDA Label: Adjust dose/interval." },
-        { name: "Levofloxacin", class: "Fluoroquinolone", maxDose: "750 mg/day", renal: "CrCl < 50", ref: "FDA Label: Alter frequency or dose." },
-        { name: "Norfloxacin", class: "Fluoroquinolone", maxDose: "800 mg/day", renal: "CrCl ≤ 30", ref: "FDA Label: 400 mg once daily if CrCl ≤ 30." },
-        { name: "Ofloxacin", class: "Fluoroquinolone", maxDose: "800 mg/day", renal: "CrCl ≤ 50", ref: "FDA Label: Prolong interval or reduce dose." },
-        { name: "Moxifloxacin", class: "Fluoroquinolone", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-
-        { name: "Azithromycin", class: "Macrolide", maxDose: "500 mg/day", renal: "Severe impairment", ref: "FDA Label: Caution if GFR < 10." },
-        { name: "Clarithromycin", class: "Macrolide", maxDose: "1000 mg/day", renal: "CrCl < 30", ref: "FDA Label: Reduce dose by 50% or double the interval." },
-        { name: "Roxithromycin", class: "Macrolide", maxDose: "300 mg/day", renal: "Severe impairment", ref: "Product Info: Modify dose." },
-
-        { name: "Doxycycline", class: "Other Antibiotics", maxDose: "200 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Does not accumulate in renal failure." },
-        { name: "Clindamycin", class: "Other Antibiotics", maxDose: "1.8 g (PO) / 4.8 g (IV)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Cotrimoxazole", class: "Other Antibiotics", maxDose: "Varies", renal: "CrCl < 30", ref: "FDA Label: Reduce dose 50% if CrCl 15-30. Contraindicated if < 15." },
-        { name: "Nitrofurantoin", class: "Other Antibiotics", maxDose: "400 mg/day", renal: "CrCl < 60", ref: "FDA Label: Avoid if CrCl < 60. (Beers Criteria allows if CrCl ≥ 30 short term)." },
-        { name: "Metronidazole", class: "Other Antibiotics", maxDose: "4 g/day", renal: "CrCl < 10", ref: "UpToDate: Administer 50% of dose if CrCl < 10." },
-        { name: "Gentamicin", class: "Other Antibiotics", maxDose: "Weight-based", renal: "CrCl < 60", ref: "UpToDate: Extend interval based on level monitoring." },
-
-        { name: "Fluconazole", class: "Antifungals", maxDose: "800 mg/day", renal: "CrCl ≤ 50", ref: "FDA Label: Give 50% of recommended dose after loading." },
-        { name: "Itraconazole", class: "Antifungals", maxDose: "400 mg/day", renal: "CrCl < 30 (IV)", ref: "FDA Label: IV formulation contraindicated (cyclodextrin)." },
-        { name: "Ketoconazole", class: "Antifungals", maxDose: "400 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Voriconazole", class: "Antifungals", maxDose: "Varies", renal: "CrCl < 50 (IV)", ref: "FDA Label: Avoid IV due to vehicle accumulation. PO is fine." },
-        
-        { name: "Acyclovir", class: "Antivirals", maxDose: "4000 mg/day (PO)", renal: "CrCl < 50", ref: "FDA Label: Increase interval based on CrCl." },
-        { name: "Valacyclovir", class: "Antivirals", maxDose: "4000 mg/day", renal: "CrCl < 50", ref: "FDA Label: Reduce dose/extend interval." },
-        { name: "Oseltamivir", class: "Antivirals", maxDose: "150 mg/day", renal: "CrCl ≤ 60", ref: "FDA Label: Dose reduction required." },
-        { name: "Molnupiravir", class: "Antivirals", maxDose: "1600 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Favipiravir", class: "Antivirals", maxDose: "3600 mg/day (Day 1)", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No dosage adjustment necessary. (Limited data in severe impairment)" },
-
-
-        // --- 8. Urology, CNS, Misc ---
-        { name: "Tamsulosin", class: "Urology", maxDose: "0.8 mg/day", renal: "CrCl < 10", ref: "FDA Label: Use with caution in ESRD." },
-        { name: "Doxazosin", class: "Urology", maxDose: "8 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Finasteride", class: "Urology", maxDose: "5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Dutasteride", class: "Urology", maxDose: "0.5 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Oxybutynin", class: "Urology", maxDose: "30 mg/day", renal: "Caution", ref: "FDA Label: Use with caution." },
-        { name: "Solifenacin", class: "Urology", maxDose: "10 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 5 mg/day." },
-        { name: "Mirabegron", class: "Urology", maxDose: "50 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 25 mg/day if CrCl 15-29. Avoid if < 15." },
-        { name: "Sildenafil", class: "Urology", maxDose: "100 mg/day", renal: "CrCl < 30", ref: "FDA Label: Consider starting at 25 mg." },
-        { name: "Tadalafil", class: "Urology", maxDose: "20 mg/day", renal: "CrCl < 50", ref: "FDA Label: Max 10 mg PRN if CrCl 30-50. Max 5 mg every 72h if <30." },
-
-        { name: "Fluoxetine", class: "CNS", maxDose: "80 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Use caution in severe impairment." },
-        { name: "Sertraline", class: "CNS", maxDose: "200 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Escitalopram", class: "CNS", maxDose: "20 mg/day", renal: "CrCl < 20", ref: "FDA Label: Use caution." },
-        { name: "Venlafaxine", class: "CNS", maxDose: "225 mg/day", renal: "CrCl < 90", ref: "FDA Label: Reduce dose 25-50% if CrCl 30-89; 50% if < 30." },
-        { name: "Diazepam", class: "CNS", maxDose: "40 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Metabolites may accumulate." },
-        { name: "Lorazepam", class: "CNS", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment (PO)</span>", ref: "FDA Label: IV formulation vehicle may accumulate." },
-        { name: "Haloperidol", class: "CNS", maxDose: "100 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Cautious use." },
-        { name: "Risperidone", class: "CNS", maxDose: "16 mg/day", renal: "CrCl < 30", ref: "FDA Label: Start 0.5 mg bid, titrate slowly." },
-
-        { name: "Carbamazepine", class: "Antiepileptics", maxDose: "1600 mg/day", renal: "CrCl < 10", ref: "UpToDate: Reduce dose by 25%." },
-        { name: "Valproic acid", class: "Antiepileptics", maxDose: "60 mg/kg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: Protein binding altered, monitor free levels." },
-        { name: "Levetiracetam", class: "Antiepileptics", maxDose: "3000 mg/day", renal: "CrCl ≤ 80", ref: "FDA Label: Reduce dose based on CrCl tiers." },
-        { name: "Phenytoin", class: "Antiepileptics", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: Altered protein binding in uremia." },
-        { name: "Topiramate", class: "Antiepileptics", maxDose: "400 mg/day", renal: "CrCl < 70", ref: "FDA Label: Reduce dose by 50%." },
-
-        { name: "Sumatriptan", class: "Migraine", maxDose: "200 mg/day (PO)", renal: "Severe impairment", ref: "UpToDate: Use caution." },
-        { name: "Flunarizine", class: "Migraine", maxDose: "10 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "Product Info: No formal guidelines." },
-
-        { name: "Levothyroxine", class: "Thyroid", maxDose: "Titrated", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        { name: "Methimazole", class: "Thyroid", maxDose: "60 mg/day", renal: "<span class='no-adjust'>No adjustment</span>", ref: "FDA Label: No dosage adjustment necessary." },
-        
-        { name: "Alendronate", class: "Osteoporosis", maxDose: "70 mg/week", renal: "CrCl < 35", ref: "FDA Label: Not recommended if CrCl < 35." },
-        
-        { name: "Colchicine", class: "Gout", maxDose: "Varies", renal: "CrCl < 30", ref: "FDA Label: Reduce dose. Avoid if hepatic + renal impairment." },
-        { name: "Allopurinol", class: "Gout", maxDose: "800 mg/day", renal: "CrCl < 20", ref: "FDA Label: Max 200 mg/day if CrCl 10-20, 100 mg if < 10." },
-        { name: "Febuxostat", class: "Gout", maxDose: "120 mg/day", renal: "CrCl < 30", ref: "FDA Label: Max 40 mg/day." },
-
-        { name: "Tranexamic acid", class: "Hematology", maxDose: "3900 mg/day", renal: "SCr > 1.36", ref: "FDA Label: Dose adjust based on serum creatinine." },
-        
-        { name: "Folic acid", class: "Supplements", maxDose: "Varies", renal: "<span class='no-adjust'>No adjustment</span>", ref: "UpToDate: No dosage adjustment necessary." }
-    ];
-
-        // ฟังก์ชันสร้างลิ้งก์ UpToDate รองรับยาสูตรผสม และยาที่ไม่มีใน US
-    function getUpToDateLink(drugName) {
-        let formattedName = drugName.toLowerCase().trim().replace(/\s+/g, '-');
-        
-        // 1. ดักจับยาที่ไม่มีหน้า Profile มาตรฐาน ให้ดีดไปหน้า Search ของ UpToDate แทน
-        const searchOnlyDrugs = ["molnupiravir", "favipiravir", "manidipine"];
-        if (searchOnlyDrugs.includes(formattedName)) {
-            return `https://www.uptodate.com/contents/search?search=${formattedName}+dosing`;
-        }
-        
-        // 2. ดักจับยาสูตรผสมที่ต้องเปลี่ยนชื่อ Path
-        switch(formattedName) {
-            case "amoxicillin/clavulanate":
-                formattedName = "amoxicillin-and-clavulanate";
-                break;
-            case "cotrimoxazole":
-                formattedName = "trimethoprim-and-sulfamethoxazole-cotrimoxazole"; 
-                break;
-            case "alum-milk":
-                formattedName = "aluminum-hydroxide-and-magnesium-hydroxide";
-                break;
-            case "ciprofloxacin":
-                formattedName = "ciprofloxacin-systemic"; 
-                break;
-            case "ampicillin/sulbactam":
-                formattedName = "ampicillin-and-sulbactam";
-                break;
-            case "piperacillin/tazobactam":
-                formattedName = "piperacillin-and-tazobactam";
-                break;
-        }
-
-        return `https://www.uptodate.com/contents/${formattedName}-drug-information?sectionName=Kidney%20Impairment%20(Adult)`;
+function renderCategoryButtons(){
+  const grid=document.getElementById("categoryGrid");
+  grid.innerHTML="";
+  const isDark=document.documentElement.getAttribute("data-theme")==="dark";
+  Object.keys(categoryMeta).forEach(key=>{
+    const meta=categoryMeta[key];
+    const btn=document.createElement("button");
+    btn.className="cat-btn"+(activeCategory===key?" active":"");
+    btn.innerHTML='<div class="icon-circle">'+meta.icon+'</div><span class="label">'+meta.label+'</span><span class="count-badge">'+countInCategory(key)+' รายการ</span>';
+    if(activeCategory===key){
+      btn.style.borderColor=meta.color;
+      btn.style.background=hexToRgba(meta.color,isDark?0.18:0.08);
+      btn.querySelector(".icon-circle").style.background=meta.color;
+      btn.querySelector(".icon-circle").style.color="#fff";
     }
-
-
-    function renderTable(data) {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        
-        data.forEach(drug => {
-            let renalContent = drug.renal;
-            if(!drug.renal.includes('no-adjust')) {
-                renalContent = `
-                    <span class="tooltip">${drug.renal}
-                        <span class="tooltiptext">📚 <strong>Reference:</strong><br>${drug.ref}</span>
-                    </span>`;
-            }
-
-            const row = `<tr>
-                <td data-label="Drug Name"><strong>${drug.name}</strong> <br><span class="tag">${drug.class}</span></td>
-                <td data-label="Max Dose">${drug.maxDose}</td>
-                <td data-label="Renal Adjustment">
-                    ${renalContent}
-                </td>
-                <td data-label="UpToDate Link"><a href="${getUpToDateLink(drug.name)}" target="_blank" class="btn-link">🔗 เปิด UpToDate</a></td>
-            </tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-
-    function filterTable() {
-        const searchText = document.getElementById('searchInput').value.toLowerCase();
-        const selectedClass = document.getElementById('classFilter').value;
-
-        let filteredData = drugData.filter(drug => {
-            const matchName = drug.name.toLowerCase().includes(searchText);
-            const matchClass = selectedClass === "All" || drug.class === selectedClass;
-            return matchName && matchClass;
-        });
-
-        if(selectedClass === "All") {
-            filteredData.sort((a, b) => a.name.localeCompare(b.name));
-        }
-
-        renderTable(filteredData);
-    }
-
-    function toggleTheme() {
-        const htmlTag = document.documentElement;
-        const btn = document.getElementById('themeToggleBtn');
-        const currentTheme = htmlTag.getAttribute('data-theme');
-
-        if (currentTheme === 'dark') {
-            htmlTag.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-            btn.innerText = '🌙';
-        } else {
-            htmlTag.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-            btn.innerText = '☀️';
-        }
-    }
-
-    window.onload = () => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('themeToggleBtn').innerText = '☀️';
-        }
-
-        drugData.sort((a, b) => a.name.localeCompare(b.name));
-        renderTable(drugData);
+    btn.onclick=()=>{
+      activeCategory=(activeCategory===key)?null:key;
+      activeSubset="all"; searchTerm="";
+      document.getElementById("searchInput").value="";
+      document.getElementById("clearSearch").style.display="none";
+      renderCategoryButtons(); renderSubsetChips(); renderResults();
     };
+    grid.appendChild(btn);
+  });
+}
 
+function renderSubsetChips(){
+  const row=document.getElementById("subsetRow");
+  row.innerHTML="";
+  if(!activeCategory){row.style.display="none";return;}
+  row.style.display="flex";
+  const meta=categoryMeta[activeCategory];
+  meta.subsets.forEach(s=>{
+    const chip=document.createElement("button");
+    chip.className="subset-chip"+(activeSubset===s.key?" active":"");
+    chip.textContent=s.label;
+    if(activeSubset===s.key){chip.style.background=meta.color;chip.style.borderColor=meta.color;chip.style.color="#fff";}
+    chip.onclick=()=>{activeSubset=s.key;renderSubsetChips();renderResults();};
+    row.appendChild(chip);
+  });
+}
+
+function filterDrugs(){
+  if(searchTerm.trim().length>0){
+    const t=searchTerm.trim().toLowerCase();
+    return drugData.filter(d=>d.name.toLowerCase().includes(t)||d.class.toLowerCase().includes(t));
+  }
+  if(!activeCategory) return [];
+  let list=drugData.filter(d=>d.category===activeCategory);
+  if(activeCategory==="abx"){
+    if(activeSubset==="opd") list=list.filter(d=>d.type==="antibacterial"&&(d.setting==="opd"||d.setting==="both"));
+    else if(activeSubset==="ipd") list=list.filter(d=>d.type==="antibacterial"&&(d.setting==="ipd"||d.setting==="both"));
+    else if(activeSubset==="antifungal") list=list.filter(d=>d.type==="antifungal");
+    else if(activeSubset==="antiviral") list=list.filter(d=>d.type==="antiviral");
+  } else if(activeSubset!=="all"){
+    list=list.filter(d=>d.subset && d.subset.includes(activeSubset));
+  }
+  return list;
+}
+
+function renderResults(){
+  const container=document.getElementById("drugList");
+  const countEl=document.getElementById("resultCount");
+  const results=filterDrugs().sort((a,b)=>a.name.localeCompare(b.name));
+
+  if(searchTerm.trim().length===0 && !activeCategory){
+    countEl.textContent="เลือกกลุ่มยา หรือค้นหาชื่อยาด้านบน";
+    container.innerHTML='<div class="empty-state"><span class="big-icon">🩺</span><p>เลือกกลุ่มยาด้านบน หรือพิมพ์ชื่อยาที่ช่องค้นหา<br>เพื่อเริ่มตรวจสอบขนาดยา</p></div>';
+    return;
+  }
+  countEl.innerHTML='<span class="count-pill">พบ '+results.length+' รายการ</span>';
+  if(results.length===0){
+    container.innerHTML='<div class="empty-state"><span class="big-icon">😕</span><p>ไม่พบยาที่ตรงกับเงื่อนไขค้นหา</p></div>';
+    return;
+  }
+  container.innerHTML="";
+  results.forEach((d,i)=>{
+    const accent=categoryMeta[d.category].color;
+    const card=document.createElement("div");
+    card.className="drug-card";
+    card.style.animationDelay=(i*0.02)+"s";
+    card.style.setProperty("--card-accent",accent);
+    card.innerHTML=
+      '<div class="card-top"><div><h3>'+d.name+'</h3>'+
+      '<div class="badge-row"><span class="tag">'+d.class+'</span>'+settingBadgeHTML(d)+'</div></div>'+
+      '<button class="ud-btn">🔗 UpToDate</button></div>'+
+      '<div class="divider"></div>'+
+      '<div class="info-row"><span class="info-icon">💊</span><div class="info-text"><span class="info-label">Max Dose</span><span class="info-value">'+d.maxDose+'</span></div></div>'+
+      '<div class="info-row"><span class="info-icon">🧪</span><div class="info-text"><span class="info-label">Renal Adjustment</span><span class="info-value">'+d.renal+'</span></div></div>';
+    card.querySelector(".ud-btn").addEventListener("click",()=>window.open(getUpToDateLink(d.name),"_blank"));
+    container.appendChild(card);
+  });
+}
+
+const searchInput=document.getElementById("searchInput");
+const clearBtn=document.getElementById("clearSearch");
+searchInput.addEventListener("input",e=>{searchTerm=e.target.value;clearBtn.style.display=searchTerm?"flex":"none";renderResults();});
+clearBtn.addEventListener("click",()=>{searchTerm="";searchInput.value="";clearBtn.style.display="none";renderResults();});
+
+const themeToggle=document.getElementById("themeToggle");
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  themeToggle.textContent=t==="dark"?"☀️":"🌙";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content",t==="dark"?"#0b1220":"#0d9488");
+  localStorage.setItem("doseToolTheme",t);
+  renderCategoryButtons(); renderSubsetChips();
+}
+themeToggle.addEventListener("click",()=>{const c=document.documentElement.getAttribute("data-theme");applyTheme(c==="dark"?"light":"dark");});
+applyTheme(localStorage.getItem("doseToolTheme")||(window.matchMedia('(prefers-color-scheme: dark)').matches?"dark":"light"));
+
+renderCategoryButtons(); renderSubsetChips(); renderResults();
 </script>
-
 </body>
 </html>
