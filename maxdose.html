@@ -26,7 +26,8 @@
     --both-c:#d97706; --both-bg:#fffbeb;
     --af-c:#6d28d9; --af-bg:#ede9fe;
     --av-c:#0e7490; --av-bg:#cffafe;
-    --drugscom-c:#2563eb; /* Blue tone for Drugs.com */
+    --drugscom-c:#2563eb; 
+    --mims-c:#059669; /* Green tone for MIMS */
   }
   [data-theme="dark"]{
     --bg:#0b1220; --bg-grad-b:#111a2c;
@@ -38,6 +39,7 @@
     --opd-bg:rgba(37,99,235,.16); --ipd-bg:rgba(220,38,38,.16); --both-bg:rgba(217,119,6,.16);
     --af-bg:rgba(109,40,217,.18); --av-bg:rgba(14,116,144,.18);
     --drugscom-c:#3b82f6;
+    --mims-c:#10b981;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   body{
@@ -95,7 +97,8 @@
   }
   .action-btn:active{transform:scale(.95);}
   .action-btn.on{background:#fbbf24; border-color:#fbbf24; color:#78350f;}
-  .action-btn.ref-on{background:var(--drugscom-c); border-color:var(--drugscom-c); color:#fff;} 
+  .action-btn.ref-drugscom{background:var(--drugscom-c); border-color:var(--drugscom-c); color:#fff;} 
+  .action-btn.ref-mims{background:var(--mims-c); border-color:var(--mims-c); color:#fff;} 
   
   .fav-star{
     flex-shrink:0; background:none; border:none; font-size:1.15rem; cursor:pointer;
@@ -146,7 +149,6 @@
   .drug-card:hover{box-shadow:var(--shadow-md); transform:translateY(-2px);}
   @keyframes fadeUp{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
   
-  /* Flexbox fix for long names/tags pushing the button */
   .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:9px;}
   .card-top-left{flex:1; min-width:0;}
   .card-top h3{margin:0 0 5px; font-size:.96rem; font-weight:700; line-height:1.3; word-wrap:break-word;}
@@ -172,6 +174,9 @@
   .ud-btn.drugscom-mode{ color:var(--drugscom-c); border-color:var(--drugscom-c); }
   .ud-btn.drugscom-mode:hover{ background:var(--drugscom-c); color:#fff; }
 
+  .ud-btn.mims-mode{ color:var(--mims-c); border-color:var(--mims-c); }
+  .ud-btn.mims-mode:hover{ background:var(--mims-c); color:#fff; }
+
   .divider{height:1px; background:var(--border); margin:9px 0;}
   .info-row{display:flex; gap:7px; margin:7px 0; align-items:flex-start;}
   .info-row .info-icon{font-size:.85rem; flex-shrink:0; margin-top:1px; opacity:.7;}
@@ -193,7 +198,7 @@
   @media(min-width:1024px){ .category-grid{grid-template-columns:repeat(9,1fr);} }
   @media(max-width:380px){ 
     .drug-list{grid-template-columns:1fr;} 
-    .action-btn{flex: 1 1 45%;}
+    .action-btn{flex: 1 1 30%;}
   }
 
   @media print{
@@ -303,7 +308,7 @@ const drugData = [
 {name:"Nimodipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"360 mg/day",renal:"ไม่ต้องปรับตามไต"},
 {name:"Nitrendipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"40 mg/day",renal:"ไม่ต้องปรับตามไต"},
 {name:"Isradipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
-{name:"Lercanidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"CrCl <30: ห้ามใช้"},
+{name:"Lercanidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"CrCl <30: ใช้ด้วยความระมัดระวัง"},
 {name:"Manidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ระมัดระวังในไตเสื่อมรุนแรง"},
 {name:"Cilnidipine",class:"CCB (Dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"20 mg/day",renal:"ไม่ต้องปรับตามไต"},
 {name:"Diltiazem",class:"CCB (Non-dihydropyridine)",category:"cv",subset:["ccb"],maxDose:"480 mg/day",renal:"ไม่ต้องปรับตามไต"},
@@ -585,7 +590,7 @@ function updateFavCount(){
 
 // ==================== STATE ====================
 let activeCategory=null, activeSubset="all", searchTerm="";
-let currentRef = "uptodate"; // Default Reference
+let currentRef = "uptodate"; // Default Reference (uptodate -> drugscom -> mims -> uptodate)
 
 // ==================== HELPERS ====================
 function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
@@ -599,13 +604,15 @@ function settingBadgeHTML(d){
   return d.setting ? '<span class="setting-badge '+d.setting+'">'+map[d.setting]+'</span>' : "";
 }
 
-// Generate Reference Link based on current mode
+// Generate Reference Link based on current mode (UpToDate, Drugs.com, MIMS)
 function getRefLink(name){
   const clean = name.split("(")[0].trim();
   if (currentRef === "drugscom") {
-    // แปลงช่องว่างและ / ให้เป็น - (เช่น amoxicillin/clavulanate -> amoxicillin-clavulanate)
     const formatted = clean.toLowerCase().replace(/[\s\/]+/g, '-');
     return "https://www.drugs.com/dosage/" + formatted + ".html#Renal_Dose_Adjustments";
+  } else if (currentRef === "mims") {
+    const formattedMims = clean.toLowerCase().replace(/[\s\/]+/g, '-');
+    return "https://www.mims.com/thailand/drug/info/" + formattedMims;
   }
   return "https://www.uptodate.com/contents/search?search=" + encodeURIComponent(clean);
 }
@@ -717,8 +724,15 @@ function renderResults(){
   container.innerHTML="";
   
   // Set up Reference Display Text and Style Class
-  const refText = currentRef === "uptodate" ? "UpToDate" : "Drugs.com";
-  const refClass = currentRef === "uptodate" ? "" : " drugscom-mode";
+  let refText = "UpToDate";
+  let refClass = "";
+  if (currentRef === "drugscom") {
+    refText = "Drugs.com";
+    refClass = " drugscom-mode";
+  } else if (currentRef === "mims") {
+    refText = "MIMS Thailand";
+    refClass = " mims-mode";
+  }
 
   results.forEach((d,i)=>{
     const accent=categoryMeta[d.category].color;
@@ -798,17 +812,26 @@ if (savedState) {
 
 const refToggleBtn = document.getElementById("refToggleBtn");
 function updateRefUI() {
+  refToggleBtn.classList.remove("ref-drugscom", "ref-mims");
   if (currentRef === "uptodate") {
     refToggleBtn.innerHTML = "📚 REF: UpToDate";
-    refToggleBtn.classList.remove("ref-on");
-  } else {
+  } else if (currentRef === "drugscom") {
     refToggleBtn.innerHTML = "📚 REF: Drugs.com";
-    refToggleBtn.classList.add("ref-on");
+    refToggleBtn.classList.add("ref-drugscom");
+  } else if (currentRef === "mims") {
+    refToggleBtn.innerHTML = "📚 REF: MIMS";
+    refToggleBtn.classList.add("ref-mims");
   }
-  renderResults(); // Re-render to update the link buttons in drug cards
+  renderResults(); 
 }
 refToggleBtn.addEventListener("click", () => {
-  currentRef = (currentRef === "uptodate") ? "drugscom" : "uptodate";
+  if (currentRef === "uptodate") {
+    currentRef = "drugscom";
+  } else if (currentRef === "drugscom") {
+    currentRef = "mims";
+  } else {
+    currentRef = "uptodate";
+  }
   updateRefUI();
 });
 
