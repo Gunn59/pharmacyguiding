@@ -9,21 +9,21 @@
 
         /* ================= Theme Variables ================= */
         :root {
-            --bg-body: #ffffff;
-            --text-main: #333333;
-            --text-muted: #666666;
+            --bg-body: #f4f7fb;
+            --text-main: #172033;
+            --text-muted: #64748b;
             --bg-card: #ffffff;
             --bg-input: #ffffff;
-            --border-color: #dddddd;
-            --border-light: #eeeeee;
+            --border-color: #d9e2ef;
+            --border-light: #e7edf5;
             
             /* UI Colors */
-            --primary: #007aff;
-            --primary-hover: #005bb5;
-            --success: #4CAF50;
-            --success-text: #2e7d32;
-            --danger: #d32f2f;
-            --box-bg: #f9f9f9;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --success-text: #15803d;
+            --danger: #dc2626;
+            --box-bg: #f8fafc;
 
             /* Warfarin Tablet Colors (Light Mode) */
             --bg-1mg: #ffe4e1; --border-1mg: #ffb6c1;
@@ -39,21 +39,21 @@
         }
 
         html[data-theme="dark"] {
-            --bg-body: #121212;
-            --text-main: #f5f5f5;
-            --text-muted: #aaaaaa;
-            --bg-card: #1e1e1e;
-            --bg-input: #2c2c2e;
-            --border-color: #3a3a3c;
-            --border-light: #2a2a2a;
+            --bg-body: #0b1220;
+            --text-main: #e8eef8;
+            --text-muted: #94a3b8;
+            --bg-card: #111a2e;
+            --bg-input: #172238;
+            --border-color: #2a3954;
+            --border-light: #22304a;
             
             /* UI Colors */
-            --primary: #4da3ff;
-            --primary-hover: #82c4ff;
-            --success: #43a047;
-            --success-text: #66bb6a;
-            --danger: #ef5350;
-            --box-bg: #1a1a1a;
+            --primary: #60a5fa;
+            --primary-hover: #93c5fd;
+            --success: #22c55e;
+            --success-text: #4ade80;
+            --danger: #f87171;
+            --box-bg: #101a2d;
 
             /* Warfarin Tablet Colors (Dark Mode) - Muted but distinct */
             --bg-1mg: #3b2629; --border-1mg: #b56c77;
@@ -91,7 +91,7 @@
             background: var(--bg-card);
             padding: 8px 16px;
             border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 14px rgba(15,23,42,.08);
             margin-bottom: 20px; 
             font-size: 14px; 
             transition: all 0.2s ease;
@@ -102,7 +102,7 @@
         /* ================= Rows & Colors ================= */
         .row { 
             display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 12px; padding: 15px; 
-            border-radius: 8px; border: 1px solid var(--border-light); box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px; border: 1px solid var(--border-light); box-shadow: 0 3px 12px rgba(15,23,42,.06);
             transition: background-color 0.3s, border-color 0.3s;
         }
         
@@ -187,7 +187,7 @@
             color: var(--reset-text);
             border: 1px solid var(--reset-border);
             border-radius: 20px; font-size: 1em; font-weight: bold; cursor: pointer;
-            text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s ease;
+            text-align: center; box-shadow: 0 4px 14px rgba(15,23,42,.08); transition: all 0.2s ease;
         }
         .btn-reset-all:hover { background-color: var(--reset-hover); }
         .btn-reset-all:active { transform: scale(0.98); }
@@ -202,6 +202,17 @@
         }
         .theme-toggle-btn:hover { transform: scale(1.1); background: var(--primary-hover); }
         .theme-toggle-btn:active { transform: scale(0.95); }
+
+        body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 10% 0%,rgba(37,99,235,.08),transparent 30%),radial-gradient(circle at 100% 20%,rgba(14,165,233,.07),transparent 28%);}
+        h2{font-size:1.65rem;margin:0 0 18px;font-weight:700;letter-spacing:-.02em;}
+        .row{border-radius:14px;gap:8px;backdrop-filter:blur(8px);}
+        .tabs-select,input[type="number"]{padding:9px 11px;border-radius:10px;outline:none;}
+        .tabs-select:focus,input[type="number"]:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+        .day-label{padding:7px 11px;border-radius:10px;font-weight:600;}
+        .btn-reverse,.btn-duplicate,.btn-remove{border-radius:9px;padding:7px 11px;transition:transform .15s,filter .15s;}
+        .btn-reverse:hover,.btn-duplicate:hover,.btn-remove:hover{filter:brightness(.96);transform:translateY(-1px);}
+        .summary-box,.dispense-box{border-radius:14px;box-shadow:0 4px 16px rgba(15,23,42,.05);}
+        html[data-theme="dark"] body::before{background:radial-gradient(circle at 10% 0%,rgba(96,165,250,.10),transparent 30%),radial-gradient(circle at 100% 20%,rgba(45,212,191,.07),transparent 28%);}
     </style>
 </head>
 <body>
@@ -214,13 +225,13 @@
     <h2>⚡ Warfarin Fast Screen</h2>
     
     <div id="regimen-container">
-        <div class="row color-1mg" data-strength="1"><div class="strength-label">1 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
+        <div class="row color-1mg" data-strength="1"><div class="strength-label">1 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option><option value="3">3 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
         
-        <div class="row color-2mg" data-strength="2"><div class="strength-label">2 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
+        <div class="row color-2mg" data-strength="2"><div class="strength-label">2 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option><option value="3">3 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
         
-        <div class="row color-3mg" data-strength="3"><div class="strength-label">3 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
+        <div class="row color-3mg" data-strength="3"><div class="strength-label">3 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option><option value="3">3 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
         
-        <div class="row color-5mg" data-strength="5"><div class="strength-label">5 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
+        <div class="row color-5mg" data-strength="5"><div class="strength-label">5 mg</div><select class="tabs-select"><option value="0" selected>0 เม็ด</option><option value="0.25">1/4 เม็ด</option><option value="0.5">1/2 เม็ด</option><option value="1">1 เม็ด</option><option value="1.5">1.5 เม็ด</option><option value="2">2 เม็ด</option><option value="3">3 เม็ด</option></select><div class="days-group"><label><input type="checkbox" class="day-checkbox" value="0"> <span class="day-label">จ</span></label><label><input type="checkbox" class="day-checkbox" value="1"> <span class="day-label">อ</span></label><label><input type="checkbox" class="day-checkbox" value="2"> <span class="day-label">พ</span></label><label><input type="checkbox" class="day-checkbox" value="3"> <span class="day-label">พฤ</span></label><label><input type="checkbox" class="day-checkbox" value="4"> <span class="day-label">ศ</span></label><label><input type="checkbox" class="day-checkbox" value="5"> <span class="day-label">ส</span></label><label><input type="checkbox" class="day-checkbox" value="6"> <span class="day-label">อา</span></label><button type="button" class="btn-reverse">R</button><button type="button" class="btn-duplicate">➕</button></div></div>
     </div>
 
     <div class="summary-box">
