@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d9488">
+<title>Fast Dose Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2f6;
+    --bg-grad-a:#eef4f9;
+    --bg-grad-b:#e4ecf5;
+    --surface:#ffffff;
+    --surface-2:#f8fafc;
+    --text:#0f172a;
+    --text-muted:#64748b;
+    --text-faint:#94a3b8;
+    --border:#e6ebf1;
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06);
+    --shadow-md:0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.04);
+    --shadow-lg:0 12px 32px rgba(15,23,42,.12);
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+
+    --brand-1:#0891b2;
+    --brand-2:#0d9488;
+
+    --cv:#e11d48;    --cv-bg:#fff1f3;   --cv-bg-dark:rgba(225,29,72,.15);
+    --endo:#7c3aed;  --endo-bg:#f5f0fe; --endo-bg-dark:rgba(124,58,237,.15);
+    --abx:#059669;   --abx-bg:#ecfdf5;  --abx-bg-dark:rgba(5,150,105,.15);
+
+    --opd-c:#2563eb; --opd-bg:#eff6ff;
+    --ipd-c:#dc2626; --ipd-bg:#fef2f2;
+    --both-c:#d97706; --both-bg:#fffbeb;
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220;
+    --bg-grad-a:#0b1220;
+    --bg-grad-b:#111a2c;
+    --surface:#161f32;
+    --surface-2:#1c273d;
+    --text:#e8edf5;
+    --text-muted:#9aa8c0;
+    --text-faint:#6b7a95;
+    --border:#26314a;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+    --shadow-md:0 6px 16px rgba(0,0,0,.35);
+    --shadow-lg:0 16px 40px rgba(0,0,0,.5);
+
+    --cv-bg:rgba(225,29,72,.14); --endo-bg:rgba(124,58,237,.14); --abx-bg:rgba(5,150,105,.14);
+    --opd-bg:rgba(37,99,235,.16); --ipd-bg:rgba(220,38,38,.16); --both-bg:rgba(217,119,6,.16);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; font-family:'Prompt','Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, var(--bg-grad-b) 0%, transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, var(--bg-grad-b) 0%, transparent 55%),
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--text); transition:background .3s,color .3s;
+    min-height:100vh;
+    padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky; top:0; z-index:30;
+    padding:calc(14px + env(safe-area-inset-top)) 16px 16px;
+    background:linear-gradient(135deg,var(--brand-1),var(--brand-2));
+    box-shadow:0 6px 24px rgba(8,145,178,.25);
+    border-radius:0 0 24px 24px;
+  }
+  .header-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-icon{
+    width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.22);
+    display:flex; align-items:center; justify-content:center; font-size:1.25rem; flex-shrink:0;
+    backdrop-filter:blur(4px);
+  }
+  .brand h1{color:#fff; font-size:1.05rem; font-weight:700; margin:0; letter-spacing:.2px;}
+  .brand p{color:rgba(255,255,255,.85); font-size:.7rem; margin:1px 0 0; font-weight:400;}
+  .theme-btn{
+    background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:12px;
+    width:40px; height:40px; font-size:1.1rem; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; transition:.2s;
+  }
+  .theme-btn:active{transform:scale(.9);}
+
+  .search-wrap{position:relative;}
+  .search-wrap .icon-prefix{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:1rem; opacity:.5;
+  }
+  .search-wrap input{
+    width:100%; padding:13px 40px 13px 40px; border-radius:16px; border:none;
+    font-family:inherit; font-size:.92rem; outline:none; background:rgba(255,255,255,.96); color:#0f172a;
+    box-shadow:0 4px 14px rgba(0,0,0,.15);
+  }
+  .search-wrap input::placeholder{color:#94a3b8;}
+  .search-wrap .clear-btn{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    background:#e2e8f0; border:none; width:24px; height:24px; border-radius:50%; font-size:.85rem;
+    color:#64748b; cursor:pointer; display:none; align-items:center; justify-content:center;
+  }
+
+  main{max-width:1100px; margin:0 auto; padding:18px 16px 0;}
+
+  /* ---------- CATEGORY CARDS ---------- */
+  .category-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px;}
+  .cat-btn{
+    position:relative; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:16px 8px 14px; cursor:pointer; text-align:center; box-shadow:var(--shadow-sm);
+    transition:.18s ease; color:var(--text); overflow:hidden;
+  }
+  .cat-btn:active{transform:scale(.96);}
+  .cat-btn .icon-circle{
+    width:44px; height:44px; margin:0 auto 8px; border-radius:14px; display:flex; align-items:center;
+    justify-content:center; font-size:1.35rem; background:var(--surface-2); transition:.2s;
+  }
+  .cat-btn .label{font-size:.8rem; font-weight:600; display:block; line-height:1.3;}
+  .cat-btn .count-badge{
+    font-size:.63rem; font-weight:500; color:var(--text-faint); margin-top:2px; display:block;
+  }
+  .cat-btn.active{box-shadow:var(--shadow-md); transform:translateY(-2px);}
+  .cat-btn[data-cat="cv"].active{border-color:var(--cv); background:var(--cv-bg);}
+  .cat-btn[data-cat="cv"].active .icon-circle{background:var(--cv); color:#fff;}
+  .cat-btn[data-cat="endo"].active{border-color:var(--endo); background:var(--endo-bg);}
+  .cat-btn[data-cat="endo"].active .icon-circle{background:var(--endo); color:#fff;}
+  .cat-btn[data-cat="abx"].active{border-color:var(--abx); background:var(--abx-bg);}
+  .cat-btn[data-cat="abx"].active .icon-circle{background:var(--abx); color:#fff;}
+
+  /* ---------- SUBSET CHIPS ---------- */
+  .subset-row{
+    display:flex; gap:8px; overflow-x:auto; padding:2px 2px 14px; scrollbar-width:none;
+    -ms-overflow-style:none; mask-image:linear-gradient(90deg,#000 92%,transparent);
+  }
+  .subset-row::-webkit-scrollbar{display:none;}
+  .subset-chip{
+    flex-shrink:0; padding:9px 18px; border-radius:999px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text-muted); font-size:.82rem; cursor:pointer; white-space:nowrap;
+    font-weight:500; font-family:inherit; transition:.18s; box-shadow:var(--shadow-sm);
+  }
+  .subset-chip.active{
+    background:linear-gradient(135deg,var(--brand-1),var(--brand-2)); color:#fff; border-color:transparent;
+    box-shadow:0 4px 12px rgba(13,148,136,.3);
+  }
+
+  .result-meta{
+    display:flex; justify-content:space-between; align-items:center; margin:2px 0 14px;
+    color:var(--text-muted); font-size:.8rem; font-weight:500;
+  }
+  .result-meta .count-pill{
+    background:var(--surface-2); padding:4px 12px; border-radius:999px; font-weight:600; color:var(--text);
+  }
+
+  /* ---------- DRUG CARDS ---------- */
+  .drug-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px;}
+  .drug-card{
+    background:var(--surface); border-radius:var(--radius-md); padding:16px;
+    box-shadow:var(--shadow-sm); border:1px solid var(--border);
+    border-top:3px solid var(--card-accent,#0d9488);
+    transition:.2s ease; animation:fadeUp .3s ease backwards;
+  }
+  .drug-card:hover{box-shadow:var(--shadow-md); transform:translateY(-2px);}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;}
+  .card-top h3{margin:0 0 6px; font-size:1.02rem; font-weight:700; line-height:1.3;}
+  .badge-row{display:flex; flex-wrap:wrap; gap:5px; align-items:center;}
+  .tag{
+    display:inline-block; font-size:.68rem; padding:3px 9px; border-radius:7px;
+    background:var(--surface-2); color:var(--text-muted); font-weight:600;
+  }
+  .setting-badge{font-size:.65rem; padding:3px 9px; border-radius:7px; font-weight:700;}
+  .setting-badge.opd{background:var(--opd-bg); color:var(--opd-c);}
+  .setting-badge.ipd{background:var(--ipd-bg); color:var(--ipd-c);}
+  .setting-badge.both{background:var(--both-bg); color:var(--both-c);}
+
+  .ud-btn{
+    flex-shrink:0; background:var(--surface-2); color:var(--brand-2); border:1.5px solid var(--brand-2);
+    border-radius:10px; padding:8px 12px; font-size:.72rem; font-weight:700; cursor:pointer;
+    white-space:nowrap; font-family:inherit; display:flex; align-items:center; gap:4px; transition:.18s;
+  }
+  .ud-btn:hover{background:var(--brand-2); color:#fff;}
+  .ud-btn:active{transform:scale(.94);}
+
+  .divider{height:1px; background:var(--border); margin:10px 0;}
+  .info-row{display:flex; gap:8px; margin:8px 0; align-items:flex-start;}
+  .info-row .info-icon{font-size:.9rem; flex-shrink:0; margin-top:1px; opacity:.7;}
+  .info-row .info-text{flex:1;}
+  .info-row .info-label{font-size:.68rem; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:.4px; display:block; margin-bottom:2px;}
+  .info-row .info-value{font-size:.86rem; line-height:1.45; color:var(--text);}
+
+  /* ---------- EMPTY STATE ---------- */
+  .empty-state{
+    text-align:center; padding:56px 24px; color:var(--text-muted);
+    background:var(--surface); border-radius:var(--radius-lg); border:1px dashed var(--border);
+  }
+  .empty-state .big-icon{font-size:2.8rem; display:block; margin-bottom:12px; opacity:.6;}
+  .empty-state p{font-size:.88rem; margin:0; line-height:1.6;}
+
+  footer{
+    max-width:1100px; margin:28px auto 0; padding:16px 20px; color:var(--text-faint); font-size:.72rem;
+    text-align:center; line-height:1.6; border-top:1px solid var(--border);
+  }
+
+  @media(min-width:640px){
+    .category-grid{gap:14px;}
+    .cat-btn{padding:20px 12px 16px;}
+    .cat-btn .icon-circle{width:52px; height:52px; font-size:1.6rem;}
+    .cat-btn .label{font-size:.9rem;}
+  }
+  @media(max-width:380px){
+    .drug-list{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div>
+        <h1>Fast Dose Screening</h1>
+        <p>คัดกรองขนาดยาหน้างาน + เชื่อม UpToDate</p>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeToggle" title="สลับธีม">🌙</button>
+  </div>
+  <div class="search-wrap">
+    <span class="icon-prefix">🔍</span>
+    <input type="text" id="searchInput" placeholder="ค้นหาชื่อยา เช่น Enalapril, Ceftriaxone...">
+    <button class="clear-btn" id="clearSearch">✕</button>
+  </div>
+</header>
+
+<main>
+  <div class="category-grid" id="categoryGrid"></div>
+  <div class="subset-row" id="subsetRow"></div>
+  <div class="result-meta">
+    <span id="resultCount">เลือกกลุ่มยา หรือค้นหาชื่อยาด้านบน</span>
+  </div>
+  <div class="drug-list" id="drugList"></div>
+</main>
+
+<footer>
+  ⚠️ ข้อมูลนี้จัดทำเพื่อการคัดกรองเบื้องต้นหน้างานเท่านั้น กรุณายืนยันความถูกต้องและปรับตามผู้ป่วยรายบุคคลผ่าน UpToDate หรือแหล่งอ้างอิงมาตรฐานก่อนใช้ทางคลินิกจริงเสมอ
+</footer>
+
+<script>
+// ==================== DATA ====================
+const categoryMeta = {
+  cv:  { label:"Cardiovascular", icon:"❤️", var:"cv",
+         subsets:[
+           {key:"all", label:"ทั้งหมด"},
+           {key:"antihypertensive", label:"Antihypertensive"},
+           {key:"antianginal", label:"Antianginal"},
+           {key:"antilipid", label:"Antilipid"},
+           {key:"antiplatelet", label:"Antiplatelet/Anticoag"},
+           {key:"antiarrhythmic", label:"Antiarrhythmic"}
+         ]},
+  endo:{ label:"Endocrine", icon:"🦋", var:"endo",
+         subsets:[
+           {key:"all", label:"ทั้งหมด"},
+           {key:"antidiabetic", label:"Antidiabetic"},
+           {key:"thyroid", label:"Thyroid"},
+           {key:"corticosteroid", label:"Corticosteroid"},
+           {key:"bone", label:"Bone/Osteoporosis"}
+         ]},
+  abx: { label:"Antibiotics", icon:"💊", var:"abx",
+         subsets:[
+           {key:"all", label:"ทั้งหมด"},
+           {key:"opd", label:"OPD focused"},
+           {key:"ipd", label:"IPD focused"}
+         ]}
+};
+
+const drugData = [
+// ================= CARDIOVASCULAR =================
+{name:"Enalapril", class:"ACE Inhibitor", category:"cv", subset:["antihypertensive"], maxDose:"40 mg/day (แบ่งให้ 1-2 ครั้ง)", renal:"CrCl 10-30: เริ่ม 2.5 mg/day; CrCl <10: เริ่ม 2.5 mg วันเว้นวัน"},
+{name:"Captopril", class:"ACE Inhibitor", category:"cv", subset:["antihypertensive"], maxDose:"150 mg/day (แบ่งให้ 2-3 ครั้ง)", renal:"CrCl <30: ลดขนาด 50% และเพิ่มระยะห่างของมื้อยา"},
+{name:"Losartan", class:"ARB", category:"cv", subset:["antihypertensive"], maxDose:"100 mg/day", renal:"ไม่ต้องปรับ แต่ติดตาม K+/Cr อย่างใกล้ชิดถ้า CrCl <30"},
+{name:"Valsartan", class:"ARB", category:"cv", subset:["antihypertensive"], maxDose:"320 mg/day", renal:"CrCl <10: ใช้ด้วยความระมัดระวัง"},
+{name:"Amlodipine", class:"CCB (Dihydropyridine)", category:"cv", subset:["antihypertensive","antianginal"], maxDose:"10 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Nifedipine (Extended-release)", class:"CCB (Dihydropyridine)", category:"cv", subset:["antihypertensive","antianginal"], maxDose:"90 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Atenolol", class:"Beta-blocker (Cardioselective)", category:"cv", subset:["antihypertensive","antianginal"], maxDose:"100 mg/day", renal:"CrCl 15-35: max 50 mg/day; CrCl <15: max 25 mg/day"},
+{name:"Bisoprolol", class:"Beta-blocker (Cardioselective)", category:"cv", subset:["antihypertensive","antianginal"], maxDose:"20 mg/day", renal:"CrCl <20: max 10 mg/day"},
+{name:"Propranolol", class:"Beta-blocker (Non-selective)", category:"cv", subset:["antihypertensive","antianginal","antiarrhythmic"], maxDose:"320 mg/day (HTN)", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Carvedilol", class:"Beta-blocker (Alpha/Beta)", category:"cv", subset:["antihypertensive"], maxDose:"50 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Hydrochlorothiazide (HCTZ)", class:"Thiazide diuretic", category:"cv", subset:["antihypertensive"], maxDose:"50 mg/day (มักใช้ 12.5-25 mg/day)", renal:"ประสิทธิภาพลดลงถ้า CrCl <30 mL/min"},
+{name:"Furosemide", class:"Loop diuretic", category:"cv", subset:["antihypertensive"], maxDose:"600 mg/day (รายบวมมาก/ไตวาย)", renal:"อาจต้องเพิ่มขนาดเมื่อ CrCl ลดลงเพื่อให้ได้ผล"},
+{name:"Spironolactone", class:"Aldosterone antagonist", category:"cv", subset:["antihypertensive"], maxDose:"100 mg/day (HTN); 400 mg/day (ascites)", renal:"หลีกเลี่ยงถ้า CrCl <30 เสี่ยง hyperkalemia"},
+{name:"Methyldopa", class:"Central alpha-2 agonist", category:"cv", subset:["antihypertensive"], maxDose:"3000 mg/day", renal:"CrCl <10: เพิ่มระยะห่างมื้อยา"},
+{name:"Hydralazine", class:"Direct vasodilator", category:"cv", subset:["antihypertensive"], maxDose:"300 mg/day", renal:"CrCl <10: ให้ q8h แทน q6h"},
+{name:"Isosorbide Dinitrate (ISDN)", class:"Nitrate", category:"cv", subset:["antianginal"], maxDose:"160 mg/day (ต้องมี nitrate-free interval)", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Isosorbide Mononitrate (ISMN)", class:"Nitrate", category:"cv", subset:["antianginal"], maxDose:"240 mg/day (extended-release)", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Trimetazidine", class:"Metabolic antianginal", category:"cv", subset:["antianginal"], maxDose:"70 mg/day (35 mg BID)", renal:"CrCl 30-60: 35 mg/day; หลีกเลี่ยงถ้า CrCl <30"},
+{name:"Simvastatin", class:"Statin", category:"cv", subset:["antilipid"], maxDose:"40 mg/day (80 mg เฉพาะรายใช้มานาน)", renal:"CrCl <30: เริ่ม 5 mg/day ปรึกษาแพทย์ก่อนเพิ่ม"},
+{name:"Atorvastatin", class:"Statin", category:"cv", subset:["antilipid"], maxDose:"80 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Rosuvastatin", class:"Statin", category:"cv", subset:["antilipid"], maxDose:"40 mg/day (max เริ่มต้น 20 mg ในคนเอเชีย)", renal:"CrCl <30: max 10 mg/day"},
+{name:"Gemfibrozil", class:"Fibrate", category:"cv", subset:["antilipid"], maxDose:"1200 mg/day", renal:"CrCl <60: หลีกเลี่ยง/ลดขนาด; CrCl <15: ห้ามใช้"},
+{name:"Fenofibrate", class:"Fibrate", category:"cv", subset:["antilipid"], maxDose:"200 mg/day (micronized)", renal:"CrCl 30-59: ลดขนาด; CrCl <30: ห้ามใช้"},
+{name:"Ezetimibe", class:"Cholesterol absorption inhibitor", category:"cv", subset:["antilipid"], maxDose:"10 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Aspirin (Antiplatelet dose)", class:"Antiplatelet", category:"cv", subset:["antiplatelet"], maxDose:"325 mg/day (มักใช้ 81 mg/day)", renal:"ใช้ด้วยความระมัดระวังถ้า CrCl <10"},
+{name:"Clopidogrel", class:"Antiplatelet (P2Y12 inhibitor)", category:"cv", subset:["antiplatelet"], maxDose:"75 mg/day (loading 300-600 mg ครั้งเดียว)", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Warfarin", class:"Anticoagulant (VKA)", category:"cv", subset:["antiplatelet"], maxDose:"ปรับตาม INR เป้าหมาย (ไม่มี max ตายตัว)", renal:"CrCl <30: เริ่มขนาดต่ำ ติดตาม INR ถี่ขึ้น"},
+{name:"Enoxaparin", class:"Anticoagulant (LMWH)", category:"cv", subset:["antiplatelet"], maxDose:"1 mg/kg q12h (treatment dose)", renal:"CrCl <30: ปรับเป็น 1 mg/kg once daily"},
+{name:"Digoxin", class:"Cardiac glycoside", category:"cv", subset:["antiarrhythmic"], maxDose:"0.25 mg/day", renal:"CrCl <50: ลดขนาด/เพิ่มระยะห่าง + ติดตามระดับยา"},
+{name:"Amiodarone", class:"Antiarrhythmic (Class III)", category:"cv", subset:["antiarrhythmic"], maxDose:"Loading 800-1600 mg/day, maintenance 100-400 mg/day", renal:"ไม่ต้องปรับตามไต แต่ระวังตับ/ปอด/ไทรอยด์"},
+
+// ================= ENDOCRINE =================
+{name:"Metformin", class:"Biguanide", category:"endo", subset:["antidiabetic"], maxDose:"2000-2550 mg/day", renal:"eGFR 30-45: max 1000 mg/day; eGFR <30: ห้ามใช้"},
+{name:"Glibenclamide (Glyburide)", class:"Sulfonylurea", category:"endo", subset:["antidiabetic"], maxDose:"20 mg/day", renal:"หลีกเลี่ยงถ้า CrCl <50 เสี่ยง hypoglycemia รุนแรง"},
+{name:"Gliclazide", class:"Sulfonylurea", category:"endo", subset:["antidiabetic"], maxDose:"320 mg/day (MR: 120 mg/day)", renal:"ระมัดระวังถ้า CrCl <30"},
+{name:"Glipizide", class:"Sulfonylurea", category:"endo", subset:["antidiabetic"], maxDose:"40 mg/day", renal:"ปลอดภัยกว่าตัวอื่นในกลุ่มเมื่อไตเสื่อม แต่ยังต้องระวัง"},
+{name:"Pioglitazone", class:"Thiazolidinedione", category:"endo", subset:["antidiabetic"], maxDose:"45 mg/day", renal:"ไม่ต้องปรับ แต่ห้ามใช้ใน heart failure"},
+{name:"Sitagliptin", class:"DPP-4 inhibitor", category:"endo", subset:["antidiabetic"], maxDose:"100 mg/day", renal:"CrCl 30-50: 50 mg/day; CrCl <30: 25 mg/day"},
+{name:"Vildagliptin", class:"DPP-4 inhibitor", category:"endo", subset:["antidiabetic"], maxDose:"100 mg/day", renal:"CrCl <50: 50 mg once daily"},
+{name:"Acarbose", class:"Alpha-glucosidase inhibitor", category:"endo", subset:["antidiabetic"], maxDose:"300 mg/day", renal:"หลีกเลี่ยงถ้า CrCl <25"},
+{name:"Insulin NPH", class:"Intermediate-acting insulin", category:"endo", subset:["antidiabetic"], maxDose:"ปรับตามระดับน้ำตาล (ไม่มี max ตายตัว)", renal:"ไตเสื่อมอาจต้องลดขนาด (การขับ insulin ลดลง)"},
+{name:"Insulin Regular", class:"Short-acting insulin", category:"endo", subset:["antidiabetic"], maxDose:"ปรับตามระดับน้ำตาล (ไม่มี max ตายตัว)", renal:"ไตเสื่อมอาจต้องลดขนาด (การขับ insulin ลดลง)"},
+{name:"Levothyroxine", class:"Thyroid hormone replacement", category:"endo", subset:["thyroid"], maxDose:"ปรับตาม TSH เป้าหมาย (มัก 1.6 mcg/kg/day)", renal:"ไม่จำเป็นต้องปรับขนาดตามไต"},
+{name:"Propylthiouracil (PTU)", class:"Antithyroid", category:"endo", subset:["thyroid"], maxDose:"900 mg/day (initial), maintenance 50-300 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Methimazole", class:"Antithyroid", category:"endo", subset:["thyroid"], maxDose:"60 mg/day (initial), maintenance 5-15 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Prednisolone", class:"Corticosteroid (Glucocorticoid)", category:"endo", subset:["corticosteroid"], maxDose:"ปรับตามข้อบ่งใช้ (physiologic 5-7.5 mg/day)", renal:"ไม่จำเป็นต้องปรับขนาดตามไต"},
+{name:"Dexamethasone", class:"Corticosteroid (Glucocorticoid)", category:"endo", subset:["corticosteroid"], maxDose:"ปรับตามข้อบ่งใช้เฉพาะ", renal:"ไม่จำเป็นต้องปรับขนาดตามไต"},
+{name:"Hydrocortisone", class:"Corticosteroid (Glucocorticoid)", category:"endo", subset:["corticosteroid"], maxDose:"Replacement 15-25 mg/day แบ่งให้", renal:"ไม่จำเป็นต้องปรับขนาดตามไต"},
+{name:"Alendronate", class:"Bisphosphonate", category:"endo", subset:["bone"], maxDose:"70 mg สัปดาห์ละครั้ง", renal:"หลีกเลี่ยงถ้า CrCl <35 mL/min"},
+
+// ================= ANTIBIOTICS =================
+{name:"Amoxicillin", class:"Aminopenicillin", category:"abx", setting:"opd", maxDose:"4000 mg/day (แบ่งให้ q8h)", renal:"CrCl 10-30: q12h; CrCl <10: q24h"},
+{name:"Amoxicillin-Clavulanate", class:"Beta-lactam/BLI", category:"abx", setting:"both", maxDose:"3000 mg (amoxicillin)/day", renal:"CrCl 10-30: q12h; CrCl <10: q24h"},
+{name:"Cephalexin", class:"1st-gen Cephalosporin", category:"abx", setting:"opd", maxDose:"4000 mg/day (500 mg q6h)", renal:"CrCl 10-30: q8-12h; CrCl <10: q12-24h"},
+{name:"Azithromycin", class:"Macrolide", category:"abx", setting:"opd", maxDose:"500 mg/day (day1) แล้ว 250 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Clarithromycin", class:"Macrolide", category:"abx", setting:"opd", maxDose:"1000 mg/day (500 mg BID)", renal:"CrCl <30: ลดขนาด 50%"},
+{name:"Doxycycline", class:"Tetracycline", category:"abx", setting:"opd", maxDose:"200 mg/day", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Ciprofloxacin (Oral/IV)", class:"Fluoroquinolone", category:"abx", setting:"both", maxDose:"1500 mg/day oral (750 mg BID) หรือ 800 mg/day IV", renal:"CrCl <30: ลดขนาด 50%"},
+{name:"Levofloxacin", class:"Fluoroquinolone", category:"abx", setting:"both", maxDose:"750 mg/day", renal:"CrCl 20-49: 750 mg q48h; CrCl <20: 500 mg q48h หลัง loading"},
+{name:"Cotrimoxazole (TMP-SMX)", class:"Sulfonamide combination", category:"abx", setting:"both", maxDose:"320/1600 mg/day (สูงขึ้นสำหรับ PCP)", renal:"CrCl 15-30: ลดขนาด 50%; CrCl <15: หลีกเลี่ยง"},
+{name:"Metronidazole (Oral/IV)", class:"Nitroimidazole", category:"abx", setting:"both", maxDose:"4000 mg/day (มักใช้ 500 mg q8h)", renal:"ไม่ต้องปรับตามไต (ปรับตามตับแทน)"},
+{name:"Nitrofurantoin", class:"Urinary antiseptic", category:"abx", setting:"opd", maxDose:"400 mg/day (100 mg q6h)", renal:"หลีกเลี่ยงถ้า CrCl <30-60"},
+{name:"Clindamycin (Oral)", class:"Lincosamide", category:"abx", setting:"opd", maxDose:"1800 mg/day (300-450 mg q6h)", renal:"ไม่จำเป็นต้องปรับขนาด"},
+{name:"Ceftriaxone", class:"3rd-gen Cephalosporin", category:"abx", setting:"ipd", maxDose:"4000 mg/day (2 g q12-24h)", renal:"ไม่ต้องปรับ (ขับทางน้ำดี) ระวังถ้าไต+ตับเสื่อมร่วมกัน"},
+{name:"Cefazolin", class:"1st-gen Cephalosporin", category:"abx", setting:"ipd", maxDose:"6000 mg/day (2 g q8h)", renal:"CrCl 35-54: q8h; CrCl 11-34: q12h; CrCl <10: q18-24h"},
+{name:"Cefotaxime", class:"3rd-gen Cephalosporin", category:"abx", setting:"ipd", maxDose:"12000 mg/day (2 g q4-6h)", renal:"CrCl <50: เพิ่มระยะห่างมื้อยา"},
+{name:"Ceftazidime", class:"3rd-gen Cephalosporin (Antipseudomonal)", category:"abx", setting:"ipd", maxDose:"6000 mg/day (2 g q8h)", renal:"CrCl 31-50: q12h; CrCl 16-30: q24h; CrCl <16: q48h"},
+{name:"Piperacillin-Tazobactam", class:"Extended-spectrum penicillin/BLI", category:"abx", setting:"ipd", maxDose:"18/2.25 g/day (4.5 g q6h)", renal:"CrCl 20-40: 3.375 g q6h; CrCl <20: 2.25 g q6h"},
+{name:"Meropenem", class:"Carbapenem", category:"abx", setting:"ipd", maxDose:"6000 mg/day (2 g q8h สำหรับ meningitis)", renal:"CrCl 26-50: q12h; CrCl 10-25: 50%dose q12h; CrCl <10: 50%dose q24h"},
+{name:"Vancomycin (IV)", class:"Glycopeptide", category:"abx", setting:"ipd", maxDose:"15-20 mg/kg q8-12h (ปรับตาม trough)", renal:"ปรับขนาด/ระยะห่างตามไตอย่างมีนัยสำคัญ + ติดตามระดับยา"},
+{name:"Amikacin", class:"Aminoglycoside", category:"abx", setting:"ipd", maxDose:"15 mg/kg/day", renal:"ปรับตามระดับยาในเลือดและ CrCl"},
+{name:"Gentamicin", class:"Aminoglycoside", category:"abx", setting:"ipd", maxDose:"5-7 mg/kg/day (extended-interval)", renal:"เพิ่มระยะห่างมื้อยาตาม CrCl + ติดตามระดับยา"},
+{name:"Colistin", class:"Polymyxin", category:"abx", setting:"ipd", maxDose:"ตามน้ำหนักตัว (loading + maintenance ตาม CrCl)", renal:"ปรับขนาดตาม CrCl อย่างมีนัยสำคัญ"},
+{name:"Clindamycin (IV)", class:"Lincosamide", category:"abx", setting:"ipd", maxDose:"4800 mg/day (600-900 mg q8h)", renal:"ไม่จำเป็นต้องปรับขนาด"}
+];
+
+// ==================== STATE ====================
+let activeCategory = null;
+let activeSubset = "all";
+let searchTerm = "";
+
+// ==================== HELPERS ====================
+function getUpToDateLink(drugName){
+  const cleanName = drugName.split("(")[0].trim();
+  return "https://www.uptodate.com/contents/search?search=" + encodeURIComponent(cleanName);
+}
+function settingBadgeHTML(setting){
+  if(!setting) return "";
+  const map = {opd:"OPD", ipd:"IPD", both:"OPD+IPD"};
+  return '<span class="setting-badge ' + setting + '">' + map[setting] + '</span>';
+}
+function countInCategory(catKey){
+  return drugData.filter(d=>d.category===catKey).length;
+}
+
+// ==================== RENDER: CATEGORY BUTTONS ====================
+function renderCategoryButtons(){
+  const grid = document.getElementById("categoryGrid");
+  grid.innerHTML = "";
+  Object.keys(categoryMeta).forEach(key=>{
+    const meta = categoryMeta[key];
+    const btn = document.createElement("button");
+    btn.className = "cat-btn" + (activeCategory===key ? " active" : "");
+    btn.dataset.cat = key;
+    btn.innerHTML =
+      '<div class="icon-circle">'+meta.icon+'</div>' +
+      '<span class="label">'+meta.label+'</span>' +
+      '<span class="count-badge">'+countInCategory(key)+' รายการ</span>';
+    btn.onclick = ()=>{
+      activeCategory = (activeCategory===key) ? null : key;
+      activeSubset = "all";
+      searchTerm = "";
+      document.getElementById("searchInput").value = "";
+      document.getElementById("clearSearch").style.display = "none";
+      renderCategoryButtons();
+      renderSubsetChips();
+      renderResults();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+// ==================== RENDER: SUBSET CHIPS ====================
+function renderSubsetChips(){
+  const row = document.getElementById("subsetRow");
+  row.innerHTML = "";
+  if(!activeCategory){ row.style.display="none"; return; }
+  row.style.display="flex";
+  categoryMeta[activeCategory].subsets.forEach(s=>{
+    const chip = document.createElement("button");
+    chip.className = "subset-chip" + (activeSubset===s.key ? " active" : "");
+    chip.textContent = s.label;
+    chip.onclick = ()=>{
+      activeSubset = s.key;
+      renderSubsetChips();
+      renderResults();
+    };
+    row.appendChild(chip);
+  });
+}
+
+// ==================== FILTER LOGIC ====================
+function filterDrugs(){
+  if(searchTerm.trim().length > 0){
+    const term = searchTerm.trim().toLowerCase();
+    return drugData.filter(d =>
+      d.name.toLowerCase().includes(term) || d.class.toLowerCase().includes(term)
+    );
+  }
+  if(!activeCategory) return [];
+  let list = drugData.filter(d => d.category === activeCategory);
+  if(activeCategory === "abx"){
+    if(activeSubset !== "all"){
+      list = list.filter(d => d.setting === activeSubset || d.setting === "both");
+    }
+  } else {
+    if(activeSubset !== "all"){
+      list = list.filter(d => d.subset.includes(activeSubset));
+    }
+  }
+  return list;
+}
+
+// ==================== RENDER: RESULTS ====================
+function renderResults(){
+  const container = document.getElementById("drugList");
+  const countEl = document.getElementById("resultCount");
+  const results = filterDrugs().sort((a,b)=>a.name.localeCompare(b.name));
+
+  if(searchTerm.trim().length === 0 && !activeCategory){
+    countEl.innerHTML = "เลือกกลุ่มยา หรือค้นหาชื่อยาด้านบน";
+    container.innerHTML = '<div class="empty-state"><span class="big-icon">🩺</span><p>เลือกกลุ่มยาด้านบน หรือพิมพ์ชื่อยาที่ช่องค้นหา<br>เพื่อเริ่มตรวจสอบขนาดยา</p></div>';
+    return;
+  }
+
+  countEl.innerHTML = '<span class="count-pill">พบ ' + results.length + ' รายการ</span>';
+
+  if(results.length === 0){
+    container.innerHTML = '<div class="empty-state"><span class="big-icon">😕</span><p>ไม่พบยาที่ตรงกับเงื่อนไขค้นหา</p></div>';
+    return;
+  }
+
+  container.innerHTML = "";
+  results.forEach((d,i)=>{
+    const cssVarName = "--" + categoryMeta[d.category].var;
+    const card = document.createElement("div");
+    card.className = "drug-card";
+    card.style.animationDelay = (i*0.03)+"s";
+    card.style.setProperty("--card-accent", "var("+cssVarName+")");
+    card.innerHTML =
+      '<div class="card-top">' +
+        '<div>' +
+          '<h3>'+d.name+'</h3>' +
+          '<div class="badge-row"><span class="tag">'+d.class+'</span>' + settingBadgeHTML(d.setting) + '</div>' +
+        '</div>' +
+        '<button class="ud-btn">🔗 UpToDate</button>' +
+      '</div>' +
+      '<div class="divider"></div>' +
+      '<div class="info-row">' +
+        '<span class="info-icon">💊</span>' +
+        '<div class="info-text"><span class="info-label">Max Dose</span><span class="info-value">'+d.maxDose+'</span></div>' +
+      '</div>' +
+      '<div class="info-row">' +
+        '<span class="info-icon">🧪</span>' +
+        '<div class="info-text"><span class="info-label">Renal Adjustment</span><span class="info-value">'+d.renal+'</span></div>' +
+      '</div>';
+    card.querySelector(".ud-btn").addEventListener("click", ()=>{
+      window.open(getUpToDateLink(d.name), "_blank");
+    });
+    container.appendChild(card);
+  });
+}
+
+// ==================== SEARCH ====================
+const searchInput = document.getElementById("searchInput");
+const clearBtn = document.getElementById("clearSearch");
+searchInput.addEventListener("input", (e)=>{
+  searchTerm = e.target.value;
+  clearBtn.style.display = searchTerm ? "flex" : "none";
+  renderResults();
+});
+clearBtn.addEventListener("click", ()=>{
+  searchTerm = "";
+  searchInput.value = "";
+  clearBtn.style.display = "none";
+  renderResults();
+});
+
+// ==================== THEME TOGGLE ====================
+const themeToggle = document.getElementById("themeToggle");
+function applyTheme(theme){
+  document.documentElement.setAttribute("data-theme", theme);
+  themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", theme === "dark" ? "#0b1220" : "#0d9488");
+  localStorage.setItem("doseToolTheme", theme);
+}
+themeToggle.addEventListener("click", ()=>{
+  const current = document.documentElement.getAttribute("data-theme");
+  applyTheme(current === "dark" ? "light" : "dark");
+});
+applyTheme(localStorage.getItem("doseToolTheme") || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
+
+// ==================== INIT ====================
+renderCategoryButtons();
+renderSubsetChips();
+renderResults();
+</script>
+</body>
+</html>
