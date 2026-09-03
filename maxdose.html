@@ -60,6 +60,15 @@
     border-radius:0 0 24px 24px;
   }
   .header-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;}
+  .header-left{display:flex; align-items:center; gap:10px; min-width:0;}
+  .back-btn{
+    flex-shrink:0; width:40px; height:40px; border-radius:12px;
+    background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3);
+    color:#fff; font-size:1.25rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:.2s;
+    text-decoration:none;
+  }
+  .back-btn:active{transform:scale(.9);}
   .brand{display:flex; align-items:center; gap:10px;}
   .brand-icon{
     width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.22);
@@ -220,9 +229,12 @@
 
 <header>
   <div class="header-top">
-    <div class="brand">
+    <div class="header-left">
+      <button class="back-btn" id="backToIndex" title="กลับหน้าแรก" aria-label="กลับหน้าแรก">←</button>
+      <div class="brand">
       <div class="brand-icon">⚡</div>
       <div><h1>Fast Dose Screening</h1><p>ฐานข้อมูลยาครบชุด + เชื่อม อ้างอิง</p></div>
+      </div>
     </div>
     <button class="theme-btn" id="themeToggle" title="สลับธีม">🌙</button>
   </div>
@@ -834,6 +846,9 @@ refToggleBtn.addEventListener("click", () => {
   }
   updateRefUI();
 });
+
+// ==================== BACK TO INDEX ====================
+document.getElementById("backToIndex").addEventListener("click",()=>{ window.location.href="index.html"; });
 
 // ==================== THEME TOGGLE ====================
 const themeToggle=document.getElementById("themeToggle");
