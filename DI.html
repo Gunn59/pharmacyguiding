@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d9488">
+<title>Fast LINKS | DDI Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2f6; --bg-grad-b:#e4ecf5;
+    --surface:#ffffff; --surface-2:#f8fafc;
+    --text:#0f172a; --text-muted:#64748b; --text-faint:#94a3b8;
+    --border:#e6ebf1;
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04), 0 1px 3px rgba(15,23,42,.06);
+    --shadow-md:0 4px 12px rgba(15,23,42,.08), 0 2px 4px rgba(15,23,42,.04);
+    --radius-lg:20px; --radius-md:14px;
+    --brand-1:#0891b2; --brand-2:#0d9488;
+  }
+  [data-theme="dark"]{
+    --bg:#0b1220; --bg-grad-b:#111a2c;
+    --surface:#161f32; --surface-2:#1c273d;
+    --text:#e8edf5; --text-muted:#9aa8c0; --text-faint:#6b7a95;
+    --border:#26314a;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+    --shadow-md:0 6px 16px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; font-family:'Prompt','Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, var(--bg-grad-b) 0%, transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, var(--bg-grad-b) 0%, transparent 55%),
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--text); transition:background .3s,color .3s;
+    min-height:100vh; padding-bottom:calc(24px + env(safe-area-inset-bottom));
+  }
+  header{
+    position:sticky; top:0; z-index:30;
+    padding:calc(14px + env(safe-area-inset-top)) 16px 16px;
+    background:linear-gradient(135deg,var(--brand-1),var(--brand-2));
+    box-shadow:0 6px 24px rgba(8,145,178,.25);
+    border-radius:0 0 24px 24px;
+  }
+  .header-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .header-left{display:flex; align-items:center; gap:10px; min-width:0;}
+  .back-btn{
+    flex-shrink:0; width:40px; height:40px; border-radius:12px;
+    background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3);
+    color:#fff; font-size:1.25rem; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:.2s;
+    text-decoration:none;
+  }
+  .back-btn:active{transform:scale(.9);}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-icon{
+    width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.22);
+    display:flex; align-items:center; justify-content:center; font-size:1.25rem; flex-shrink:0;
+  }
+  .brand h1{color:#fff; font-size:1.02rem; font-weight:700; margin:0;}
+  .brand p{color:rgba(255,255,255,.85); font-size:.68rem; margin:1px 0 0; font-weight:400;}
+  .theme-btn{
+    background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:12px;
+    width:40px; height:40px; font-size:1.1rem; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; transition:.2s;
+  }
+  .theme-btn:active{transform:scale(.9);}
+
+  /* ===== DDI Checker UI ===== */
+  main{max-width:600px; margin:0 auto; padding:24px 16px;}
+  
+  .checker-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+  }
+
+  .checker-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .checker-header h2 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+    color: var(--text);
+  }
+  
+  .checker-header p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+
+  .input-group { margin-bottom: 16px; }
+  .input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  
+  .drug-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.2s;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.02);
+  }
+  
+  .drug-input:focus {
+    border-color: var(--brand-2);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  }
+
+  .action-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .btn:active { transform: scale(0.96); }
+  
+  .btn-add {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .btn-add:hover:not(:disabled) { background: var(--border); }
+  .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(8,145,178,.25);
+  }
+  .btn-submit:hover { filter: brightness(1.1); }
+  .btn-submit.loading { opacity: 0.7; cursor: wait; }
+
+  footer{max-width:600px; margin:26px auto 0; padding:16px 20px; color:var(--text-faint); font-size:.7rem; text-align:center; line-height:1.6; border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-left">
+      <button class="back-btn" onclick="window.history.back()" title="กลับ">←</button>
+      <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div><h1>Drug Interactions</h1><p>ระบบตรวจสอบการตีกันของยา</p></div>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeToggle" title="สลับธีม">🌙</button>
+  </div>
+</header>
+
+<main>
+  <div class="checker-card">
+    <div class="checker-header">
+      <h2>ตรวจสอบความปลอดภัยทางคลินิก</h2>
+      <p>รองรับสูงสุด 3 รายการต่อครั้ง (อ้างอิง Drugs.com)</p>
+    </div>
+
+    <!-- ฐานข้อมูลตัวเลือกยา (เป็นเพียงตัวช่วยพิมพ์ แต่ไม่บังคับ) -->
+    <datalist id="drug-list"></datalist>
+
+    <div id="drug-container">
+        <div class="input-group">
+            <label>ยาตัวที่ 1</label>
+            <input type="text" class="drug-input" list="drug-list" placeholder="พิมพ์ชื่อยา..." autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>ยาตัวที่ 2</label>
+            <input type="text" class="drug-input" list="drug-list" placeholder="พิมพ์ชื่อยา..." autocomplete="off">
+        </div>
+    </div>
+
+    <div class="action-row">
+        <button class="btn btn-add" id="addBtn" onclick="addDrugInput()"><span>+</span> เพิ่มรายการ</button>
+        <button class="btn btn-submit" id="submitBtn" onclick="processInteractions()">ตรวจสอบ (Check)</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  ⚠️ ข้อมูลนี้จัดทำเพื่อการคัดกรองเบื้องต้นหน้างานเท่านั้น กรุณายืนยันความถูกต้องผ่านแหล่งอ้างอิงมาตรฐานก่อนใช้ทางคลินิกจริงเสมอ
+</footer>
+
+<script>
+// ==================== THEME TOGGLE ====================
+const themeToggle = document.getElementById("themeToggle");
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  themeToggle.textContent = t==="dark" ? "☀️" : "🌙";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", t==="dark" ? "#0b1220" : "#0d9488");
+  localStorage.setItem("ddiToolTheme", t);
+}
+themeToggle.addEventListener("click", ()=>{
+  const c = document.documentElement.getAttribute("data-theme");
+  applyTheme(c === "dark" ? "light" : "dark");
+});
+applyTheme(localStorage.getItem("ddiToolTheme") || (window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"));
+
+// ==================== DDI CHECKER LOGIC ====================
+// ฐานข้อมูลตัวเลือกยาเต็มรูปแบบ
+const drugData = [
+  { name: "Enalapril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Captopril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Benazepril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Fosinopril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Imidapril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Lisinopril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Moexipril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Perindopril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Quinapril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Ramipril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Trandolapril", class: "ACE Inhibitor", category: "cv", subset: ["acei"] },
+  { name: "Losartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Valsartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Candesartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Irbesartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Telmisartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Olmesartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Azilsartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Eprosartan", class: "ARB", category: "cv", subset: ["arb"] },
+  { name: "Amlodipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Nifedipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Felodipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Nicardipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Nimodipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Nitrendipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Isradipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Lercanidipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Manidipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Cilnidipine", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Diltiazem", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Verapamil", class: "CCB", category: "cv", subset: ["ccb"] },
+  { name: "Atenolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Bisoprolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Metoprolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Propranolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Carvedilol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Acebutolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Betaxolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Labetalol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Nadolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Nebivolol", class: "Beta-blocker", category: "cv", subset: ["betablocker"] },
+  { name: "Sotalol", class: "Beta-blocker/Antiarrhythmic", category: "cv", subset: ["betablocker", "antiarrhythmic"] },
+  { name: "HCTZ", class: "Thiazide Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Bendroflumethiazide", class: "Thiazide Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Chlorthalidone", class: "Thiazide-like Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Indapamide", class: "Thiazide-like Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Furosemide", class: "Loop Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Bumetanide", class: "Loop Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Torsemide", class: "Loop Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Ethacrynic Acid", class: "Loop Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Spironolactone", class: "Aldosterone Antagonist", category: "cv", subset: ["diuretic"] },
+  { name: "Eplerenone", class: "Aldosterone Antagonist", category: "cv", subset: ["diuretic"] },
+  { name: "Amiloride", class: "Potassium-sparing Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Triamterene", class: "Potassium-sparing Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Mannitol", class: "Osmotic Diuretic", category: "cv", subset: ["diuretic"] },
+  { name: "Amiodarone", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Adenosine", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Disopyramide", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Flecainide", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Lidocaine", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Procainamide", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Propafenone", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Quinidine", class: "Antiarrhythmic", category: "cv", subset: ["antiarrhythmic"] },
+  { name: "Isosorbide Dinitrate", class: "Nitrate", category: "cv", subset: ["antianginal"] },
+  { name: "Isosorbide Mononitrate", class: "Nitrate", category: "cv", subset: ["antianginal"] },
+  { name: "Nitroglycerin", class: "Nitrate", category: "cv", subset: ["antianginal"] },
+  { name: "Nicorandil", class: "Potassium Channel Opener", category: "cv", subset: ["antianginal"] },
+  { name: "Ranolazine", class: "Antianginal", category: "cv", subset: ["antianginal"] },
+  { name: "Trimetazidine", class: "Antianginal", category: "cv", subset: ["antianginal"] },
+  { name: "Aspirin", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Clopidogrel", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Ticagrelor", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Ticlopidine", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Cilostazol", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Dipyridamole", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Cangrelor", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Eptifibatide", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Tirofiban", class: "Antiplatelet", category: "cv", subset: ["antiplatelet"] },
+  { name: "Warfarin", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Heparin", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Enoxaparin", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Dalteparin", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Fondaparinux", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Apixaban", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Dabigatran", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Edoxaban", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Rivaroxaban", class: "Anticoagulant", category: "cv", subset: ["anticoagulant"] },
+  { name: "Atorvastatin", class: "Statin", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Rosuvastatin", class: "Statin", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Simvastatin", class: "Statin", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Pravastatin", class: "Statin", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Fluvastatin", class: "Statin", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Pitavastatin", class: "Statin", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Gemfibrozil", class: "Fibrate", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Fenofibrate", class: "Fibrate", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Bezafibrate", class: "Fibrate", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Ezetimibe", class: "Cholesterol Absorption Inhibitor", category: "cv", subset: ["dyslipidemia"] },
+  { name: "Digoxin", class: "Cardiac Glycoside", category: "cv", subset: ["othercv"] },
+  { name: "Milrinone", class: "Inotrope", category: "cv", subset: ["othercv"] },
+  { name: "Levosimendan", class: "Inotrope", category: "cv", subset: ["othercv"] },
+  { name: "Dopamine", class: "Vasopressor/Inotrope", category: "cv", subset: ["othercv"] },
+  { name: "Dobutamine", class: "Inotrope", category: "cv", subset: ["othercv"] },
+  { name: "Isoproterenol", class: "Inotrope", category: "cv", subset: ["othercv"] },
+  { name: "Epinephrine", class: "Vasopressor", category: "cv", subset: ["othercv"] },
+  { name: "Norepinephrine", class: "Vasopressor", category: "cv", subset: ["othercv"] },
+  { name: "Vasopressin", class: "Vasopressor", category: "cv", subset: ["othercv"] },
+  { name: "Tolvaptan", class: "Vasopressin Antagonist", category: "cv", subset: ["othercv"] },
+  { name: "Metformin", class: "Biguanide", category: "endo", subset: ["diabetes"] },
+  { name: "Glibenclamide", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Gliclazide", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Glimepiride", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Glipizide", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Chlorpropamide", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Tolazamide", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Tolbutamide", class: "Sulfonylurea", category: "endo", subset: ["diabetes"] },
+  { name: "Acarbose", class: "Alpha-glucosidase Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Miglitol", class: "Alpha-glucosidase Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Voglibose", class: "Alpha-glucosidase Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Pioglitazone", class: "Thiazolidinedione", category: "endo", subset: ["diabetes"] },
+  { name: "Rosiglitazone", class: "Thiazolidinedione", category: "endo", subset: ["diabetes"] },
+  { name: "Sitagliptin", class: "DPP-4 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Vildagliptin", class: "DPP-4 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Linagliptin", class: "DPP-4 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Saxagliptin", class: "DPP-4 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Alogliptin", class: "DPP-4 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Dapagliflozin", class: "SGLT2 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Empagliflozin", class: "SGLT2 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Canagliflozin", class: "SGLT2 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Ertugliflozin", class: "SGLT2 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Bexagliflozin", class: "SGLT2 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Sotagliflozin", class: "SGLT1/2 Inhibitor", category: "endo", subset: ["diabetes"] },
+  { name: "Liraglutide", class: "GLP-1 Agonist", category: "endo", subset: ["diabetes"] },
+  { name: "Dulaglutide", class: "GLP-1 Agonist", category: "endo", subset: ["diabetes"] },
+  { name: "Semaglutide", class: "GLP-1 Agonist", category: "endo", subset: ["diabetes"] },
+  { name: "Exenatide", class: "GLP-1 Agonist", category: "endo", subset: ["diabetes"] },
+  { name: "Lixisenatide", class: "GLP-1 Agonist", category: "endo", subset: ["diabetes"] },
+  { name: "Tirzepatide", class: "GLP-1/GIP Agonist", category: "endo", subset: ["diabetes"] },
+  { name: "Repaglinide", class: "Meglitinide", category: "endo", subset: ["diabetes"] },
+  { name: "Nateglinide", class: "Meglitinide", category: "endo", subset: ["diabetes"] },
+  { name: "Insulin Glargine", class: "Insulin (Long-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "Insulin Detemir", class: "Insulin (Long-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "Insulin Lispro", class: "Insulin (Rapid-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "Insulin Aspart", class: "Insulin (Rapid-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "Insulin Glulisine", class: "Insulin (Rapid-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "Regular Insulin", class: "Insulin (Short-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "NPH Insulin", class: "Insulin (Intermediate-acting)", category: "endo", subset: ["diabetes"] },
+  { name: "Levothyroxine", class: "Thyroid Hormone", category: "endo", subset: ["thyroid"] },
+  { name: "Methimazole", class: "Antithyroid", category: "endo", subset: ["thyroid"] },
+  { name: "Propylthiouracil", class: "Antithyroid", category: "endo", subset: ["thyroid"] },
+  { name: "Dexamethasone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Hydrocortisone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Prednisolone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Prednisone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Methylprednisolone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Betamethasone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Triamcinolone", class: "Corticosteroid", category: "endo", subset: ["corticosteroid"] },
+  { name: "Alendronate", class: "Bisphosphonate", category: "endo", subset: ["bone"] },
+  { name: "Risedronate", class: "Bisphosphonate", category: "endo", subset: ["bone"] },
+  { name: "Ibandronate", class: "Bisphosphonate", category: "endo", subset: ["bone"] },
+  { name: "Zoledronic Acid", class: "Bisphosphonate", category: "endo", subset: ["bone"] },
+  { name: "Pamidronate", class: "Bisphosphonate", category: "endo", subset: ["bone"] },
+  { name: "Denosumab", class: "RANKL Inhibitor", category: "endo", subset: ["bone"] },
+  { name: "Romosozumab", class: "Sclerostin Inhibitor", category: "endo", subset: ["bone"] },
+  { name: "Teriparatide", class: "PTH Analog", category: "endo", subset: ["bone"] },
+  { name: "Raloxifene", class: "SERM", category: "endo", subset: ["bone"] },
+  { name: "Calcitriol", class: "Vitamin D Analog", category: "endo", subset: ["bone"] },
+  { name: "Alfacalcidol", class: "Vitamin D Analog", category: "endo", subset: ["bone"] },
+  { name: "Paricalcitol", class: "Vitamin D Analog", category: "endo", subset: ["bone"] },
+  { name: "Cinacalcet", class: "Calcimimetic", category: "endo", subset: ["bone"] },
+  { name: "Etelcalcetide", class: "Calcimimetic", category: "endo", subset: ["bone"] },
+  { name: "Colchicine", class: "Antigout", category: "endo", subset: ["gout"] },
+  { name: "Febuxostat", class: "Xanthine Oxidase Inhibitor", category: "endo", subset: ["gout"] },
+  { name: "Allopurinol", class: "Xanthine Oxidase Inhibitor", category: "endo", subset: ["gout"] },
+  { name: "Amoxicillin", class: "Penicillin", category: "abx", subset: ["opd"] },
+  { name: "Ampicillin", class: "Penicillin", category: "abx", subset: ["ipd"] },
+  { name: "Cloxacillin", class: "Penicillin", category: "abx", subset: ["opd"] },
+  { name: "Dicloxacillin", class: "Penicillin", category: "abx", subset: ["opd"] },
+  { name: "Oxacillin", class: "Penicillin", category: "abx", subset: ["ipd"] },
+  { name: "Nafcillin", class: "Penicillin", category: "abx", subset: ["ipd"] },
+  { name: "Piperacillin", class: "Penicillin", category: "abx", subset: ["ipd"] },
+  { name: "Ticarcillin", class: "Penicillin", category: "abx", subset: ["ipd"] },
+  { name: "Penicillin G", class: "Penicillin", category: "abx", subset: ["ipd"] },
+  { name: "Penicillin V", class: "Penicillin", category: "abx", subset: ["opd"] },
+  { name: "Benzathine Penicillin", class: "Penicillin", category: "abx", subset: ["opd"] },
+  { name: "Amoxicillin/Clavulanate", class: "Penicillin/BLI", category: "abx", subset: ["opd"] },
+  { name: "Ampicillin/Sulbactam", class: "Penicillin/BLI", category: "abx", subset: ["ipd"] },
+  { name: "Piperacillin/Tazobactam", class: "Penicillin/BLI", category: "abx", subset: ["ipd"] },
+  { name: "Cefalexin", class: "Cephalosporin (1st Gen)", category: "abx", subset: ["opd"] },
+  { name: "Cefazolin", class: "Cephalosporin (1st Gen)", category: "abx", subset: ["ipd"] },
+  { name: "Cefuroxime", class: "Cephalosporin (2nd Gen)", category: "abx", subset: ["opd"] },
+  { name: "Cefdinir", class: "Cephalosporin (3rd Gen)", category: "abx", subset: ["opd"] },
+  { name: "Cefotaxime", class: "Cephalosporin (3rd Gen)", category: "abx", subset: ["ipd"] },
+  { name: "Ceftriaxone", class: "Cephalosporin (3rd Gen)", category: "abx", subset: ["ipd"] },
+  { name: "Ceftazidime", class: "Cephalosporin (3rd Gen)", category: "abx", subset: ["ipd"] },
+  { name: "Cefoperazone/Sulbactam", class: "Cephalosporin/BLI", category: "abx", subset: ["ipd"] },
+  { name: "Cefepime", class: "Cephalosporin (4th Gen)", category: "abx", subset: ["ipd"] },
+  { name: "Ceftaroline", class: "Cephalosporin (5th Gen)", category: "abx", subset: ["ipd"] },
+  { name: "Ceftolozane/Tazobactam", class: "Cephalosporin/BLI", category: "abx", subset: ["ipd"] },
+  { name: "Meropenem", class: "Carbapenem", category: "abx", subset: ["ipd"] },
+  { name: "Imipenem", class: "Carbapenem", category: "abx", subset: ["ipd"] },
+  { name: "Ertapenem", class: "Carbapenem", category: "abx", subset: ["ipd"] },
+  { name: "Doripenem", class: "Carbapenem", category: "abx", subset: ["ipd"] },
+  { name: "Aztreonam", class: "Monobactam", category: "abx", subset: ["ipd"] },
+  { name: "Gentamicin", class: "Aminoglycoside", category: "abx", subset: ["ipd"] },
+  { name: "Amikacin", class: "Aminoglycoside", category: "abx", subset: ["ipd"] },
+  { name: "Tobramycin", class: "Aminoglycoside", category: "abx", subset: ["ipd"] },
+  { name: "Streptomycin", class: "Aminoglycoside", category: "abx", subset: ["ipd"] },
+  { name: "Spectinomycin", class: "Aminoglycoside", category: "abx", subset: ["ipd"] },
+  { name: "Ciprofloxacin", class: "Fluoroquinolone", category: "abx", subset: ["opd"] },
+  { name: "Levofloxacin", class: "Fluoroquinolone", category: "abx", subset: ["opd"] },
+  { name: "Moxifloxacin", class: "Fluoroquinolone", category: "abx", subset: ["opd"] },
+  { name: "Norfloxacin", class: "Fluoroquinolone", category: "abx", subset: ["opd"] },
+  { name: "Ofloxacin", class: "Fluoroquinolone", category: "abx", subset: ["opd"] },
+  { name: "Azithromycin", class: "Macrolide", category: "abx", subset: ["opd"] },
+  { name: "Clarithromycin", class: "Macrolide", category: "abx", subset: ["opd"] },
+  { name: "Roxithromycin", class: "Macrolide", category: "abx", subset: ["opd"] },
+  { name: "Erythromycin", class: "Macrolide", category: "abx", subset: ["opd"] },
+  { name: "Doxycycline", class: "Tetracycline", category: "abx", subset: ["opd"] },
+  { name: "Minocycline", class: "Tetracycline", category: "abx", subset: ["opd"] },
+  { name: "Tetracycline", class: "Tetracycline", category: "abx", subset: ["opd"] },
+  { name: "Tigecycline", class: "Glycylcycline", category: "abx", subset: ["ipd"] },
+  { name: "Clindamycin", class: "Lincosamide", category: "abx", subset: ["opd"] },
+  { name: "Cotrimoxazole", class: "Sulfonamide", category: "abx", subset: ["opd"] },
+  { name: "Metronidazole", class: "Nitroimidazole", category: "abx", subset: ["opd"] },
+  { name: "Tinidazole", class: "Nitroimidazole", category: "abx", subset: ["opd"] },
+  { name: "Secnidazole", class: "Nitroimidazole", category: "abx", subset: ["opd"] },
+  { name: "Ornidazole", class: "Nitroimidazole", category: "abx", subset: ["opd"] },
+  { name: "Nitrofurantoin", class: "Urinary Antiseptic", category: "abx", subset: ["opd"] },
+  { name: "Fosfomycin", class: "Urinary Antiseptic", category: "abx", subset: ["opd"] },
+  { name: "Linezolid", class: "Oxazolidinone", category: "abx", subset: ["ipd"] },
+  { name: "Vancomycin", class: "Glycopeptide", category: "abx", subset: ["ipd"] },
+  { name: "Teicoplanin", class: "Glycopeptide", category: "abx", subset: ["ipd"] },
+  { name: "Daptomycin", class: "Lipopeptide", category: "abx", subset: ["ipd"] },
+  { name: "Colistin", class: "Polymyxin", category: "abx", subset: ["ipd"] },
+  { name: "Polymyxin B", class: "Polymyxin", category: "abx", subset: ["ipd"] },
+  { name: "Rifampicin", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Isoniazid", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Pyrazinamide", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Ethambutol", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Ethionamide", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Cycloserine", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Clofazimine", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Bedaquiline", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Delamanid", class: "Antimycobacterial", category: "abx", subset: ["opd"] },
+  { name: "Fluconazole", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Itraconazole", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Ketoconazole", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Voriconazole", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Posaconazole", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Isavuconazole", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Amphotericin B", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Nystatin", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Caspofungin", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Micafungin", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Anidulafungin", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Flucytosine", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Terbinafine", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Griseofulvin", class: "Antifungal", category: "abx", subset: ["antifungal"] },
+  { name: "Acyclovir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Valacyclovir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Ganciclovir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Oseltamivir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Favipiravir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Molnupiravir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Tenofovir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Entecavir", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Lamivudine", class: "Antiviral", category: "abx", subset: ["antiviral"] },
+  { name: "Praziquantel", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Albendazole", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Mebendazole", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Ivermectin", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Diethylcarbamazine", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Niclosamide", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Pyrantel", class: "Anthelmintic", category: "abx", subset: ["opd"] },
+  { name: "Chloroquine", class: "Antimalarial", category: "abx", subset: ["opd"] },
+  { name: "Hydroxychloroquine", class: "Antimalarial", category: "abx", subset: ["opd"] },
+  { name: "Primaquine", class: "Antimalarial", category: "abx", subset: ["opd"] },
+  { name: "Mefloquine", class: "Antimalarial", category: "abx", subset: ["opd"] },
+  { name: "Artemether", class: "Antimalarial", category: "abx", subset: ["opd"] },
+  { name: "Lumefantrine", class: "Antimalarial", category: "abx", subset: ["opd"] },
+  { name: "Quinine", class: "Antimalarial", category: "abx", subset: ["ipd"] },
+  { name: "Ibuprofen", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Diclofenac", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Naproxen", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Mefenamic Acid", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Ketoprofen", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Ketorolac", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Meloxicam", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Piroxicam", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Indomethacin", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Celecoxib", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Etoricoxib", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Parecoxib", class: "NSAID", category: "painneuro", subset: ["nsaid"] },
+  { name: "Aspirin", class: "NSAID/Salicylate", category: "painneuro", subset: ["nsaid"] },
+  { name: "Paracetamol", class: "Analgesic", category: "painneuro", subset: ["all"] },
+  { name: "Morphine", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Fentanyl", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Oxycodone", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Tramadol", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Methadone", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Pethidine", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Codeine", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Buprenorphine", class: "Opioid", category: "painneuro", subset: ["opioid"] },
+  { name: "Amitriptyline", class: "Neuropathic Agent", category: "painneuro", subset: ["neuropathic"] },
+  { name: "Duloxetine", class: "Neuropathic Agent", category: "painneuro", subset: ["neuropathic"] },
+  { name: "Gabapentin", class: "Neuropathic Agent", category: "painneuro", subset: ["neuropathic"] },
+  { name: "Pregabalin", class: "Neuropathic Agent", category: "painneuro", subset: ["neuropathic"] },
+  { name: "Flunarizine", class: "Migraine Prophylaxis", category: "painneuro", subset: ["migraine"] },
+  { name: "Sumatriptan", class: "Triptan", category: "painneuro", subset: ["migraine"] },
+  { name: "Zolmitriptan", class: "Triptan", category: "painneuro", subset: ["migraine"] },
+  { name: "Eletriptan", class: "Triptan", category: "painneuro", subset: ["migraine"] },
+  { name: "Rizatriptan", class: "Triptan", category: "painneuro", subset: ["migraine"] },
+  { name: "Naratriptan", class: "Triptan", category: "painneuro", subset: ["migraine"] },
+  { name: "Frovatriptan", class: "Triptan", category: "painneuro", subset: ["migraine"] },
+  { name: "Ergotamine", class: "Ergot Alkaloid", category: "painneuro", subset: ["migraine"] },
+  { name: "Dihydroergotamine", class: "Ergot Alkaloid", category: "painneuro", subset: ["migraine"] },
+  { name: "Erenumab", class: "CGRP Inhibitor", category: "painneuro", subset: ["migraine"] },
+  { name: "Galcanezumab", class: "CGRP Inhibitor", category: "painneuro", subset: ["migraine"] },
+  { name: "Fremanezumab", class: "CGRP Inhibitor", category: "painneuro", subset: ["migraine"] },
+  { name: "Eptinezumab", class: "CGRP Inhibitor", category: "painneuro", subset: ["migraine"] },
+  { name: "Carbamazepine", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Levetiracetam", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Phenytoin", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Topiramate", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Valproic Acid", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Lamotrigine", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Oxcarbazepine", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Phenobarbital", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Primidone", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Ethosuximide", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Clobazam", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Rufinamide", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Lacosemide", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Perampanel", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Brivaracetam", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Vigabatrin", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Tiagabine", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Zonisamide", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Felbamate", class: "Anticonvulsant", category: "cnspsych", subset: ["antiepileptic"] },
+  { name: "Diazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Lorazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Alprazolam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Clonazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Midazolam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Temazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Triazolam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Bromazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Chlordiazepoxide", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Clorazepate", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Estazolam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Flurazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Nitrazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Quazepam", class: "Benzodiazepine", category: "cnspsych", subset: ["psych"] },
+  { name: "Escitalopram", class: "SSRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Fluoxetine", class: "SSRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Sertraline", class: "SSRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Paroxetine", class: "SSRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Fluvoxamine", class: "SSRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Citalopram", class: "SSRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Venlafaxine", class: "SNRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Desvenlafaxine", class: "SNRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Imipramine", class: "TCA", category: "cnspsych", subset: ["psych"] },
+  { name: "Nortriptyline", class: "TCA", category: "cnspsych", subset: ["psych"] },
+  { name: "Clomipramine", class: "TCA", category: "cnspsych", subset: ["psych"] },
+  { name: "Bupropion", class: "NDRI", category: "cnspsych", subset: ["psych"] },
+  { name: "Mirtazapine", class: "NaSSA", category: "cnspsych", subset: ["psych"] },
+  { name: "Trazodone", class: "SARI", category: "cnspsych", subset: ["psych"] },
+  { name: "Vortioxetine", class: "SMS", category: "cnspsych", subset: ["psych"] },
+  { name: "Agomelatine", class: "Melatonergic Antidepressant", category: "cnspsych", subset: ["psych"] },
+  { name: "Haloperidol", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Chlorpromazine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Fluphenazine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Perphenazine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Trifluoperazine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Thioridazine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Sulpiride", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Risperidone", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Paliperidone", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Olanzapine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Quetiapine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Clozapine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Aripiprazole", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Brexpiprazole", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Cariprazine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Ziprasidone", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Lurasidone", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Asenapine", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Amisulpride", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Zuclopenthixol", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Flupentixol", class: "Antipsychotic", category: "cnspsych", subset: ["psych"] },
+  { name: "Zolpidem", class: "Z-Drug", category: "cnspsych", subset: ["psych"] },
+  { name: "Zopiclone", class: "Z-Drug", category: "cnspsych", subset: ["psych"] },
+  { name: "Eszopiclone", class: "Z-Drug", category: "cnspsych", subset: ["psych"] },
+  { name: "Ramelteon", class: "Melatonin Receptor Agonist", category: "cnspsych", subset: ["psych"] },
+  { name: "Suvorexant", class: "Orexin Receptor Antagonist", category: "cnspsych", subset: ["psych"] },
+  { name: "Lemborexant", class: "Orexin Receptor Antagonist", category: "cnspsych", subset: ["psych"] },
+  { name: "Buspirone", class: "Anxiolytic", category: "cnspsych", subset: ["psych"] },
+  { name: "Lithium Carbonate", class: "Mood Stabilizer", category: "cnspsych", subset: ["psych"] },
+  { name: "Donepezil", class: "Cholinesterase Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Rivastigmine", class: "Cholinesterase Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Galantamine", class: "Cholinesterase Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Memantine", class: "NMDA Antagonist", category: "cnspsych", subset: ["other"] },
+  { name: "Levodopa", class: "Antiparkinsonian", category: "cnspsych", subset: ["other"] },
+  { name: "Carbidopa", class: "Antiparkinsonian", category: "cnspsych", subset: ["other"] },
+  { name: "Benserazide", class: "Antiparkinsonian", category: "cnspsych", subset: ["other"] },
+  { name: "Pramipexole", class: "Dopamine Agonist", category: "cnspsych", subset: ["other"] },
+  { name: "Ropinirole", class: "Dopamine Agonist", category: "cnspsych", subset: ["other"] },
+  { name: "Rotigotine", class: "Dopamine Agonist", category: "cnspsych", subset: ["other"] },
+  { name: "Selegiline", class: "MAO-B Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Rasagiline", class: "MAO-B Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Safinamide", class: "MAO-B Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Amantadine", class: "Antiparkinsonian", category: "cnspsych", subset: ["other"] },
+  { name: "Entacapone", class: "COMT Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Tolcapone", class: "COMT Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Opicapone", class: "COMT Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Apomorphine", class: "Dopamine Agonist", category: "cnspsych", subset: ["other"] },
+  { name: "Atomoxetine", class: "ADHD Agent", category: "cnspsych", subset: ["other"] },
+  { name: "Methylphenidate", class: "Stimulant", category: "cnspsych", subset: ["other"] },
+  { name: "Modafinil", class: "Stimulant", category: "cnspsych", subset: ["other"] },
+  { name: "Armodafinil", class: "Stimulant", category: "cnspsych", subset: ["other"] },
+  { name: "Disulfiram", class: "Alcohol Dependence Agent", category: "cnspsych", subset: ["other"] },
+  { name: "Acamprosate", class: "Alcohol Dependence Agent", category: "cnspsych", subset: ["other"] },
+  { name: "Naltrexone", class: "Opioid Antagonist", category: "cnspsych", subset: ["other"] },
+  { name: "Nicotine", class: "Smoking Cessation", category: "cnspsych", subset: ["other"] },
+  { name: "Varenicline", class: "Smoking Cessation", category: "cnspsych", subset: ["other"] },
+  { name: "Riluzole", class: "ALS Agent", category: "cnspsych", subset: ["other"] },
+  { name: "Edaravone", class: "ALS Agent", category: "cnspsych", subset: ["other"] },
+  { name: "Tetrabenazine", class: "VMAT2 Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Deutetrabenazine", class: "VMAT2 Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Valbenazine", class: "VMAT2 Inhibitor", category: "cnspsych", subset: ["other"] },
+  { name: "Omeprazole", class: "Proton Pump Inhibitor", category: "gi", subset: ["acidsuppress"] },
+  { name: "Esomeprazole", class: "Proton Pump Inhibitor", category: "gi", subset: ["acidsuppress"] },
+  { name: "Pantoprazole", class: "Proton Pump Inhibitor", category: "gi", subset: ["acidsuppress"] },
+  { name: "Lansoprazole", class: "Proton Pump Inhibitor", category: "gi", subset: ["acidsuppress"] },
+  { name: "Dexlansoprazole", class: "Proton Pump Inhibitor", category: "gi", subset: ["acidsuppress"] },
+  { name: "Rabeprazole", class: "Proton Pump Inhibitor", category: "gi", subset: ["acidsuppress"] },
+  { name: "Cimetidine", class: "H2-Receptor Antagonist", category: "gi", subset: ["acidsuppress"] },
+  { name: "Famotidine", class: "H2-Receptor Antagonist", category: "gi", subset: ["acidsuppress"] },
+  { name: "Ranitidine", class: "H2-Receptor Antagonist", category: "gi", subset: ["acidsuppress"] },
+  { name: "Nizatidine", class: "H2-Receptor Antagonist", category: "gi", subset: ["acidsuppress"] },
+  { name: "Domperidone", class: "Antiemetic/Prokinetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Metoclopramide", class: "Antiemetic/Prokinetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Ondansetron", class: "Antiemetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Granisetron", class: "Antiemetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Mosapride", class: "Prokinetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Itopride", class: "Prokinetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Levosulpiride", class: "Prokinetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Meclizine", class: "Antiemetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Cinnarizine", class: "Antiemetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Dimenhydrinate", class: "Antiemetic", category: "gi", subset: ["antiemetic"] },
+  { name: "Bisacodyl", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Senna", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Lactulose", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "PEG", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Sorbitol", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Psyllium Husk", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Mineral Oil", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Docusate", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Glycerin", class: "Laxative", category: "gi", subset: ["laxative"] },
+  { name: "Bismuth", class: "Antidiarrheal/Antacid", category: "gi", subset: ["othergi"] },
+  { name: "Sucralfate", class: "Mucosal Protectant", category: "gi", subset: ["othergi"] },
+  { name: "Misoprostol", class: "Prostaglandin Analog", category: "gi", subset: ["othergi"] },
+  { name: "Simethicone", class: "Antiflatulent", category: "gi", subset: ["othergi"] },
+  { name: "Dicyclomine", class: "Antispasmodic", category: "gi", subset: ["othergi"] },
+  { name: "Hyoscine", class: "Antispasmodic", category: "gi", subset: ["othergi"] },
+  { name: "Mebeverine", class: "Antispasmodic", category: "gi", subset: ["othergi"] },
+  { name: "Racecadotril", class: "Antidiarrheal", category: "gi", subset: ["othergi"] },
+  { name: "Alginate", class: "Antacid", category: "gi", subset: ["othergi"] },
+  { name: "Aluminum Hydroxide", class: "Antacid", category: "gi", subset: ["othergi"] },
+  { name: "Activated Charcoal", class: "Adsorbent", category: "gi", subset: ["othergi"] },
+  { name: "Salbutamol", class: "SABA", category: "resp", subset: ["bronchodilator"] },
+  { name: "Terbutaline", class: "SABA", category: "resp", subset: ["bronchodilator"] },
+  { name: "Salmeterol", class: "LABA", category: "resp", subset: ["bronchodilator"] },
+  { name: "Formoterol", class: "LABA", category: "resp", subset: ["bronchodilator"] },
+  { name: "Tiotropium", class: "LAMA", category: "resp", subset: ["bronchodilator"] },
+  { name: "Ipratropium", class: "SAMA", category: "resp", subset: ["bronchodilator"] },
+  { name: "Budesonide", class: "Inhaled Corticosteroid", category: "resp", subset: ["bronchodilator"] },
+  { name: "Fluticasone", class: "Inhaled Corticosteroid", category: "resp", subset: ["bronchodilator"] },
+  { name: "Montelukast", class: "Leukotriene Receptor Antagonist", category: "resp", subset: ["bronchodilator"] },
+  { name: "Theophylline", class: "Methylxanthine", category: "resp", subset: ["bronchodilator"] },
+  { name: "Cromolyn", class: "Mast Cell Stabilizer", category: "resp", subset: ["bronchodilator"] },
+  { name: "Omalizumab", class: "Anti-IgE", category: "resp", subset: ["bronchodilator"] },
+  { name: "Mepolizumab", class: "Anti-IL5", category: "resp", subset: ["bronchodilator"] },
+  { name: "Benralizumab", class: "Anti-IL5", category: "resp", subset: ["bronchodilator"] },
+  { name: "Acetylcysteine", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Ambroxol", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Bromhexine", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Erdosteine", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Guaiacol", class: "Expectorant", category: "resp", subset: ["mucolytic"] },
+  { name: "Guaifenesin", class: "Expectorant", category: "resp", subset: ["mucolytic"] },
+  { name: "Carbocisteine", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Sobrerol", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Tyloxapol", class: "Mucolytic", category: "resp", subset: ["mucolytic"] },
+  { name: "Dextromethorphan", class: "Antitussive", category: "resp", subset: ["mucolytic"] },
+  { name: "Butamirate", class: "Antitussive", category: "resp", subset: ["mucolytic"] },
+  { name: "Noscapine", class: "Antitussive", category: "resp", subset: ["mucolytic"] },
+  { name: "Cloperastine", class: "Antitussive", category: "resp", subset: ["mucolytic"] },
+  { name: "Pentoxyverine", class: "Antitussive", category: "resp", subset: ["mucolytic"] },
+  { name: "Cetirizine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Levocetirizine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Loratadine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Desloratadine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Fexofenadine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Bilastine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Chlorpheniramine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Hydroxyzine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Brompheniramine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Dexchlorpheniramine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Triprolidine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Clemastine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Cyproheptadine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Diphenhydramine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Rupatadine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Ebastine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Mizolastine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Azatadine", class: "Antihistamine", category: "resp", subset: ["antihistamine"] },
+  { name: "Doxazosin", class: "Alpha Blocker", category: "uro", subset: ["bph"] },
+  { name: "Tamsulosin", class: "Alpha Blocker", category: "uro", subset: ["bph"] },
+  { name: "Terazosin", class: "Alpha Blocker", category: "uro", subset: ["bph"] },
+  { name: "Finasteride", class: "5-Alpha Reductase Inhibitor", category: "uro", subset: ["bph"] },
+  { name: "Dutasteride", class: "5-Alpha Reductase Inhibitor", category: "uro", subset: ["bph"] },
+  { name: "Oxybutynin", class: "Antimuscarinic", category: "uro", subset: ["oab"] },
+  { name: "Solifenacin", class: "Antimuscarinic", category: "uro", subset: ["oab"] },
+  { name: "Tolterodine", class: "Antimuscarinic", category: "uro", subset: ["oab"] },
+  { name: "Darifenacin", class: "Antimuscarinic", category: "uro", subset: ["oab"] },
+  { name: "Fesoterodine", class: "Antimuscarinic", category: "uro", subset: ["oab"] },
+  { name: "Mirabegron", class: "Beta-3 Agonist", category: "uro", subset: ["oab"] },
+  { name: "Flavoxate", class: "Antispasmodic", category: "uro", subset: ["oab"] },
+  { name: "Sildenafil", class: "PDE5 Inhibitor", category: "uro", subset: ["ed"] },
+  { name: "Tadalafil", class: "PDE5 Inhibitor", category: "uro", subset: ["ed"] },
+  { name: "Vardenafil", class: "PDE5 Inhibitor", category: "uro", subset: ["ed"] },
+  { name: "Fusidic Acid", class: "Topical Antibiotic", category: "misc", subset: ["all"] },
+  { name: "Mupirocin", class: "Topical Antibiotic", category: "misc", subset: ["all"] },
+  { name: "Silver Sulfadiazine", class: "Topical Antibiotic", category: "misc", subset: ["all"] },
+  { name: "Benzoyl Peroxide", class: "Acne Treatment", category: "misc", subset: ["all"] },
+  { name: "Adapalene", class: "Acne Treatment", category: "misc", subset: ["all"] },
+  { name: "Tretinoin", class: "Acne Treatment", category: "misc", subset: ["all"] },
+  { name: "Salicylic Acid", class: "Keratolytic", category: "misc", subset: ["all"] },
+  { name: "Urea", class: "Keratolytic", category: "misc", subset: ["all"] },
+  { name: "Permethrin", class: "Scabicide", category: "misc", subset: ["all"] },
+  { name: "Calamine", class: "Topical Antipruritic", category: "misc", subset: ["all"] },
+  { name: "Tacrolimus", class: "Immunosuppressant", category: "misc", subset: ["all"] },
+  { name: "Pimecrolimus", class: "Immunosuppressant", category: "misc", subset: ["all"] },
+  { name: "Calcipotriol", class: "Vitamin D Analog (Topical)", category: "misc", subset: ["all"] },
+  { name: "Dapsone", class: "Antimicrobial", category: "misc", subset: ["all"] },
+  { name: "Azelaic Acid", class: "Acne Treatment", category: "misc", subset: ["all"] },
+  { name: "Sulfur", class: "Keratolytic/Acne", category: "misc", subset: ["all"] },
+  { name: "Coal Tar", class: "Keratoplastic", category: "misc", subset: ["all"] },
+  { name: "Povidone Iodine", class: "Antiseptic", category: "misc", subset: ["all"] },
+  { name: "Chlorhexidine", class: "Antiseptic", category: "misc", subset: ["all"] },
+  { name: "Ethanol", class: "Antiseptic", category: "misc", subset: ["all"] },
+  { name: "Hydrogen Peroxide", class: "Antiseptic", category: "misc", subset: ["all"] },
+  { name: "Zinc Oxide", class: "Astringent/Protectant", category: "misc", subset: ["all"] },
+  { name: "Crotamiton", class: "Scabicide", category: "misc", subset: ["all"] },
+  { name: "Benzyl Benzoate", class: "Scabicide", category: "misc", subset: ["all"] },
+  { name: "Imiquimod", class: "Immune Response Modifier", category: "misc", subset: ["all"] },
+  { name: "Podophyllotoxin", class: "Antiviral (Topical)", category: "misc", subset: ["all"] },
+  { name: "Fluorouracil", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Capsaicin", class: "Topical Analgesic", category: "misc", subset: ["all"] },
+  { name: "Polidocanol", class: "Sclerosing Agent", category: "misc", subset: ["all"] },
+  { name: "Menthol", class: "Topical Analgesic", category: "misc", subset: ["all"] },
+  { name: "Camphor", class: "Topical Analgesic", category: "misc", subset: ["all"] },
+  { name: "Methyl Salicylate", class: "Topical Analgesic", category: "misc", subset: ["all"] },
+  { name: "Minoxidil", class: "Vasodilator (Topical/Oral)", category: "misc", subset: ["all"] },
+  { name: "Timolol", class: "Ophthalmic Beta-blocker", category: "misc", subset: ["all"] },
+  { name: "Latanoprost", class: "Ophthalmic Prostaglandin", category: "misc", subset: ["all"] },
+  { name: "Bimatoprost", class: "Ophthalmic Prostaglandin", category: "misc", subset: ["all"] },
+  { name: "Travoprost", class: "Ophthalmic Prostaglandin", category: "misc", subset: ["all"] },
+  { name: "Brinzolamide", class: "Carbonic Anhydrase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Dorzolamide", class: "Carbonic Anhydrase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Acetazolamide", class: "Carbonic Anhydrase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Pilocarpine", class: "Cholinergic Agonist", category: "misc", subset: ["all"] },
+  { name: "Apraclonidine", class: "Alpha Agonist", category: "misc", subset: ["all"] },
+  { name: "Brimonidine", class: "Alpha Agonist", category: "misc", subset: ["all"] },
+  { name: "Levobunolol", class: "Ophthalmic Beta-blocker", category: "misc", subset: ["all"] },
+  { name: "Carteolol", class: "Ophthalmic Beta-blocker", category: "misc", subset: ["all"] },
+  { name: "Metipranolol", class: "Ophthalmic Beta-blocker", category: "misc", subset: ["all"] },
+  { name: "Fluorometholone", class: "Ophthalmic Corticosteroid", category: "misc", subset: ["all"] },
+  { name: "Loteprednol", class: "Ophthalmic Corticosteroid", category: "misc", subset: ["all"] },
+  { name: "Rimexolone", class: "Ophthalmic Corticosteroid", category: "misc", subset: ["all"] },
+  { name: "Neomycin", class: "Antibiotic", category: "misc", subset: ["all"] },
+  { name: "Chloramphenicol", class: "Antibiotic", category: "misc", subset: ["all"] },
+  { name: "Trifluridine", class: "Antiviral", category: "misc", subset: ["all"] },
+  { name: "Olopatadine", class: "Ophthalmic Antihistamine", category: "misc", subset: ["all"] },
+  { name: "Ketotifen", class: "Ophthalmic Antihistamine", category: "misc", subset: ["all"] },
+  { name: "Azelastine", class: "Ophthalmic Antihistamine", category: "misc", subset: ["all"] },
+  { name: "Epinastine", class: "Ophthalmic Antihistamine", category: "misc", subset: ["all"] },
+  { name: "Antazoline", class: "Ophthalmic Antihistamine", category: "misc", subset: ["all"] },
+  { name: "Naphazoline", class: "Decongestant", category: "misc", subset: ["all"] },
+  { name: "Tetrahydrozoline", class: "Decongestant", category: "misc", subset: ["all"] },
+  { name: "Artificial Tears", class: "Ophthalmic Lubricant", category: "misc", subset: ["all"] },
+  { name: "Hyaluronic Acid", class: "Ophthalmic Lubricant", category: "misc", subset: ["all"] },
+  { name: "Carboxymethylcellulose", class: "Ophthalmic Lubricant", category: "misc", subset: ["all"] },
+  { name: "Lifitegrast", class: "Anti-inflammatory", category: "misc", subset: ["all"] },
+  { name: "Cyclopentolate", class: "Cycloplegic Mydriatic", category: "misc", subset: ["all"] },
+  { name: "Tropicamide", class: "Cycloplegic Mydriatic", category: "misc", subset: ["all"] },
+  { name: "Homatropine", class: "Cycloplegic Mydriatic", category: "misc", subset: ["all"] },
+  { name: "Multivitamin", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin A", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin D", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin E", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin K", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin B1", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin B6", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin B12", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Vitamin C", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Folic Acid", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Niacin", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Biotin", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Calcium Carbonate", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Calcium Citrate", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Ferrous Fumarate", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Ferrous Sulfate", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Magnesium Oxide", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Zinc Sulfate", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Copper", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Selenium", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Chromium", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Iodine", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Potassium Chloride", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Sodium Bicarbonate", class: "Alkalinizing Agent", category: "misc", subset: ["all"] },
+  { name: "Sodium Chloride", class: "Electrolyte", category: "misc", subset: ["all"] },
+  { name: "Glucose", class: "Fluid/Nutrient", category: "misc", subset: ["all"] },
+  { name: "Amino Acid", class: "Fluid/Nutrient", category: "misc", subset: ["all"] },
+  { name: "Intralipid", class: "Fluid/Nutrient", category: "misc", subset: ["all"] },
+  { name: "Carnitine", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Coenzyme Q10", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Glucosamine", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Chondroitin", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Omega-3", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Fish Oil", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Lecithin", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Evening Primrose", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Ginseng", class: "Herbal Supplement", category: "misc", subset: ["all"] },
+  { name: "Garlic", class: "Herbal Supplement", category: "misc", subset: ["all"] },
+  { name: "Ginger", class: "Herbal Supplement", category: "misc", subset: ["all"] },
+  { name: "Turmeric", class: "Herbal Supplement", category: "misc", subset: ["all"] },
+  { name: "Probiotics", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Prebiotics", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Capecitabine", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Cyclophosphamide", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Methotrexate", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Gemcitabine", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Cytarabine", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Doxorubicin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Epirubicin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Daunorubicin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Bleomycin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Vincristine", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Vinblastine", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Paclitaxel", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Docetaxel", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Irinotecan", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Topotecan", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Etoposide", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Cisplatin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Carboplatin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Oxaliplatin", class: "Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Imatinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Dasatinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Nilotinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Gefitinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Erlotinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Afatinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Sunitinib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Sorafenib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Pazopanib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Regorafenib", class: "Tyrosine Kinase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Everolimus", class: "mTOR Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Temsirolimus", class: "mTOR Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Trastuzumab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Rituximab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Bevacizumab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Cetuximab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Panitumumab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Pembrolizumab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Nivolumab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Ipilimumab", class: "Monoclonal Antibody", category: "misc", subset: ["all"] },
+  { name: "Tamoxifen", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Anastrozole", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Letrozole", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Exemestane", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Leuprolide", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Goserelin", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Bicalutamide", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Flutamide", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Megestrol", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Medroxyprogesterone", class: "Hormonal Antineoplastic", category: "misc", subset: ["all"] },
+  { name: "Leucovorin", class: "Chemoprotectant", category: "misc", subset: ["all"] },
+  { name: "Mesna", class: "Chemoprotectant", category: "misc", subset: ["all"] },
+  { name: "Amifostine", class: "Chemoprotectant", category: "misc", subset: ["all"] },
+  { name: "Dexrazoxane", class: "Chemoprotectant", category: "misc", subset: ["all"] },
+  { name: "Filgrastim", class: "Colony Stimulating Factor", category: "misc", subset: ["all"] },
+  { name: "Pegfilgrastim", class: "Colony Stimulating Factor", category: "misc", subset: ["all"] },
+  { name: "Epoetin Alfa", class: "Erythropoiesis-Stimulating Agent", category: "misc", subset: ["all"] },
+  { name: "Darbepoetin", class: "Erythropoiesis-Stimulating Agent", category: "misc", subset: ["all"] },
+  { name: "Oprelvekin", class: "Thrombopoietic Agent", category: "misc", subset: ["all"] },
+  { name: "Romiplostim", class: "Thrombopoietic Agent", category: "misc", subset: ["all"] },
+  { name: "Eltrombopag", class: "Thrombopoietic Agent", category: "misc", subset: ["all"] },
+  { name: "Deferoxamine", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Deferasirox", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Penicillamine", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Trientine", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Succimer", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Dimercaprol", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Edetate", class: "Chelating Agent", category: "misc", subset: ["all"] },
+  { name: "Protamine", class: "Antidote", category: "misc", subset: ["all"] },
+  { name: "Vitamin K1", class: "Antidote/Supplement", category: "misc", subset: ["all"] },
+  { name: "Phytomenadione", class: "Antidote/Supplement", category: "misc", subset: ["all"] },
+  { name: "Menadione", class: "Vitamin K Analog", category: "misc", subset: ["all"] },
+  { name: "Glutathione", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Alpha Lipoic Acid", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Silymarin", class: "Hepatoprotectant", category: "misc", subset: ["all"] },
+  { name: "Ursodeoxycholic Acid", class: "Gallstone Dissolution Agent", category: "misc", subset: ["all"] },
+  { name: "Betaine", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Choline", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Inositol", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "PABA", class: "Supplement", category: "misc", subset: ["all"] },
+  { name: "Dantrolene", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Baclofen", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Cyclobenzaprine", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Orphenadrine", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Chlorzoxazone", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Methocarbamol", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Tizanidine", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Eperisone", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Tolperisone", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Carisoprodol", class: "Skeletal Muscle Relaxant", category: "misc", subset: ["all"] },
+  { name: "Propofol", class: "General Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Etomidate", class: "General Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Ketamine", class: "General Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Thiopental", class: "General Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Methohexital", class: "General Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Isoflurane", class: "Inhalation Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Sevoflurane", class: "Inhalation Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Desflurane", class: "Inhalation Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Nitrous Oxide", class: "Inhalation Anesthetic", category: "misc", subset: ["all"] },
+  { name: "Succinylcholine", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Rocuronium", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Vecuronium", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Pancuronium", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Atracurium", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Cisatracurium", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Mivacurium", class: "Neuromuscular Blocker", category: "misc", subset: ["all"] },
+  { name: "Neostigmine", class: "Cholinesterase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Edrophonium", class: "Cholinesterase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Pyridostigmine", class: "Cholinesterase Inhibitor", category: "misc", subset: ["all"] },
+  { name: "Sugammadex", class: "Neuromuscular Blockade Reversal", category: "misc", subset: ["all"] },
+  { name: "Glycopyrrolate", class: "Anticholinergic", category: "misc", subset: ["all"] },
+  { name: "Magnesium Sulfate", class: "Electrolyte/Anticonvulsant", category: "misc", subset: ["all"] },
+  { name: "Calcium Gluconate", class: "Electrolyte", category: "misc", subset: ["all"] },
+  { name: "Calcium Chloride", class: "Electrolyte", category: "misc", subset: ["all"] },
+  { name: "Dextrose 5%", class: "IV Fluid", category: "misc", subset: ["all"] },
+  { name: "Dextrose 50%", class: "IV Fluid", category: "misc", subset: ["all"] },
+  { name: "Normal Saline", class: "IV Fluid", category: "misc", subset: ["all"] },
+  { name: "Lactated Ringer", class: "IV Fluid", category: "misc", subset: ["all"] },
+  { name: "Plasma-Lyte", class: "IV Fluid", category: "misc", subset: ["all"] },
+  { name: "Hydroxyethyl Starch", class: "Plasma Volume Expander", category: "misc", subset: ["all"] },
+  { name: "Albumin", class: "Plasma Volume Expander", category: "misc", subset: ["all"] },
+  { name: "Gelatin", class: "Plasma Volume Expander", category: "misc", subset: ["all"] },
+  { name: "Tranexamic Acid", class: "Antifibrinolytic", category: "misc", subset: ["all"] }
+];
+
+const dataList = document.getElementById('drug-list');
+drugData.forEach(drug => {
+    const option = document.createElement('option');
+    option.value = drug.name;
+    dataList.appendChild(option);
+});
+
+const MAX_DRUGS = 3;
+
+function addDrugInput() {
+    const container = document.getElementById('drug-container');
+    const inputCount = container.children.length;
+    
+    if (inputCount >= MAX_DRUGS) return;
+    
+    const div = document.createElement('div');
+    div.className = 'input-group';
+    
+    const label = document.createElement('label');
+    label.innerText = `ยาตัวที่ ${inputCount + 1}`;
+    
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'drug-input';
+    input.setAttribute('list', 'drug-list');
+    input.placeholder = 'พิมพ์ชื่อยา...';
+    input.autocomplete = 'off';
+    
+    div.appendChild(label);
+    div.appendChild(input);
+    container.appendChild(div);
+    
+    if (container.children.length >= MAX_DRUGS) {
+        const addBtn = document.getElementById('addBtn');
+        addBtn.disabled = true;
+        addBtn.innerHTML = 'เต็มโควต้า';
+    }
+}
+
+async function processInteractions() {
+    const inputs = document.querySelectorAll('.drug-input');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    const drugNames = Array.from(inputs)
+                           .map(el => el.value.trim())
+                           .filter(val => val !== "");
+
+    if (drugNames.length < 2) {
+        alert("กรุณาพิมพ์ชื่อยาอย่างน้อย 2 ตัว");
+        return;
+    }
+
+    submitBtn.innerHTML = "กำลังประมวลผล...";
+    submitBtn.classList.add("loading");
+
+    let drugIds = [];
+
+    for (let name of drugNames) {
+        const apiUrl = `https://www.drugs.com/api/autocomplete/?type=interaction&s=${encodeURIComponent(name)}`;
+        
+        try {
+            const response = await fetch(apiUrl, {
+                method: "GET",
+                headers: { "accept": "application/json" }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data.categories && data.categories.length > 0 && data.categories[0].results.length > 0) {
+                    const firstResult = data.categories[0].results[0];
+                    const fetchedId = `${firstResult.ddc_id}-${firstResult.brand_name_id || 0}`; 
+                    drugIds.push(fetchedId);
+                }
+            }
+        } catch (error) {
+            console.error(`Error fetching ID for ${name}:`, error);
+        }
+    }
+
+    submitBtn.innerHTML = "ตรวจสอบ (Check)";
+    submitBtn.classList.remove("loading");
+
+    if (drugIds.length >= 2) {
+        const idString = drugIds.join(',');
+        const targetUrl = `https://www.drugs.com/interaction/list/?drug_list=${idString}`;
+        window.open(targetUrl, '_blank');
+    } else {
+        alert("ไม่สามารถดึงข้อมูลรหัสยาได้ครบถ้วน อาจมีชื่อยาที่สะกดผิด (ตรวจสอบ Network/CORS)");
+    }
+}
+</script>
+</body>
+</html>
