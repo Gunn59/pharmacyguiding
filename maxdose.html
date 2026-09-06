@@ -860,6 +860,51 @@ refToggleBtn.addEventListener("click", () => {
   updateRefUI();
 });
 
+const CACHE_NAME = 'calc-app-v1';
+const urlsToCache = [
+  './',
+  './index.html',
+  './manifest.json',
+  // './icon-192x192.png' // หากมีไฟล์รูปภาพไอคอน ให้ uncomment บรรทัดนี้
+];
+
+// ติดตั้ง Service Worker และเก็บไฟล์ลง Cache
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+// ดึงข้อมูลจาก Cache มาใช้เวลาออฟไลน์
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // ถ้าเจอใน Cache ส่งคืนทันที, ถ้าไม่เจอให้ดึงจาก Network
+        return response || fetch(event.request);
+      })
+  );
+});
+
+// ล้าง Cache เก่าเมื่อมีการอัปเดตเวอร์ชัน
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+  
 // ==================== BACK TO INDEX ====================
 document.getElementById("backToIndex").addEventListener("click",()=>{ window.location.href="index.html"; });
 
