@@ -93,14 +93,16 @@
         .page-header h2 { margin: 0; font-size: 24px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .page-header .subtitle { font-size: 14px; margin-top: 5px; opacity: 0.9; }
 
-        /* ================= Layout Grid ================= */
+/* ================= Layout Grid ================= */
         .grid-layout {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
-            max-width: 1200px;
+            max-width: 850px; /* ลดขนาดจาก 1200px เพื่อให้สัดส่วนบน Desktop พอดีขึ้น */
             margin: 0 auto;
+            align-items: start; /* ป้องกันไม่ให้กล่องยืดความสูงตามกันจนเกิดพื้นที่ว่าง */
         }
+        
         @media (min-width: 768px) {
             .grid-layout { grid-template-columns: 1fr 1fr; }
             .full-width { grid-column: 1 / -1; }
@@ -439,8 +441,7 @@
                     <input type="number" id="crclScr" class="date-input" placeholder="Scr" step="0.1" min="0.1">
                 </div>
             </div>
-            
-            <button class="action-btn" onclick="calculateCrCl()" style="background-color: var(--color-warning); color: white; box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);">คำนวณ Cockcroft-Gault CrCl</button>
+            <button class="action-btn" onclick="calculateCrCl()" style="background-color: var(--color-warning); color: white; box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2); max-width: 400px; margin: 0 auto; display: block;">คำนวณ Cockcroft-Gault CrCl</button>
             <div class="date-result" id="crclResult">-- mL/min</div>
         </div>
 
