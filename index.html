@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pharmacy Guiding</title>
-    <!-- บอกให้บราวเซอร์รู้ว่ามี manifest -->
     <link rel="manifest" href="manifest.json">
-    <!-- กำหนดสีแถบสถานะบนมือถือ -->
     <meta name="theme-color" content="#007aff">
-    <!-- รองรับไอคอนบน iOS -->
     <link rel="apple-touch-icon" href="icon-192x192.PNG">
     <style>
-        /* นำเข้าฟอนต์ Prompt จาก Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
     
         body { 
@@ -22,32 +18,30 @@
         }
         
         .header { 
-        /* สร้างพื้นหลังไล่สีโทนฟ้า-น้ำเงิน */
-        background: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
-        border-radius: 24px; /* ปรับมุมให้โค้งมนรับกับ Card ด้านล่าง */
-        padding: 35px 20px; 
-        text-align: center; 
-        margin-bottom: 35px; 
-        margin-top: 15px; 
-        /* เพิ่มเงาสีฟ้าอ่อนๆ ให้กล่องดูลอยขึ้นมา */
-        box-shadow: 0 12px 24px rgba(0, 122, 255, 0.25);
-    }
+            background: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
+            border-radius: 24px; 
+            padding: 35px 20px; 
+            text-align: center; 
+            margin-bottom: 35px; 
+            margin-top: 15px;
+            box-shadow: 0 12px 24px rgba(0, 122, 255, 0.25);
+        }
     
-    .header h1 { 
-        color: #ffffff; /* เปลี่ยนสีตัวอักษรเป็นสีขาวให้ตัดกับพื้นหลัง */
-        font-size: 32px; 
-        font-weight: 600;
-        margin: 0; 
-        letter-spacing: -0.5px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1); /* เพิ่มเงาให้ข้อความเด่นขึ้น */
-    }
-    
-    .header p { 
-        color: rgba(255, 255, 255, 0.85); /* สีขาวแบบโปร่งแสงเล็กน้อยให้ดูมีลำดับชั้น */
-        font-size: 15px; 
-        margin-top: 8px; 
-        font-weight: 400;
-    }
+        .header h1 { 
+            color: #ffffff; 
+            font-size: 32px; 
+            font-weight: 600;
+            margin: 0; 
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        
+        .header p { 
+            color: rgba(255, 255, 255, 0.85); 
+            font-size: 15px; 
+            margin-top: 8px; 
+            font-weight: 400;
+        }
         
         .menu-grid { 
             display: grid; 
@@ -57,20 +51,18 @@
         
         .menu-card {
             background: #ffffff;
-            border-radius: 20px; /* เพิ่มความโค้งให้ดูนุ่มนวลขึ้น */
+            border-radius: 20px; 
             padding: 20px;
             display: flex;
             align-items: center;
             text-decoration: none;
             color: #333;
-            /* ปรับเงาให้ดูฟุ้ง ละมุน และมีมิติมากขึ้น */
             box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
             transition: all 0.2s ease;
-            position: relative; /* สำหรับวางลูกศร */
-            border: 1px solid rgba(0,0,0,0.02); /* ขอบบางๆ ให้ card ดูมีมิติ */
+            position: relative; 
+            border: 1px solid rgba(0,0,0,0.02); 
         }
         
-        /* เพิ่มลูกศร (Chevron) ด้านขวาของ Card */
         .menu-card::after {
             content: "›";
             position: absolute;
@@ -89,7 +81,7 @@
         .icon { 
             font-size: 28px; 
             margin-right: 18px; 
-            background: #f4f6f9; /* สีพื้นหลังไอคอนที่ดูสบายตาขึ้น */
+            background: #f4f6f9; 
             width: 56px; 
             height: 56px; 
             display: flex; 
@@ -101,7 +93,7 @@
         
         .details h3 { 
             margin: 0; 
-            font-size: 20px; 
+            font-asize: 20px; 
             font-weight: 500;
             color: #007aff; 
         }
@@ -168,7 +160,6 @@
                 <p>เครื่องคิดเลข</p>
             </div>
         </a>
-
         
         <a href="WIP.html" class="menu-card">
             <div class="icon">⏰</div>
@@ -180,10 +171,10 @@
 
     </div>
         <script>
-          // ลงทะเบียน Service Worker
+          // ลงทะเบียน Service Worker (แก้ไข Path เป็น Relative)
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-              navigator.serviceWorker.register('/pharmacyguiding/sw.js')
+              navigator.serviceWorker.register('./sw.js')
                 .then(registration => {
                   console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 })
