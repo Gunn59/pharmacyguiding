@@ -1,188 +1,1239 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pharmacy Guiding</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007aff">
-    <link rel="apple-touch-icon" href="icon-192x192.PNG">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ระบบนับเงินและกระทบยอดปิดกะร้านยา | PharmaBalance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
     
-        body { 
-            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; 
-            background-color: #f2f2f7; 
-            padding: 20px; 
-            margin: 0; 
-        }
-        
-        .header { 
-            background: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
-            border-radius: 24px; 
-            padding: 35px 20px; 
-            text-align: center; 
-            margin-bottom: 35px; 
-            margin-top: 15px;
-            box-shadow: 0 12px 24px rgba(0, 122, 255, 0.25);
-        }
+    /* แก้ปัญหาช่องวันที่และเวลาล้นกรอบบน iOS/Safari */
+    input[type=date], input[type=time] {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      -webkit-appearance: none;
+    }
     
-        .header h1 { 
-            color: #ffffff; 
-            font-size: 32px; 
-            font-weight: 600;
-            margin: 0; 
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-        }
-        
-        .header p { 
-            color: rgba(255, 255, 255, 0.85); 
-            font-size: 15px; 
-            margin-top: 8px; 
-            font-weight: 400;
-        }
-        
-        .menu-grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 16px; 
-        }
-        
-        .menu-card {
-            background: #ffffff;
-            border-radius: 20px; 
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
-            position: relative; 
-            border: 1px solid rgba(0,0,0,0.02); 
-        }
-        
-        .menu-card::after {
-            content: "›";
-            position: absolute;
-            right: 20px;
-            font-size: 24px;
-            color: #c7c7cc;
-            transition: transform 0.2s ease;
-        }
-    
-        .menu-card:active { 
-            transform: scale(0.97); 
-            background: #fafafa; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
-        
-        .icon { 
-            font-size: 28px; 
-            margin-right: 18px; 
-            background: #f4f6f9; 
-            width: 56px; 
-            height: 56px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 14px; 
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-        
-        .details h3 { 
-            margin: 0; 
-            font-asize: 20px; 
-            font-weight: 500;
-            color: #007aff; 
-        }
-        .details p { 
-            margin: 4px 0 0 0; 
-            font-size: 13px; 
-            color: #8e8e93; 
-            line-height: 1.4;
-        }
-    </style>
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+    /* จัดการการตั้งค่าตอน Print */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #ffffff !important; margin: 0; padding: 0; }
+      .shadow-sm, .shadow-md, .shadow-lg { box-shadow: none !important; }
+      
+      /* ปรับให้การ์ดสรุปขยายเต็มกลางหน้ากระดาษ */
+      main { padding: 0 !important; margin-top: 20px !important; }
+      .lg\:col-span-5 { 
+        grid-column: span 12 / span 12 !important; 
+        max-width: 650px !important; 
+        margin: 0 auto !important; 
+      }
+      .sticky { position: static !important; }
+      .border-slate-200 { border-color: #e2e8f0 !important; }
+    }
+  </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white overflow-x-hidden">
 
-    <div class="header">
-        <h1>Pharmacy Guiding</h1>
-        <p>จัดไปชาวเภสัช</p>
+  <!-- Top Header Navigation -->
+  <header class="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white shadow-lg sticky top-0 z-30 no-print border-b border-emerald-700/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3 shrink-0">
+        <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
+          <i class="fa-solid fa-prescription-bottle-medical text-xl text-emerald-300"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight">PharmaBalance</h1>
+            <span class="text-[10px] sm:text-[11px] bg-emerald-500/20 text-emerald-300 px-2 sm:px-2.5 py-0.5 rounded-full border border-emerald-400/30 font-medium">Google Sheets Synced</span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-300">ระบบตรวจนับเงินสด & กระทบยอดปิดกะร้านยา</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <button onclick="openConfigModal()" title="ตั้งค่าการเชื่อมต่อ Google Sheets" class="px-3 py-2 text-xs sm:text-sm font-medium bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all flex items-center gap-2 backdrop-blur-sm">
+          <i class="fa-solid fa-cloud-arrow-up text-emerald-300"></i>
+          <span class="hidden sm:inline">การเชื่อมต่อ Sheets</span>
+        </button>
+        <button onclick="window.print()" title="พิมพ์ใบปิดกะ" class="px-3 py-2 text-xs sm:text-sm font-medium bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl transition-all flex items-center gap-2 backdrop-blur-sm">
+          <i class="fa-solid fa-print"></i>
+          <span class="hidden sm:inline">พิมพ์</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 py-6 flex-grow w-full space-y-6">
+
+    <!-- Shift Meta Info (Time selection, Date, Staff, Float) -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-4 sm:p-5 transition hover:shadow-md no-print">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full">
+        
+        <!-- Date input -->
+        <div class="w-full">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
+            <i class="fa-regular fa-calendar text-emerald-600"></i> วันที่ปิดยอด
+          </label>
+          <div class="relative w-full">
+            <input type="date" id="shiftDate" class="block w-full max-w-full box-border px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+          </div>
+        </div>
+
+        <!-- Dynamic Time Picker with "NOW" button -->
+        <div class="w-full">
+          <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+            <label class="text-xs font-semibold text-slate-600 flex items-center gap-1.5 shrink-0">
+              <i class="fa-regular fa-clock text-emerald-600"></i> นับตอนกี่โมง (เวลา)
+            </label>
+            <button type="button" onclick="setCountTimeToNow()" class="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 active:scale-95 transition flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200/60 shrink-0">
+              <i class="fa-solid fa-bolt text-[10px]"></i> ตอนนี้ (Now)
+            </button>
+          </div>
+          <div class="relative w-full">
+            <input type="time" id="shiftTime" class="block w-full max-w-full box-border px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 border border-slate-200 rounded-xl text-base sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+          </div>
+        </div>
+
+        <!-- Cashier / Pharmacist Name -->
+        <div class="w-full">
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
+            <i class="fa-solid fa-user-doctor text-emerald-600"></i> เภสัชกร / ผู้ตรวจนับเงิน
+          </label>
+          <input type="text" id="staffName" placeholder="เช่น ภก. สมชาย" class="block w-full max-w-full box-border px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100/60 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition placeholder:text-slate-400">
+        </div>
+
+        <!-- Opening Float (เงินทอนในเก๊ะ 5000) -->
+        <div class="w-full">
+          <div class="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+            <label class="text-xs font-semibold text-slate-600 flex items-center gap-1.5 shrink-0">
+              <i class="fa-solid fa-lock text-emerald-600"></i> เงินทอนตั้งต้น (บาท)
+            </label>
+            <button type="button" onclick="resetFloatDefault()" class="text-[11px] font-semibold text-emerald-600 hover:text-emerald-700 transition shrink-0" title="คลิกเพื่อตั้งค่าเป็น 5,000">[5,000]</button>
+          </div>
+          <div class="relative w-full">
+            <span class="absolute left-3.5 top-2.5 text-emerald-700 font-bold text-base sm:text-sm">฿</span>
+            <input type="number" id="floatAmount" value="5000" min="0" step="50" oninput="calculateAll()" class="block w-full max-w-full box-border pl-8 pr-3.5 py-2.5 bg-emerald-50/60 border border-emerald-200 rounded-xl text-base sm:text-sm font-bold text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <div class="menu-grid">
-        <a href="ped-dose.html" class="menu-card">
-            <div class="icon">👶🏻</div>
-            <div class="details">
-                <h3>Pediatric Dose Calc</h3>
-                <p>คำนวณขนาดยาเด็กและแบ่งมื้ออัตโนมัติ</p>
-            </div>
-        </a>
+    <!-- Core 2-Column Workflow -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <a href="ped-screen.html" class="menu-card">
-            <div class="icon">🔍</div>
-            <div class="details">
-                <h3>Fast Screening Ped</h3>
-                <p>คัดกรองขนาดยาเด็กฉบับเร่งด่วน</p>
-            </div>
-        </a>
-        
-        <a href="warfarin.html" class="menu-card">
-            <div class="icon">🩸</div>
-            <div class="details">
-                <h3>Warfarin Dose Calc</h3>
-                <p>คำนวณปรับขนาดยาต้านการแข็งตัวของเลือด</p>
-            </div>
-        </a>
+      <!-- LEFT: Section 1 (POS) & Section 2 (Denominations) -->
+      <div class="lg:col-span-7 space-y-6 no-print">
 
-        <a href="maxdose.html" class="menu-card">
-            <div class="icon">✨</div>
-            <div class="details">
-                <h3>Max dose checker</h3>
-                <p>ตรวจสอบขนาดยา</p>
+        <!-- SECTION 1: POS Inputs and Cash Payouts -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-4 sm:p-6 transition hover:shadow-md overflow-hidden w-full">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-teal-100 text-teal-800 font-black text-xs shrink-0">1</span>
+              <h2 class="text-sm sm:text-base font-bold text-slate-800">ยอดขายตามระบบคอมพิวเตอร์ (POS System)</h2>
             </div>
-        </a>
+          </div>
 
-        <a href="DI.html" class="menu-card">
-            <div class="icon">‽</div>
-            <div class="details">
-                <h3>Drug Interaction Checker</h3>
-                <p>ตรวจสอบอันตรกริยาของยา</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <!-- Total Sales -->
+            <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200 w-full">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">ยอดขายรวมบนหน้าจอ (Total Sales)</label>
+              <div class="relative w-full">
+                <span class="absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm sm:text-base">฿</span>
+                <input type="number" id="posTotalSales" placeholder="0.00" min="0" step="any" oninput="calculateAll()" class="block w-full max-w-full box-border pl-8 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-lg font-bold text-slate-800 text-right focus:ring-2 focus:ring-teal-500 outline-none transition">
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">รวมทั้งยอดเงินสด และยอดโอนสแกน</p>
             </div>
-        </a>
-        
-        <a href="calculator.html" class="menu-card">
-            <div class="icon">➕</div>
-            <div class="details">
-                <h3>Calculator</h3>
-                <p>เครื่องคิดเลข</p>
+
+            <!-- Transfer / QR Sales -->
+            <div class="bg-slate-50/70 p-4 rounded-2xl border border-slate-200 w-full">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">ยอดโอน / สแกน QR (Bank Transfer)</label>
+              <div class="relative w-full">
+                <span class="absolute left-3.5 top-2.5 text-indigo-400 font-bold text-sm sm:text-base">฿</span>
+                <input type="number" id="posTransferSales" placeholder="0.00" min="0" step="any" oninput="calculateAll()" class="block w-full max-w-full box-border pl-8 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-base sm:text-lg font-bold text-indigo-700 text-right focus:ring-2 focus:ring-indigo-500 outline-none transition">
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">ยอดเงินที่เข้าบัญชีธนาคารร้าน</p>
             </div>
-        </a>
-        
-        <a href="WIP.html" class="menu-card">
-            <div class="icon">⏰</div>
-            <div class="details">
-                <h3>WIP..</h3>
-                <p>WIP..</p>
+          </div>
+
+          <!-- Payouts / Cash Drops (เงินสดที่หยิบจ่ายด่วน) -->
+          <div class="mt-5 pt-4 border-t border-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                <i class="fa-solid fa-arrow-up-right-from-square text-amber-500"></i>
+                <span>หยิบจ่ายออกระหว่างกะ (ค่ายา, ของใช้)</span>
+              </div>
+              <button type="button" onclick="addPayoutRow()" class="text-xs text-emerald-700 hover:text-emerald-800 font-semibold inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100/80 px-2.5 py-1 rounded-lg border border-emerald-200 transition shrink-0">
+                <i class="fa-solid fa-plus text-[10px]"></i> เพิ่มรายการจ่าย
+              </button>
             </div>
-        </a>
+
+            <div id="payoutContainer" class="space-y-2 w-full">
+              <!-- Dynamically populated rows -->
+            </div>
+
+            <div class="flex justify-between items-center text-xs text-slate-500 mt-2 px-1">
+              <span>รวมเงินสดที่หยิบจ่ายไประหว่างกะ:</span>
+              <span id="totalPayoutDisplay" class="font-bold text-amber-700">฿0.00</span>
+            </div>
+          </div>
+
+          <!-- Computed Expected Cash Target -->
+          <div class="mt-4 p-4 bg-gradient-to-r from-teal-50 via-emerald-50 to-slate-50 rounded-2xl border border-teal-200/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-teal-800">ยอดขายเงินสดที่ระบบต้องการ (Expected Cash)</span>
+              <p class="text-[11px] text-teal-700">สูตร: ยอดขายรวม − ยอดโอนสแกน</p>
+            </div>
+            <div class="text-right">
+              <span id="expectedCashSalesText" class="text-xl sm:text-2xl font-black text-teal-950">0.00</span>
+              <span class="text-xs font-semibold text-teal-800 ml-1">บาท</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Physical Cash Counting -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-4 sm:p-6 transition hover:shadow-md overflow-hidden w-full">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-100 text-emerald-800 font-black text-xs shrink-0">2</span>
+              <h2 class="text-sm sm:text-base font-bold text-slate-800">นับเงินสดจริงทั้งหมดในลิ้นชัก</h2>
+            </div>
+            <button onclick="clearAllDenominations()" class="text-xs text-rose-500 hover:text-rose-700 font-semibold inline-flex items-center gap-1 hover:underline shrink-0">
+              <i class="fa-solid fa-rotate-left"></i> ล้างจำนวน
+            </button>
+          </div>
+
+          <!-- Banknotes Table -->
+          <div class="mb-5">
+            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <i class="fa-solid fa-money-bill-1-wave text-emerald-600"></i> ธนบัตร (ใส่จำนวนใบ)
+            </div>
+
+            <div class="space-y-2 w-full">
+              <!-- 1,000 -->
+              <div class="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition w-full">
+                <div class="flex items-center gap-2 sm:gap-3 w-[72px] sm:w-32 shrink-0">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-100 text-amber-900 font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs">1000</span>
+                  <span class="text-xs sm:text-sm font-semibold text-slate-700 hidden sm:inline">1,000 บาท</span>
+                </div>
+                <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                  <button type="button" onclick="adjustCount('bill_1000', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">−</button>
+                  <input type="number" id="bill_1000" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-12 sm:w-20 text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                  <button type="button" onclick="adjustCount('bill_1000', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">+</button>
+                </div>
+                <div class="w-16 sm:w-24 text-right shrink-0">
+                  <span id="sub_bill_1000" class="text-[11px] sm:text-sm font-bold text-slate-700">0.00</span>
+                </div>
+              </div>
+
+              <!-- 500 -->
+              <div class="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition w-full">
+                <div class="flex items-center gap-2 sm:gap-3 w-[72px] sm:w-32 shrink-0">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-100 text-purple-900 font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs">500</span>
+                  <span class="text-xs sm:text-sm font-semibold text-slate-700 hidden sm:inline">500 บาท</span>
+                </div>
+                <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                  <button type="button" onclick="adjustCount('bill_500', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">−</button>
+                  <input type="number" id="bill_500" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-12 sm:w-20 text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                  <button type="button" onclick="adjustCount('bill_500', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">+</button>
+                </div>
+                <div class="w-16 sm:w-24 text-right shrink-0">
+                  <span id="sub_bill_500" class="text-[11px] sm:text-sm font-bold text-slate-700">0.00</span>
+                </div>
+              </div>
+
+              <!-- 100 -->
+              <div class="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition w-full">
+                <div class="flex items-center gap-2 sm:gap-3 w-[72px] sm:w-32 shrink-0">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-100 text-rose-900 font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs">100</span>
+                  <span class="text-xs sm:text-sm font-semibold text-slate-700 hidden sm:inline">100 บาท</span>
+                </div>
+                <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                  <button type="button" onclick="adjustCount('bill_100', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">−</button>
+                  <input type="number" id="bill_100" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-12 sm:w-20 text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                  <button type="button" onclick="adjustCount('bill_100', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">+</button>
+                </div>
+                <div class="w-16 sm:w-24 text-right shrink-0">
+                  <span id="sub_bill_100" class="text-[11px] sm:text-sm font-bold text-slate-700">0.00</span>
+                </div>
+              </div>
+
+              <!-- 50 -->
+              <div class="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition w-full">
+                <div class="flex items-center gap-2 sm:gap-3 w-[72px] sm:w-32 shrink-0">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-sky-100 text-sky-900 font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs">50</span>
+                  <span class="text-xs sm:text-sm font-semibold text-slate-700 hidden sm:inline">50 บาท</span>
+                </div>
+                <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                  <button type="button" onclick="adjustCount('bill_50', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">−</button>
+                  <input type="number" id="bill_50" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-12 sm:w-20 text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                  <button type="button" onclick="adjustCount('bill_50', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">+</button>
+                </div>
+                <div class="w-16 sm:w-24 text-right shrink-0">
+                  <span id="sub_bill_50" class="text-[11px] sm:text-sm font-bold text-slate-700">0.00</span>
+                </div>
+              </div>
+
+              <!-- 20 -->
+              <div class="flex items-center justify-between p-2 sm:p-2.5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-slate-300 transition w-full">
+                <div class="flex items-center gap-2 sm:gap-3 w-[72px] sm:w-32 shrink-0">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-100 text-emerald-900 font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs">20</span>
+                  <span class="text-xs sm:text-sm font-semibold text-slate-700 hidden sm:inline">20 บาท</span>
+                </div>
+                <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                  <button type="button" onclick="adjustCount('bill_20', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">−</button>
+                  <input type="number" id="bill_20" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-12 sm:w-20 text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                  <button type="button" onclick="adjustCount('bill_20', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-200 active:scale-95 flex items-center justify-center font-bold transition">+</button>
+                </div>
+                <div class="w-16 sm:w-24 text-right shrink-0">
+                  <span id="sub_bill_20" class="text-[11px] sm:text-sm font-bold text-slate-700">0.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coins Section -->
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5 w-full">
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-coins text-amber-500"></i> เหรียญ (จำนวนเหรียญ)
+              </div>
+              <button type="button" onclick="toggleCoinMode()" class="text-[10px] sm:text-[11px] text-teal-700 hover:underline font-semibold shrink-0">
+                <span id="coinToggleLabel">สลับเป็น: ใส่ยอดรวมเหรียญทันที</span>
+              </button>
+            </div>
+
+            <!-- Detailed Coins -->
+            <div id="coinDetailBox" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full">
+              <!-- 10 Baht -->
+              <div class="p-2.5 bg-slate-50/80 rounded-2xl border border-slate-200 text-center">
+                <div class="text-xs font-bold text-slate-600 mb-1">เหรียญ 10 บ.</div>
+                <input type="number" id="coin_10" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-full text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                <div class="text-[11px] text-slate-400 mt-1" id="sub_coin_10">฿0.00</div>
+              </div>
+
+              <!-- 5 Baht -->
+              <div class="p-2.5 bg-slate-50/80 rounded-2xl border border-slate-200 text-center">
+                <div class="text-xs font-bold text-slate-600 mb-1">เหรียญ 5 บ.</div>
+                <input type="number" id="coin_5" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-full text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                <div class="text-[11px] text-slate-400 mt-1" id="sub_coin_5">฿0.00</div>
+              </div>
+
+              <!-- 2 Baht -->
+              <div class="p-2.5 bg-slate-50/80 rounded-2xl border border-slate-200 text-center">
+                <div class="text-xs font-bold text-slate-600 mb-1">เหรียญ 2 บ.</div>
+                <input type="number" id="coin_2" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-full text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                <div class="text-[11px] text-slate-400 mt-1" id="sub_coin_2">฿0.00</div>
+              </div>
+
+              <!-- 1 Baht -->
+              <div class="p-2.5 bg-slate-50/80 rounded-2xl border border-slate-200 text-center">
+                <div class="text-xs font-bold text-slate-600 mb-1">เหรียญ 1 บ.</div>
+                <input type="number" id="coin_1" min="0" placeholder="0" oninput="calculateAll()" class="block denom-input w-full text-center py-1.5 bg-white border border-slate-300 rounded-lg text-base sm:text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none max-w-full box-border">
+                <div class="text-[11px] text-slate-400 mt-1" id="sub_coin_1">฿0.00</div>
+              </div>
+            </div>
+
+            <!-- Single Lump Sum Coin Input -->
+            <div id="coinLumpSumBox" class="hidden p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-2xl w-full">
+              <label class="block text-xs font-bold text-amber-900 mb-1">ยอดรวมเหรียญทั้งหมด (ระบุเป็นจำนวนเงินบาท):</label>
+              <div class="relative w-full">
+                <span class="absolute left-3.5 top-2 text-slate-400 font-bold text-sm sm:text-base">฿</span>
+                <input type="number" id="quickCoinTotal" placeholder="0.00" min="0" step="any" oninput="calculateAll()" class="block w-full max-w-full box-border pl-8 pr-3 py-1.5 bg-white border border-amber-300 rounded-xl text-base font-bold text-amber-950 focus:ring-2 focus:ring-amber-500 outline-none">
+              </div>
+              <p class="text-[11px] text-amber-800 mt-1">ใช้ในกรณีที่นับรวมเหรียญทุกขนาดไว้แล้ว</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Reconciliation Card, Status, Google Sync -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-4 sm:p-6 sticky top-20 transition hover:shadow-md w-full overflow-hidden">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <span class="flex items-center justify-center w-7 h-7 rounded-xl bg-indigo-100 text-indigo-800 font-black text-xs shrink-0">3</span>
+              <h2 class="text-sm sm:text-base font-bold text-slate-800">ผลการกระทบยอดปิดกะ</h2>
+            </div>
+            <span class="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 shrink-0" id="liveClockBadge">--:--</span>
+          </div>
+
+          <!-- Dynamic Status Card (Exact / Over / Short) -->
+          <div id="reconcileCard" class="p-4 rounded-2xl border transition-all duration-300 bg-slate-50 border-slate-200 text-slate-700 mb-4 w-full">
+            <div class="flex items-start gap-3.5">
+              <div id="reconcileIconWrapper" class="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center shrink-0 mt-0.5">
+                <i id="reconcileIcon" class="fa-solid fa-calculator text-slate-600 text-base"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider opacity-80" id="reconcileTag">ตรวจสอบสถานะ</div>
+                <div class="text-base sm:text-lg font-black leading-tight mt-0.5 break-words" id="reconcileHeader">กรอกข้อมูลเพื่อเริ่มตรวจนับ</div>
+                <div class="text-[11px] sm:text-xs mt-1 leading-relaxed opacity-90" id="reconcileMessage">ระบบจะเปรียบเทียบเงินสดที่นับได้ หักเงินทอน 5,000 บ. กับยอดขายในคอมพิวเตอร์</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Step Calculation Breakdown -->
+          <div class="space-y-3 text-[11px] sm:text-sm w-full">
+            <!-- 1. Actual Drawer Cash -->
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100">
+              <span class="text-slate-600 flex items-center gap-2">
+                <i class="fa-solid fa-cash-register text-slate-400 text-xs w-4"></i>
+                เงินสดทั้งหมดที่นับได้ในเก๊ะ
+              </span>
+              <span id="lblActualDrawer" class="font-bold text-slate-900 text-sm sm:text-base">฿0.00</span>
+            </div>
+
+            <!-- 2. Opening Float -->
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 text-slate-500">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-minus text-rose-500 text-xs w-4"></i>
+                หักเงินทอนคงเก๊ะ (เตรียมไว้ทอน)
+              </span>
+              <span id="lblDeductFloat" class="font-semibold text-rose-600">- ฿5,000.00</span>
+            </div>
+
+            <!-- 3. Net Cash to Submit -->
+            <div class="flex justify-between items-center py-2 px-3 bg-emerald-50/80 rounded-2xl border border-emerald-150">
+              <span class="font-semibold text-emerald-950 flex items-center gap-2">
+                <i class="fa-solid fa-hand-holding-dollar text-emerald-600 text-xs w-4"></i>
+                เงินสดนำส่งจริง (Actual Net Cash)
+              </span>
+              <span id="lblNetSubmit" class="font-black text-emerald-800 text-base sm:text-lg">฿0.00</span>
+            </div>
+
+            <!-- 4. Payouts adjustments -->
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 text-slate-600">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-receipt text-amber-500 text-xs w-4"></i>
+                บวกเงินสดที่หยิบจ่ายไประหว่างกะ
+              </span>
+              <span id="lblPayoutAdd" class="font-medium text-amber-700">+ ฿0.00</span>
+            </div>
+
+            <!-- 5. POS Expected Cash -->
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 text-slate-600">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-desktop text-teal-600 text-xs w-4"></i>
+                เทียบยอดขายเงินสดตามระบบ POS
+              </span>
+              <span id="lblExpectedPOS" class="font-semibold text-slate-800">฿0.00</span>
+            </div>
+
+            <!-- 6. Discrepancy Final -->
+            <div class="pt-2">
+              <div class="flex justify-between items-baseline">
+                <span class="text-[11px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500">ผลต่าง (ขาด / เกิน):</span>
+                <span id="lblDiscrepancy" class="text-xl sm:text-2xl font-black text-slate-800">฿0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Remark Input -->
+          <div class="mt-4 pt-3 border-t border-slate-100 w-full">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">หมายเหตุปิดกะ (เหตุผลเงินขาด/เกิน หรือบันทึกแจ้ง)</label>
+            <textarea id="shiftRemarks" rows="2" placeholder="เช่น ลูกค้าขอส่วนลดเศษ 5 บาท, จ่ายค่าวินมอเตอร์ไซค์ส่งยา..." class="block w-full max-w-full box-border p-2.5 text-base sm:text-xs bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition"></textarea>
+          </div>
+
+          <!-- Action Buttons (Google Sheets, LINE, Reset) - เพิ่ม no-print -->
+          <div class="mt-5 space-y-2.5 no-print w-full">
+            <!-- Google Sheets Save Button with Loading State -->
+            <button id="btnSaveSheets" onclick="saveToGoogleSheets()" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white rounded-2xl font-bold text-sm shadow-md shadow-emerald-600/25 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+              <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+              <span id="btnSaveSheetsText">บันทึกยอดส่ง Google Sheets</span>
+            </button>
+
+            <div class="grid grid-cols-2 gap-2 w-full">
+              <button onclick="copyLineFormat()" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 active:scale-[0.99] text-slate-700 rounded-xl font-semibold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200">
+                <i class="fa-solid fa-share-nodes text-teal-600"></i>
+                <span>คัดลอกส่ง LINE</span>
+              </button>
+              <button onclick="confirmResetShift()" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 active:scale-[0.99] text-slate-600 rounded-xl font-semibold text-xs transition flex items-center justify-center gap-1.5 border border-slate-200">
+                <i class="fa-solid fa-rotate text-xs"></i>
+                <span>เริ่มรอบนับใหม่</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
-        <script>
-          // ลงทะเบียน Service Worker (แก้ไข Path เป็น Relative)
-          if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-              navigator.serviceWorker.register('./sw.js')
-                .then(registration => {
-                  console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                })
-                .catch(err => {
-                  console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-          }
-        </script>
+
+    <!-- Shift History Table (Local Cache) - เพิ่ม no-print เพื่อซ่อนตอนพิมพ์ -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-4 sm:p-6 no-print w-full overflow-hidden">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-clock-rotate-left text-emerald-700"></i>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-800">ประวัติบันทึกปิดกะล่าสุด (บันทึกสำรองในเบราว์เซอร์)</h3>
+          <span id="historyBadgeCount" class="text-[10px] sm:text-xs bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full font-semibold">0 รายการ</span>
+        </div>
+        <button onclick="confirmClearHistory()" class="text-[11px] sm:text-xs text-rose-500 hover:text-rose-700 font-medium shrink-0">ล้างประวัติในเครื่อง</button>
+      </div>
+
+      <div class="overflow-x-auto custom-scrollbar w-full">
+        <table class="w-full text-left text-xs text-slate-600 whitespace-nowrap">
+          <thead class="bg-slate-50 text-slate-500 uppercase font-semibold text-[11px] border-b border-slate-200">
+            <tr>
+              <th class="py-3 px-3.5">วันที่</th>
+              <th class="py-3 px-3.5">เวลานับ</th>
+              <th class="py-3 px-3.5">ผู้ตรวจนับ</th>
+              <th class="py-3 px-3.5 text-right">ยอดขายรวม (POS)</th>
+              <th class="py-3 px-3.5 text-right">ยอดโอน</th>
+              <th class="py-3 px-3.5 text-right">เงินสดในเก๊ะ</th>
+              <th class="py-3 px-3.5 text-right">เงินสดนำส่ง</th>
+              <th class="py-3 px-3.5 text-right">ผลต่าง</th>
+              <th class="py-3 px-3.5 text-center">สถานะ</th>
+              <th class="py-3 px-3.5 text-center">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="historyTbody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="10" class="py-8 text-center text-slate-400 font-light">ยังไม่มีประวัติการบันทึก</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Google Sheets URL Settings Modal -->
+  <div id="configModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-150">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-gears text-emerald-600"></i>
+          <h4 class="font-bold text-base text-slate-800">ตั้งค่า Google Apps Script Webhook</h4>
+        </div>
+        <button onclick="closeConfigModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-600">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1.5">Web App Deployment URL:</label>
+          <input type="text" id="scriptUrlInput" class="block w-full max-w-full box-border p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-mono text-[11px] text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+          <p class="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+            ระบบได้ตั้งค่า URL เริ่มต้นที่เชื่อมต่อกับ Google Apps Script ให้แล้ว หากมีการ Deploy เวอร์ชันใหม่สามารถนำ URL ล่าสุดมาเปลี่ยนที่นี่ได้เลย
+          </p>
+        </div>
+
+        <div class="p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-200/70 space-y-1">
+          <div class="font-bold text-emerald-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-table text-emerald-600"></i> Google Sheets Schema
+          </div>
+          <p class="text-[11px] text-emerald-800 leading-relaxed">
+            คอลัมน์ที่รองรับอัตโนมัติ: Timestamp, Shift_Date, Count_Time, Cashier_Name, Total_Sales_POS, Transfer_Amount, Expected_Cash, Cash_Paid_Out, Actual_Cash_In_Drawer, Opening_Float, Net_Cash_To_Submit, Discrepancy, Status, Denom_Details_JSON, Remark
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+        <button onclick="closeConfigModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs transition">ปิด</button>
+        <button onclick="saveConfigScriptUrl()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs transition flex items-center gap-1.5">
+          <i class="fa-solid fa-check"></i> บันทึกการตั้งค่า
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4 w-full">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h4 class="font-bold text-base text-slate-800 flex items-center gap-2">
+          <i class="fa-solid fa-file-invoice text-emerald-600"></i> รายละเอียดบันทึกปิดกะ
+        </h4>
+        <button onclick="closeDetailModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="detailModalContent" class="space-y-3 text-xs text-slate-700"></div>
+      <div class="mt-6 flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeDetailModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs">ปิด</button>
+        <button onclick="window.print()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i> พิมพ์
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div id="toastBox" class="flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold text-white bg-slate-900 border border-slate-700">
+      <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+      <span id="toastMsg">บันทึกสำเร็จ</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200/80 py-4 text-center text-xs text-slate-400 no-print mt-auto w-full">
+    PharmaBalance (Medihouse) • เครื่องมือนับเงินและกระทบยอดสำหรับร้านยา • ซิงค์ตรงเข้า Google Sheets
+  </footer>
+
+  <script>
+    /* -------------------------------------------------------------
+       Default Configuration & Constants
+    ------------------------------------------------------------- */
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyO7nKzcp2lU2HyvVVykSI-xTO87qDcw-uQ_ewAbBzMIweBC0jyJrnNNYCV1WR9v68/exec";
+    
+    const DENOM_CONFIG = {
+      bill_1000: 1000,
+      bill_500: 500,
+      bill_100: 100,
+      bill_50: 50,
+      bill_20: 20,
+      coin_10: 10,
+      coin_5: 5,
+      coin_2: 2,
+      coin_1: 1
+    };
+
+    let isLumpSumCoins = false;
+    let payoutItems = [];
+
+    /* -------------------------------------------------------------
+       Initialization
+    ------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Set current date & time
+      const now = new Date();
+      document.getElementById('shiftDate').value = now.toISOString().split('T')[0];
+      setCountTimeToNow();
+
+      // 2. Load stored Google Script URL
+      const storedUrl = localStorage.getItem('pharma_sheet_url') || DEFAULT_SCRIPT_URL;
+      document.getElementById('scriptUrlInput').value = storedUrl;
+
+      // 3. Render table & badge
+      renderHistoryTable();
+      updateHistoryBadge();
+
+      // 4. Live clock in summary
+      setInterval(updateLiveClock, 1000);
+      updateLiveClock();
+
+      // 5. Initial compute
+      calculateAll();
+    });
+
+    function getScriptUrl() {
+      return localStorage.getItem('pharma_sheet_url') || DEFAULT_SCRIPT_URL;
+    }
+
+    function setCountTimeToNow() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('shiftTime').value = `${hours}:${minutes}`;
+      showToast(`อัปเดตเวลานับเป็น ${hours}:${minutes} น.`, 'info');
+    }
+
+    function updateLiveClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const badge = document.getElementById('liveClockBadge');
+      if (badge) badge.innerText = `เวลาปัจจุบัน ${timeStr} น.`;
+    }
+
+    /* -------------------------------------------------------------
+       Payout Rows Logic
+    ------------------------------------------------------------- */
+    function addPayoutRow(title = '', amount = '') {
+      const id = 'PAY_' + Date.now() + Math.random().toString(36).substring(2, 5);
+      payoutItems.push({ id, title, amount: parseFloat(amount) || 0 });
+      renderPayoutRows();
+      calculateAll();
+    }
+
+    function removePayoutRow(id) {
+      payoutItems = payoutItems.filter(item => item.id !== id);
+      renderPayoutRows();
+      calculateAll();
+    }
+
+    function updatePayout(id, field, val) {
+      const item = payoutItems.find(p => p.id === id);
+      if (!item) return;
+      if (field === 'amount') {
+        item.amount = Math.max(0, parseFloat(val) || 0);
+      } else {
+        item.title = val;
+      }
+      calculateAll();
+    }
+
+    function renderPayoutRows() {
+      const container = document.getElementById('payoutContainer');
+      container.innerHTML = '';
+
+      if (payoutItems.length === 0) {
+        container.innerHTML = `
+          <div class="text-[11px] text-slate-400 italic py-1.5 px-3 bg-slate-50/60 rounded-xl border border-dashed border-slate-200 w-full">
+            ไม่มีการหยิบเงินสดจ่ายออก (กดปุ่ม "เพิ่มรายการจ่าย" หากมีค่ายาส่งด่วนหรือค่าใช้จ่าย)
+          </div>
+        `;
+        return;
+      }
+
+      payoutItems.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-1.5 sm:gap-2 w-full';
+        row.innerHTML = `
+          <input type="text" placeholder="ระบุรายการ" 
+                 value="${escapeHtml(item.title)}" 
+                 oninput="updatePayout('${item.id}', 'title', this.value)"
+                 class="block flex-grow max-w-full box-border text-base sm:text-xs px-2.5 sm:px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500 outline-none">
+          <div class="relative w-24 sm:w-28 shrink-0">
+            <span class="absolute left-2.5 top-1.5 text-xs text-slate-400">฿</span>
+            <input type="number" min="0" step="any" placeholder="0.00"
+                   value="${item.amount > 0 ? item.amount : ''}" 
+                   oninput="updatePayout('${item.id}', 'amount', this.value)"
+                   class="block w-full max-w-full box-border pl-6 pr-2 py-1.5 text-base sm:text-xs text-right font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-emerald-500 outline-none">
+          </div>
+          <button type="button" onclick="removePayoutRow('${item.id}')" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-rose-500 rounded-lg hover:bg-rose-50 transition shrink-0">
+            <i class="fa-solid fa-trash-can text-xs"></i>
+          </button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    /* -------------------------------------------------------------
+       Denomination Counting Functions
+    ------------------------------------------------------------- */
+    function adjustCount(id, delta) {
+      const input = document.getElementById(id);
+      if (!input) return;
+      let val = parseInt(input.value) || 0;
+      val = Math.max(0, val + delta);
+      input.value = val === 0 ? '' : val;
+      calculateAll();
+    }
+
+    function toggleCoinMode() {
+      isLumpSumCoins = !isLumpSumCoins;
+      const detail = document.getElementById('coinDetailBox');
+      const lump = document.getElementById('coinLumpSumBox');
+      const label = document.getElementById('coinToggleLabel');
+
+      if (isLumpSumCoins) {
+        detail.classList.add('hidden');
+        lump.classList.remove('hidden');
+        label.innerText = 'สลับเป็น: แจกแจงเหรียญทีละประเภท (10, 5, 2, 1)';
+      } else {
+        detail.classList.remove('hidden');
+        lump.classList.add('hidden');
+        label.innerText = 'สลับเป็น: ใส่ยอดรวมเหรียญทันที';
+      }
+      calculateAll();
+    }
+
+    function clearAllDenominations() {
+      Object.keys(DENOM_CONFIG).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      const q = document.getElementById('quickCoinTotal');
+      if (q) q.value = '';
+      calculateAll();
+      showToast('ล้างจำนวนนับเงินสดเรียบร้อย', 'info');
+    }
+
+    function resetFloatDefault() {
+      document.getElementById('floatAmount').value = 5000;
+      calculateAll();
+      showToast('ตั้งค่าเงินทอนคงเก๊ะเป็น 5,000 บาทแล้ว', 'success');
+    }
+
+    /* -------------------------------------------------------------
+       Reconciliation Calculations (The Exact Logic)
+    ------------------------------------------------------------- */
+    function calculateAll() {
+      // 1. Read POS Inputs
+      const totalSales = parseFloat(document.getElementById('posTotalSales').value) || 0;
+      const transferAmount = parseFloat(document.getElementById('posTransferSales').value) || 0;
+      const openingFloat = parseFloat(document.getElementById('floatAmount').value) || 0;
+
+      // Payouts
+      const cashPaidOut = payoutItems.reduce((acc, curr) => acc + (curr.amount || 0), 0);
+      document.getElementById('totalPayoutDisplay').innerText = formatCurrency(cashPaidOut);
+
+      // Expected Cash according to POS: Total Sales - Transfer
+      const expectedCash = Math.max(0, totalSales - transferAmount);
+      document.getElementById('expectedCashSalesText').innerText = formatNumber(expectedCash);
+
+      // 2. Count Cash in Drawer
+      let billsTotal = 0;
+      ['bill_1000', 'bill_500', 'bill_100', 'bill_50', 'bill_20'].forEach(id => {
+        const count = parseInt(document.getElementById(id)?.value) || 0;
+        const sub = count * DENOM_CONFIG[id];
+        billsTotal += sub;
+        const subEl = document.getElementById(`sub_${id}`);
+        if (subEl) subEl.innerText = formatNumber(sub);
+      });
+
+      let coinsTotal = 0;
+      if (isLumpSumCoins) {
+        coinsTotal = parseFloat(document.getElementById('quickCoinTotal')?.value) || 0;
+      } else {
+        ['coin_10', 'coin_5', 'coin_2', 'coin_1'].forEach(id => {
+          const count = parseInt(document.getElementById(id)?.value) || 0;
+          const sub = count * DENOM_CONFIG[id];
+          coinsTotal += sub;
+          const subEl = document.getElementById(`sub_${id}`);
+          if (subEl) subEl.innerText = formatCurrency(sub);
+        });
+      }
+
+      // Total Cash actually in Drawer
+      const actualCash = billsTotal + coinsTotal;
+
+      // 3. Net Cash to Submit = Actual Cash in Drawer - Float (5,000)
+      const netCash = actualCash - openingFloat;
+
+      // 4. Discrepancy Formula: (Net Cash to Submit + Cash Paid Out) - Expected Cash Sales
+      const discrepancy = (netCash + cashPaidOut) - expectedCash;
+
+      // Determine Status: EXACT, OVER, SHORT
+      let status = 'EXACT';
+      if (Math.abs(discrepancy) < 0.01) {
+        status = 'EXACT';
+      } else if (discrepancy > 0) {
+        status = 'OVER';
+      } else {
+        status = 'SHORT';
+      }
+
+      // 5. Update UI Labels
+      document.getElementById('lblActualDrawer').innerText = formatCurrency(actualCash);
+      document.getElementById('lblDeductFloat').innerText = `- ${formatCurrency(openingFloat)}`;
+      document.getElementById('lblNetSubmit').innerText = formatCurrency(netCash);
+      document.getElementById('lblPayoutAdd').innerText = `+ ${formatCurrency(cashPaidOut)}`;
+      document.getElementById('lblExpectedPOS').innerText = formatCurrency(expectedCash);
+
+      updateStatusUI(status, discrepancy, actualCash, totalSales);
+
+      return {
+        totalSales,
+        transferAmount,
+        expectedCash,
+        cashPaidOut,
+        openingFloat,
+        actualCash,
+        netCash,
+        discrepancy,
+        status
+      };
+    }
+
+    function updateStatusUI(status, discrepancy, actualCash, totalSales) {
+      const card = document.getElementById('reconcileCard');
+      const iconWrap = document.getElementById('reconcileIconWrapper');
+      const icon = document.getElementById('reconcileIcon');
+      const tag = document.getElementById('reconcileTag');
+      const header = document.getElementById('reconcileHeader');
+      const msg = document.getElementById('reconcileMessage');
+      const discLbl = document.getElementById('lblDiscrepancy');
+
+      if (actualCash === 0 && totalSales === 0) {
+        card.className = 'p-4 rounded-2xl border transition-all duration-300 bg-slate-50 border-slate-200 text-slate-700 mb-4 w-full';
+        iconWrap.className = 'w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center shrink-0 mt-0.5 text-slate-600';
+        icon.className = 'fa-solid fa-calculator text-base';
+        tag.innerText = 'รอข้อมูล';
+        header.innerText = 'กรอกข้อมูลเพื่อเริ่มตรวจนับ';
+        msg.innerText = 'กรอกยอดขาย POS และจำนวนเงินสดในเก๊ะเพื่อคำนวณยอดกระทบ';
+        discLbl.innerText = '฿0.00';
+        discLbl.className = 'text-xl sm:text-2xl font-black text-slate-400';
+        return;
+      }
+
+      if (status === 'EXACT') {
+        card.className = 'p-4 rounded-2xl border transition-all duration-300 bg-emerald-500/10 border-emerald-500/30 text-emerald-950 mb-4 w-full';
+        iconWrap.className = 'w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+        icon.className = 'fa-solid fa-circle-check text-lg';
+        tag.innerText = 'สถานะ: ยอดเงินตรงพอดี (EXACT)';
+        header.innerText = 'ยอดเงินตรงเป๊ะ!';
+        msg.innerText = 'เงินสดที่นับได้ หักเงินทอน 5,000 บ. และบวกเงินที่จ่ายออกแล้ว ตรงกับยอดขายเงินสดในคอมพิวเตอร์';
+        discLbl.innerText = '฿0.00 (ตรงพอดี)';
+        discLbl.className = 'text-xl sm:text-2xl font-black text-emerald-600';
+      } else if (status === 'OVER') {
+        card.className = 'p-4 rounded-2xl border transition-all duration-300 bg-sky-500/10 border-sky-500/30 text-sky-950 mb-4 w-full';
+        iconWrap.className = 'w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+        icon.className = 'fa-solid fa-circle-plus text-lg';
+        tag.innerText = 'สถานะ: เงินเกิน (OVER)';
+        header.innerText = `เงินเกิน +${formatNumber(discrepancy)} บาท`;
+        msg.innerText = 'เงินในเก๊ะมีมากกว่ายอดขายระบบ ตรวจสอบ: อาจลืมคีย์ขายบางรายการ, ทอนเงินขาด, หรือมีเงินส่วนตัวปนในเก๊ะ';
+        discLbl.innerText = `+${formatCurrency(discrepancy)}`;
+        discLbl.className = 'text-xl sm:text-2xl font-black text-sky-600';
+      } else {
+        card.className = 'p-4 rounded-2xl border transition-all duration-300 bg-rose-500/10 border-rose-500/30 text-rose-950 mb-4 w-full';
+        iconWrap.className = 'w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+        icon.className = 'fa-solid fa-triangle-exclamation text-lg';
+        tag.innerText = 'สถานะ: เงินขาด (SHORT)';
+        header.innerText = `เงินขาด -${formatNumber(Math.abs(discrepancy))} บาท`;
+        msg.innerText = 'เงินในเก๊ะน้อยกว่ายอดที่ต้องมี ตรวจสอบ: การทอนเงินผิด, ยอดโอนที่คีย์ซ้ำเป็นเงินสด, หรือมีเงินจ่ายออกที่ยังไม่ได้ลงบันทึก';
+        discLbl.innerText = `-${formatCurrency(Math.abs(discrepancy))}`;
+        discLbl.className = 'text-xl sm:text-2xl font-black text-rose-600';
+      }
+    }
+
+    /* -------------------------------------------------------------
+       Google Sheets Sync Engine (Direct Web App POST)
+    ------------------------------------------------------------- */
+    async function saveToGoogleSheets() {
+      const calc = calculateAll();
+      const shiftDate = document.getElementById('shiftDate').value;
+      const countTime = document.getElementById('shiftTime').value || '00:00';
+      const cashierName = document.getElementById('staffName').value.trim() || 'ไม่ได้ระบุ';
+      const remark = document.getElementById('shiftRemarks').value.trim();
+
+      // Collect denominations object
+      const denominations = {};
+      Object.keys(DENOM_CONFIG).forEach(k => {
+        denominations[k] = parseInt(document.getElementById(k)?.value) || 0;
+      });
+      if (isLumpSumCoins) {
+        denominations['coins_lump_sum'] = parseFloat(document.getElementById('quickCoinTotal')?.value) || 0;
+      }
+
+      const payload = {
+        shiftDate,
+        countTime,
+        cashierName,
+        totalSales: calc.totalSales,
+        transferAmount: calc.transferAmount,
+        expectedCash: calc.expectedCash,
+        cashPaidOut: calc.cashPaidOut,
+        actualCash: calc.actualCash,
+        openingFloat: calc.openingFloat,
+        netCash: calc.netCash,
+        discrepancy: calc.discrepancy,
+        status: calc.status,
+        denominations,
+        payouts: payoutItems,
+        remark: remark || '-'
+      };
+
+      const btn = document.getElementById('btnSaveSheets');
+      const btnText = document.getElementById('btnSaveSheetsText');
+      const originalText = btnText.innerText;
+
+      btn.disabled = true;
+      btnText.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> กำลังส่งเข้า Google Sheets...`;
+
+      try {
+        const scriptUrl = getScriptUrl();
+
+        // Send via POST using text/plain to avoid CORS preflight blocking in Google Apps Script
+        const response = await fetch(scriptUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const resData = await response.json().catch(() => ({ status: 'success' }));
+
+        if (resData.status === 'error') {
+          throw new Error(resData.message || 'บันทึกไม่สำเร็จจาก Apps Script');
+        }
+
+        // Save local backup record
+        saveLocalRecord(payload);
+        showToast('บันทึกลง Google Sheets และสำรองในเครื่องเรียบร้อย!', 'success');
+      } catch (err) {
+        console.warn('Google Sheets fetch notice:', err);
+        // Fallback local save in case user runs in an offline environment
+        saveLocalRecord(payload);
+        showToast('บันทึกสำรองในเครื่องแล้ว (ตรวจสอบการเชื่อมต่อ Google Sheets)', 'info');
+      } finally {
+        btn.disabled = false;
+        btnText.innerText = originalText;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       Local History Management (LocalStorage Backup)
+    ------------------------------------------------------------- */
+    function getLocalRecords() {
+      try {
+        return JSON.parse(localStorage.getItem('pharma_records_cache') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLocalRecord(data) {
+      const history = getLocalRecords();
+      const record = {
+        id: 'REC_' + Date.now(),
+        timestamp: new Date().toISOString(),
+        ...data
+      };
+      history.unshift(record);
+      localStorage.setItem('pharma_records_cache', JSON.stringify(history.slice(0, 50)));
+      renderHistoryTable();
+      updateHistoryBadge();
+    }
+
+    function renderHistoryTable() {
+      const records = getLocalRecords();
+      const tbody = document.getElementById('historyTbody');
+      tbody.innerHTML = '';
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="py-8 text-center text-slate-400 font-light">ยังไม่มีประวัติการบันทึก</td></tr>`;
+        return;
+      }
+
+      records.forEach(rec => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition-colors';
+
+        let statusBadge = '';
+        if (rec.status === 'EXACT') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">ตรงเป๊ะ</span>`;
+        } else if (rec.status === 'OVER') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800">+${formatNumber(rec.discrepancy)}</span>`;
+        } else {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">-${formatNumber(Math.abs(rec.discrepancy))}</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="py-3 px-3.5 font-medium text-slate-900">${rec.shiftDate}</td>
+          <td class="py-3 px-3.5 font-semibold text-emerald-800">${rec.countTime} น.</td>
+          <td class="py-3 px-3.5">${escapeHtml(rec.cashierName)}</td>
+          <td class="py-3 px-3.5 text-right font-medium">${formatCurrency(rec.totalSales)}</td>
+          <td class="py-3 px-3.5 text-right text-indigo-600 font-medium">${formatCurrency(rec.transferAmount)}</td>
+          <td class="py-3 px-3.5 text-right font-semibold">${formatCurrency(rec.actualCash)}</td>
+          <td class="py-3 px-3.5 text-right font-bold text-emerald-700">${formatCurrency(rec.netCash)}</td>
+          <td class="py-3 px-3.5 text-right font-mono font-bold">${rec.discrepancy >= 0 ? '+' : ''}${formatCurrency(rec.discrepancy)}</td>
+          <td class="py-3 px-3.5 text-center">${statusBadge}</td>
+          <td class="py-3 px-3.5 text-center">
+            <button onclick="viewRecordDetail('${rec.id}')" class="p-1 text-slate-500 hover:text-emerald-600 transition" title="ดูรายละเอียด">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button onclick="deleteRecord('${rec.id}')" class="p-1 text-slate-400 hover:text-rose-500 transition ml-1" title="ลบ">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewRecordDetail(id) {
+      const records = getLocalRecords();
+      const rec = records.find(r => r.id === id);
+      if (!rec) return;
+
+      const content = document.getElementById('detailModalContent');
+      content.innerHTML = `
+        <div class="grid grid-cols-2 gap-y-2 mb-4">
+          <div class="text-slate-500">วันที่: <span class="font-semibold text-slate-800">${rec.shiftDate}</span></div>
+          <div class="text-slate-500">เวลานับ: <span class="font-semibold text-slate-800">${rec.countTime} น.</span></div>
+          <div class="text-slate-500">ผู้ตรวจนับ: <span class="font-semibold text-slate-800">${escapeHtml(rec.cashierName)}</span></div>
+          <div class="text-slate-500">สถานะ: <span class="font-semibold ${rec.status === 'EXACT' ? 'text-emerald-600' : (rec.status === 'OVER' ? 'text-sky-600' : 'text-rose-600')}">${rec.status}</span></div>
+        </div>
+        <hr class="border-slate-100 my-2">
+        <div class="space-y-1">
+          <div class="flex justify-between"><span>ยอดขาย POS:</span> <span class="font-medium">${formatCurrency(rec.totalSales)}</span></div>
+          <div class="flex justify-between"><span>ยอดโอน:</span> <span class="font-medium text-indigo-600">${formatCurrency(rec.transferAmount)}</span></div>
+          <div class="flex justify-between"><span>เงินสดจ่ายออก:</span> <span class="font-medium text-amber-600">${formatCurrency(rec.cashPaidOut)}</span></div>
+          <div class="flex justify-between"><span>เงินสดในเก๊ะจริง:</span> <span class="font-medium text-slate-800">${formatCurrency(rec.actualCash)}</span></div>
+          <div class="flex justify-between"><span>เงินทอนตั้งต้น:</span> <span class="font-medium text-rose-600">-${formatCurrency(rec.openingFloat)}</span></div>
+        </div>
+        <hr class="border-slate-100 my-2">
+        <div class="flex justify-between text-sm font-bold">
+          <span>เงินสดนำส่งสุทธิ:</span> <span class="text-emerald-700">${formatCurrency(rec.netCash)}</span>
+        </div>
+        <div class="flex justify-between text-sm font-bold mt-1">
+          <span>ผลต่าง:</span> <span class="${rec.discrepancy >= 0 ? (rec.discrepancy === 0 ? 'text-emerald-600' : 'text-sky-600') : 'text-rose-600'}">${rec.discrepancy >= 0 ? '+' : ''}${formatCurrency(rec.discrepancy)}</span>
+        </div>
+        <div class="mt-3 text-[11px] text-slate-500 bg-slate-50 p-2 rounded border border-slate-200">
+          <strong>หมายเหตุ:</strong> ${escapeHtml(rec.remark)}
+        </div>
+      `;
+      document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    function deleteRecord(id) {
+      if (!confirm('ยืนยันการลบประวัตินี้ออกจากเครื่อง?')) return;
+      let records = getLocalRecords();
+      records = records.filter(r => r.id !== id);
+      localStorage.setItem('pharma_records_cache', JSON.stringify(records));
+      renderHistoryTable();
+      updateHistoryBadge();
+      showToast('ลบประวัติเรียบร้อย', 'success');
+    }
+
+    function confirmClearHistory() {
+      if (!confirm('ยืนยันการลบประวัติการนับเงินทั้งหมดในเครื่องนี้? (ข้อมูลใน Google Sheets จะไม่ถูกลบ)')) return;
+      localStorage.removeItem('pharma_records_cache');
+      renderHistoryTable();
+      updateHistoryBadge();
+      showToast('ล้างประวัติในเครื่องทั้งหมดแล้ว', 'info');
+    }
+
+    function updateHistoryBadge() {
+      const count = getLocalRecords().length;
+      document.getElementById('historyBadgeCount').innerText = `${count} รายการ`;
+    }
+
+    /* -------------------------------------------------------------
+       Utility & UI Functions
+    ------------------------------------------------------------- */
+    function formatNumber(num) {
+      return Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatCurrency(num) {
+      return '฿' + formatNumber(num);
+    }
+
+    function escapeHtml(unsafe) {
+      return (unsafe || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const box = document.getElementById('toastBox');
+      const icon = document.getElementById('toastIcon');
+      const msgEl = document.getElementById('toastMsg');
+
+      msgEl.innerText = msg;
+      
+      if (type === 'success') {
+        box.className = 'flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold text-white bg-slate-900 border border-slate-700';
+        icon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+      } else if (type === 'info') {
+        box.className = 'flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold text-white bg-sky-900 border border-sky-700';
+        icon.className = 'fa-solid fa-circle-info text-sky-400 text-base';
+      }
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    function openConfigModal() {
+      document.getElementById('configModal').classList.remove('hidden');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('configModal').classList.add('hidden');
+    }
+
+    function saveConfigScriptUrl() {
+      const url = document.getElementById('scriptUrlInput').value.trim();
+      if (!url) {
+        alert('กรุณาระบุ URL');
+        return;
+      }
+      localStorage.setItem('pharma_sheet_url', url);
+      closeConfigModal();
+      showToast('บันทึกการตั้งค่า URL เรียบร้อย', 'success');
+    }
+
+    function confirmResetShift() {
+      if (!confirm('ยืนยันการเริ่มรอบนับใหม่? ข้อมูลที่กำลังกรอกจะถูกล้างทั้งหมด')) return;
+      
+      document.getElementById('posTotalSales').value = '';
+      document.getElementById('posTransferSales').value = '';
+      document.getElementById('shiftRemarks').value = '';
+      
+      payoutItems = [];
+      renderPayoutRows();
+      clearAllDenominations();
+      
+      setCountTimeToNow();
+      document.getElementById('floatAmount').value = 5000;
+      
+      calculateAll();
+      showToast('เริ่มรอบนับใหม่เรียบร้อย', 'info');
+    }
+
+    function copyLineFormat() {
+      const calc = calculateAll();
+      const shiftDate = document.getElementById('shiftDate').value;
+      const countTime = document.getElementById('shiftTime').value || '00:00';
+      const cashierName = document.getElementById('staffName').value.trim() || 'ไม่ได้ระบุ';
+      const remark = document.getElementById('shiftRemarks').value.trim();
+
+      let diffStr = "ตรงเป๊ะ ✅";
+      if (calc.discrepancy > 0) diffStr = `เกิน +${formatNumber(calc.discrepancy)} บ. 📈`;
+      if (calc.discrepancy < 0) diffStr = `ขาด ${formatNumber(calc.discrepancy)} บ. 📉`;
+
+      let text = `📝 สรุปปิดกะร้านยา (Medihouse)\n`;
+      text += `📅 วันที่: ${shiftDate} ⏰ เวลานับ: ${countTime} น.\n`;
+      text += `👤 ผู้ตรวจนับ: ${cashierName}\n`;
+      text += `------------------------\n`;
+      text += `💰 ยอดขายรวม POS: ${formatNumber(calc.totalSales)}\n`;
+      text += `💳 ยอดโอน/QR: ${formatNumber(calc.transferAmount)}\n`;
+      
+      // ส่วนที่เพิ่มใหม่: ดึงรายการค่าใช้จ่ายมาแสดงแจกแจงทีละบรรทัด
+      if (payoutItems.length > 0) {
+        payoutItems.forEach(item => {
+          const itemTitle = item.title.trim() ? item.title.trim() : 'ไม่ได้ระบุรายการ';
+          text += `📦 ${itemTitle}: ${formatNumber(item.amount)}\n`;
+        });
+      }
+      
+      text += `------------------------\n`;
+      text += `💵 เงินสดที่นับได้ในเก๊ะ: ${formatNumber(calc.actualCash)}\n`;
+      text += `🔒 (หัก) เงินทอนตั้งต้น: 5,000.00\n`;
+      text += `💸 เงินสดนำส่งจริง: ${formatNumber(calc.netCash)}\n`;
+      text += `------------------------\n`;
+      text += `📊 ผลต่างกระทบยอด: ${diffStr}\n`;
+      
+      if (remark && remark !== "-") {
+        text += `📌 หมายเหตุ: ${remark}\n`;
+      }
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("คัดลอกข้อความสำหรับส่ง LINE เรียบร้อย!", "success");
+      }).catch(err => {
+        alert("ไม่สามารถคัดลอกได้ กรุณาลองใหม่อีกครั้ง");
+        console.error(err);
+      });
+    }
+
+
+  </script>
 </body>
 </html>
